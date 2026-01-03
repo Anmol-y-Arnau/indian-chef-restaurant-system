@@ -28,8 +28,13 @@ export default function Home() {
   const filteredItems = MENU_ITEMS.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           item.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = item.category === activeCategory;
-    return matchesSearch && matchesCategory;
+    
+    // If searching, ignore category filter. If not searching, apply category filter.
+    if (searchQuery.trim() !== "") {
+      return matchesSearch;
+    }
+    
+    return item.category === activeCategory;
   });
 
   const activeTable = tables.find(t => t.id === activeTableId);
@@ -166,20 +171,21 @@ export default function Home() {
           <Tabs defaultValue={CATEGORIES[0].id} value={activeCategory} onValueChange={setActiveCategory} className="flex-1 flex flex-col h-full">
             {/* Categories - Horizontal Scroll */}
             <div className="px-4 md:px-6 py-3 md:py-4 border-b border-border shrink-0">
-              <ScrollArea className="w-full whitespace-nowrap pb-2">
-                <TabsList className="bg-transparent h-auto p-0 gap-2 justify-start w-max">
+              <div className="w-full overflow-x-auto pb-2 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
+                <TabsList className="bg-transparent h-auto p-0 gap-2 justify-start w-max flex">
                   {CATEGORIES.map(category => (
                     <TabsTrigger 
                       key={category.id} 
                       value={category.id}
-                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full px-4 py-1.5 md:px-6 md:py-2 border border-border data-[state=active]:border-primary transition-all duration-300 text-sm md:text-base"
+                      onClick={() => setSearchQuery("")} // Clear search when picking a category
+                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full px-4 py-1.5 md:px-6 md:py-2 border border-border data-[state=active]:border-primary transition-all duration-300 text-sm md:text-base shrink-0"
                     >
                       <span className="mr-2 text-base md:text-lg">{category.icon}</span>
                       {category.label}
                     </TabsTrigger>
                   ))}
                 </TabsList>
-              </ScrollArea>
+              </div>
             </div>
 
             {/* Menu Grid - Scrollable */}
