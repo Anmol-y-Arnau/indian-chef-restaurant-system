@@ -1,3 +1,4 @@
+import { CustomItemDialog } from "@/components/CustomItemDialog";
 import { MenuCard } from "@/components/MenuCard";
 import { OrderPanel } from "@/components/OrderPanel";
 import { TableCard } from "@/components/TableCard";
@@ -119,6 +120,11 @@ export default function Home() {
             <div className="flex-1 overflow-hidden relative p-6">
               <ScrollArea className="h-full pr-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-20">
+                  {/* Custom Item Button - Always first or last depending on preference, here putting it first if no filter or always visible */}
+                  <div className="h-full">
+                    <CustomItemDialog />
+                  </div>
+
                   {filteredItems.map(item => (
                     <MenuCard 
                       key={item.id} 

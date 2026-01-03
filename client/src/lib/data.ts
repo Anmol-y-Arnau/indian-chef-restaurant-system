@@ -9,6 +9,8 @@ export const CATEGORIES: Category[] = [
   { id: 'biryani', label: 'Biryani (Arroces)', icon: '🍚' },
   { id: 'sides', label: 'Guarniciones (Arroz/Pan)', icon: '🫓' },
   { id: 'wines', label: 'Vinos', icon: '🍷' },
+  { id: 'drinks', label: 'Bebidas', icon: '🥤' },
+  { id: 'coffees', label: 'Cafés', icon: '☕' },
 ];
 
 export const MENU_ITEMS: MenuItem[] = [
@@ -657,10 +659,106 @@ export const MENU_ITEMS: MenuItem[] = [
   },
 ];
 
-export const INITIAL_TABLES: Table[] = Array.from({ length: 9 }, (_, i) => ({
-  id: i + 1,
-  name: `Mesa ${i + 1}`,
+export const INITIAL_TABLES: Table[] = Array.from({ length: 10 }, (_, i) => ({
+  id: i,
+  name: `Mesa ${i}`,
   status: 'free',
   orders: [],
   guests: 0
 }));
+
+// BEBIDAS
+MENU_ITEMS.push(
+  {
+    id: 'dr1',
+    name: 'Refresco',
+    description: 'Coca-Cola, Fanta, Sprite, etc.',
+    price: 3.50,
+    category: 'drinks',
+    image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=2070&auto=format&fit=crop'
+  },
+  {
+    id: 'dr2',
+    name: 'Caña',
+    description: 'Cerveza de barril',
+    price: 3.00,
+    category: 'drinks',
+    image: 'https://images.unsplash.com/photo-1535958636474-b021ee887b13?q=80&w=2070&auto=format&fit=crop'
+  },
+  {
+    id: 'dr3',
+    name: 'Estrella (Botella)',
+    description: 'Cerveza Estrella Galicia',
+    price: 3.50,
+    category: 'drinks',
+    image: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?q=80&w=2070&auto=format&fit=crop'
+  },
+  {
+    id: 'dr4',
+    name: 'Cobra',
+    description: 'Cerveza India Premium',
+    price: 4.00,
+    category: 'drinks',
+    image: 'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?q=80&w=2070&auto=format&fit=crop'
+  },
+  {
+    id: 'dr5',
+    name: 'Agua Pequeña',
+    description: 'Agua mineral 33cl',
+    price: 3.00,
+    category: 'drinks',
+    image: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?q=80&w=1888&auto=format&fit=crop'
+  },
+  {
+    id: 'dr6',
+    name: 'Agua Grande',
+    description: 'Agua mineral 1L',
+    price: 4.00,
+    category: 'drinks',
+    image: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?q=80&w=1888&auto=format&fit=crop'
+  },
+  {
+    id: 'dr7',
+    name: 'Copa de Vino',
+    description: 'Vino de la casa (Tinto/Blanco/Rosado)',
+    price: 3.50,
+    category: 'drinks',
+    image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=2070&auto=format&fit=crop'
+  }
+);
+
+// CAFÉS
+MENU_ITEMS.push(
+  {
+    id: 'cf1',
+    name: 'Café Solo',
+    description: 'Espresso',
+    price: 1.80,
+    category: 'coffees',
+    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=1887&auto=format&fit=crop'
+  },
+  {
+    id: 'cf2',
+    name: 'Cortado',
+    description: 'Espresso con un poco de leche',
+    price: 2.00,
+    category: 'coffees',
+    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=1887&auto=format&fit=crop'
+  },
+  {
+    id: 'cf3',
+    name: 'Café con Leche',
+    description: 'Café con leche grande',
+    price: 2.50,
+    category: 'coffees',
+    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=1887&auto=format&fit=crop'
+  },
+  {
+    id: 'cf4',
+    name: 'Carajillo',
+    description: 'Café con licor (Brandy/Whisky/Ron)',
+    price: 4.50,
+    category: 'coffees',
+    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=1887&auto=format&fit=crop'
+  }
+);
