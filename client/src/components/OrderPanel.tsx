@@ -1,6 +1,6 @@
 import { useRestaurant } from "@/contexts/RestaurantContext";
 import { cn } from "@/lib/utils";
-import { Minus, Printer, Trash2, X } from "lucide-react";
+import { Copy, MessageCircle, Minus, Printer, Trash2, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import { Separator } from "./ui/separator";
@@ -14,7 +14,8 @@ export function OrderPanel() {
     getTableTotal, 
     updateTableStatus, 
     clearTable,
-    setActiveTableId
+    setActiveTableId,
+    closeTable
   } = useRestaurant();
 
   if (!activeTableId) {
@@ -63,9 +64,26 @@ export function OrderPanel() {
 
   const handlePayment = () => {
     if (confirm(`¿Confirmar pago de ${total.toFixed(2)}€ y liberar mesa?`)) {
-      clearTable(activeTableId);
-      setActiveTableId(null);
+      closeTable(activeTableId);
     }
+  };
+
+  const getTicketText = () => {
+    const date = new Date().toLocaleString();
+    const items = table.orders.map(o => `${o.quantity}x ${o.menuItem.name} (${(o.menuItem.price * o.quantity).toFixed(2)}€)`).join('\n');
+    return `*INDIAN CHEF RESTAURANT*\n----------------------\nMesa: ${table.name}\nFecha: ${date}\n----------------------\n${items}\n----------------------\n*TOTAL: ${total.toFixed(2)}€*\n----------------------\n¡Gracias por su visita!`;
+  };
+
+  const handleCopyTicket = () => {
+    if (table.orders.length === 0) return;
+    navigator.clipboard.writeText(getTicketText());
+    toast.success("Tiquet copiado al portapapeles");
+  };
+
+  const handleWhatsApp = () => {
+    if (table.orders.length === 0) return;
+    const text = encodeURIComponent(getTicketText());
+    window.open(`https://wa.me/?text=${text}`, '_blank');
   };
 
   return (
@@ -134,16 +152,36 @@ export function OrderPanel() {
           <span className="text-3xl font-heading text-primary">{total.toFixed(2)}€</span>
         </div>
         
-        <div className="grid grid-cols-2 gap-2">
-          <Button 
-            variant="outline" 
-            className="w-full border-primary/50 hover:bg-primary/10 hover:text-primary"
-            onClick={handlePrint}
-            disabled={table.orders.length === 0}
-          >
-            <Printer className="w-4 h-4 mr-2" />
-            Tiquet
-          </Button>
+        <div className="space-y-2">
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              className="flex-1 border-primary/50 hover:bg-primary/10 hover:text-primary px-2"
+              onClick={handleCopyTicket}
+              disabled={table.orders.length === 0}
+              title="Copiar Tiquet"
+            >
+              <Copy className="w-4 h-4" />
+            </Button>
+            <Button 
+              variant="outline" 
+              className="flex-1 border-primary/50 hover:bg-primary/10 hover:text-primary px-2"
+              onClick={handleWhatsApp}
+              disabled={table.orders.length === 0}
+              title="Enviar por WhatsApp"
+            >
+              <MessageCircle className="w-4 h-4" />
+            </Button>
+            <Button 
+              variant="outline" 
+              className="flex-1 border-primary/50 hover:bg-primary/10 hover:text-primary px-2"
+              onClick={handlePrint}
+              disabled={table.orders.length === 0}
+              title="Imprimir Tiquet"
+            >
+              <Printer className="w-4 h-4" />
+            </Button>
+          </div>
           <Button 
             variant="default" 
             className="w-full bg-primary text-primary-foreground hover:bg-primary/90"

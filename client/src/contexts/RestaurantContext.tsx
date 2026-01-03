@@ -1,6 +1,6 @@
 import { INITIAL_TABLES, MENU_ITEMS } from "@/lib/data";
-import { MenuItem, OrderItem, Table } from "@/lib/types";
-import React, { createContext, useContext, useState } from "react";
+import { MenuItem, OrderHistoryItem, OrderItem, Table } from "@/lib/types";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { toast } from "sonner";
 
 interface RestaurantContextType {
@@ -13,6 +13,8 @@ interface RestaurantContextType {
   updateTableGuests: (tableId: number, guests: number) => void;
   clearTable: (tableId: number) => void;
   getTableTotal: (tableId: number) => number;
+  orderHistory: OrderHistoryItem[];
+  closeTable: (tableId: number) => void;
 }
 
 const RestaurantContext = createContext<RestaurantContextType | undefined>(undefined);
@@ -20,6 +22,14 @@ const RestaurantContext = createContext<RestaurantContextType | undefined>(undef
 export function RestaurantProvider({ children }: { children: React.ReactNode }) {
   const [tables, setTables] = useState<Table[]>(INITIAL_TABLES);
   const [activeTableId, setActiveTableId] = useState<number | null>(null);
+  const [orderHistory, setOrderHistory] = useState<OrderHistoryItem[]>(() => {
+    const saved = localStorage.getItem('indian_chef_history');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('indian_chef_history', JSON.stringify(orderHistory));
+  }, [orderHistory]);
 
   const addOrderToTable = (tableId: number, menuItem: MenuItem) => {
     setTables(prev => prev.map(table => {
@@ -112,6 +122,27 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
     return table.orders.reduce((total, order) => total + (order.menuItem.price * order.quantity), 0);
   };
 
+  const closeTable = (tableId: number) => {
+    setTables(prev => prev.map(table => {
+      if (table.id === tableId) {
+        if (table.orders.length > 0) {
+          const total = table.orders.reduce((sum, order) => sum + order.menuItem.price * order.quantity, 0);
+          const historyItem: OrderHistoryItem = {
+            id: Date.now().toString(),
+            tableId: table.id,
+            date: new Date().toISOString(),
+            total,
+            items: [...table.orders]
+          };
+          setOrderHistory(prevHistory => [historyItem, ...prevHistory]);
+        }
+        return { ...table, status: 'free', orders: [], guests: 0, startTime: undefined };
+      }
+      return table;
+    }));
+    setActiveTableId(null);
+  };
+
   return (
     <RestaurantContext.Provider value={{
       tables,
@@ -122,7 +153,9 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
       updateTableStatus,
       updateTableGuests,
       clearTable,
-      getTableTotal
+      getTableTotal,
+      orderHistory,
+      closeTable
     }}>
       {children}
     </RestaurantContext.Provider>

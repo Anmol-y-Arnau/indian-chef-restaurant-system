@@ -30,3 +30,11 @@ export interface Category {
   label: string;
   icon: string;
 }
+
+export interface OrderHistoryItem {
+  id: string;
+  tableId: number;
+  date: string; // ISO string
+  total: number;
+  items: OrderItem[];
+}

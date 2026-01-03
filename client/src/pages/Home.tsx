@@ -1,4 +1,5 @@
 import { CustomItemDialog } from "@/components/CustomItemDialog";
+import { HistoryDialog } from "@/components/HistoryDialog";
 import { MenuCard } from "@/components/MenuCard";
 import { OrderPanel } from "@/components/OrderPanel";
 import { Button } from "@/components/ui/button";
@@ -152,8 +153,9 @@ export default function Home() {
           </div>
           
           {/* Search Bar - Responsive */}
-          <div className="absolute bottom-4 right-4 md:bottom-6 md:right-8 z-20 w-40 md:w-96">
-            <div className="relative">
+          <div className="absolute bottom-4 right-4 md:bottom-6 md:right-8 z-20 flex items-center gap-2">
+            <HistoryDialog />
+            <div className="relative w-32 md:w-80">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-3 h-3 md:w-4 md:h-4" />
               <input 
                 type="text" 
