@@ -1,0 +1,172 @@
+import { useRestaurant } from "@/contexts/RestaurantContext";
+import { cn } from "@/lib/utils";
+import { Minus, Printer, Trash2, X } from "lucide-react";
+import { Button } from "./ui/button";
+import { ScrollArea } from "./ui/scroll-area";
+import { Separator } from "./ui/separator";
+import { toast } from "sonner";
+
+export function OrderPanel() {
+  const { 
+    activeTableId, 
+    tables, 
+    removeOrderFromTable, 
+    getTableTotal, 
+    updateTableStatus, 
+    clearTable,
+    setActiveTableId
+  } = useRestaurant();
+
+  if (!activeTableId) {
+    return (
+      <div className="h-full flex flex-col items-center justify-center p-8 text-center text-muted-foreground bg-card/50 border-l border-border">
+        <div className="w-24 h-24 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+          <img src="/images/chef-icon.png" alt="Chef" className="w-16 h-16 opacity-50" />
+        </div>
+        <h3 className="font-heading text-xl mb-2">Bienvenido a Indian Chef</h3>
+        <p>Selecciona una mesa para comenzar a tomar nota o ver el estado.</p>
+      </div>
+    );
+  }
+
+  const table = tables.find(t => t.id === activeTableId);
+  if (!table) return null;
+
+  const total = getTableTotal(activeTableId);
+
+  const handlePrint = () => {
+    if (table.orders.length === 0) {
+      toast.error("No hay pedidos para imprimir");
+      return;
+    }
+    
+    // In a real app, this would trigger a thermal printer
+    // Here we'll simulate it with a modal or just a toast for now
+    // Or actually open a print window
+    const printContent = `
+      INDIAN CHEF RESTAURANT
+      ----------------------
+      Mesa: ${table.name}
+      Fecha: ${new Date().toLocaleString()}
+      ----------------------
+      ${table.orders.map(o => `${o.quantity}x ${o.menuItem.name.padEnd(20)} ${(o.menuItem.price * o.quantity).toFixed(2)}€`).join('\n')}
+      ----------------------
+      TOTAL: ${total.toFixed(2)}€
+      ----------------------
+      ¡Gracias por su visita!
+    `;
+    
+    console.log(printContent);
+    toast.success("Tiquet enviado a impresora");
+    updateTableStatus(activeTableId, 'payment_pending');
+  };
+
+  const handlePayment = () => {
+    if (confirm(`¿Confirmar pago de ${total.toFixed(2)}€ y liberar mesa?`)) {
+      clearTable(activeTableId);
+      setActiveTableId(null);
+    }
+  };
+
+  return (
+    <div className="h-full flex flex-col bg-card border-l border-border shadow-xl">
+      {/* Header */}
+      <div className="p-4 border-b border-border bg-muted/30 flex justify-between items-center">
+        <div>
+          <h2 className="font-heading text-xl text-primary">{table.name}</h2>
+          <span className={cn(
+            "text-xs px-2 py-0.5 rounded-full border",
+            table.status === 'free' ? "bg-green-500/10 border-green-500/50 text-green-500" :
+            table.status === 'occupied' ? "bg-secondary/10 border-secondary/50 text-secondary" :
+            "bg-accent/10 border-accent/50 text-accent"
+          )}>
+            {table.status === 'free' ? 'Libre' : table.status === 'occupied' ? 'Ocupada' : 'Pagando'}
+          </span>
+        </div>
+        <Button variant="ghost" size="icon" onClick={() => setActiveTableId(null)}>
+          <X className="w-5 h-5" />
+        </Button>
+      </div>
+
+      {/* Order List */}
+      <ScrollArea className="flex-1 p-4">
+        {table.orders.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-40 text-muted-foreground opacity-60 mt-10">
+            <img src="/images/empty-state.jpg" alt="Empty" className="w-32 h-32 object-cover rounded-full mb-4 opacity-50 grayscale" />
+            <p>La comanda está vacía</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {table.orders.map((order) => (
+              <div key={order.id} className="flex items-start justify-between group animate-in slide-in-from-right-5 duration-300">
+                <div className="flex-1">
+                  <div className="flex items-baseline justify-between">
+                    <span className="font-medium text-sm">
+                      <span className="text-primary font-bold mr-2">{order.quantity}x</span>
+                      {order.menuItem.name}
+                    </span>
+                    <span className="text-sm font-mono ml-2">
+                      {(order.menuItem.price * order.quantity).toFixed(2)}€
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground truncate max-w-[180px]">
+                    {order.menuItem.category}
+                  </p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 ml-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={() => removeOrderFromTable(activeTableId, order.id)}
+                >
+                  <Minus className="w-3 h-3" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+      </ScrollArea>
+
+      {/* Footer Actions */}
+      <div className="p-4 bg-muted/30 border-t border-border space-y-4">
+        <div className="flex justify-between items-end">
+          <span className="text-muted-foreground text-sm">Total</span>
+          <span className="text-3xl font-heading text-primary">{total.toFixed(2)}€</span>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-2">
+          <Button 
+            variant="outline" 
+            className="w-full border-primary/50 hover:bg-primary/10 hover:text-primary"
+            onClick={handlePrint}
+            disabled={table.orders.length === 0}
+          >
+            <Printer className="w-4 h-4 mr-2" />
+            Tiquet
+          </Button>
+          <Button 
+            variant="default" 
+            className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+            onClick={handlePayment}
+            disabled={table.orders.length === 0}
+          >
+            Pagar
+          </Button>
+        </div>
+        
+        {table.status !== 'free' && (
+          <Button 
+            variant="ghost" 
+            className="w-full text-destructive hover:bg-destructive/10 hover:text-destructive text-xs h-8"
+            onClick={() => {
+              if(confirm("¿Liberar mesa sin cobrar?")) clearTable(activeTableId);
+            }}
+          >
+            <Trash2 className="w-3 h-3 mr-2" />
+            Cancelar / Liberar
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+}
