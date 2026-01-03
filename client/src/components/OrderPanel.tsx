@@ -26,6 +26,12 @@ export function OrderPanel() {
         </div>
         <h3 className="font-heading text-xl mb-2">Bienvenido a Indian Chef</h3>
         <p>Selecciona una mesa para comenzar a tomar nota o ver el estado.</p>
+        <Button 
+          className="mt-6 md:hidden" 
+          onClick={() => document.getElementById('mobile-menu-trigger')?.click()}
+        >
+          Seleccionar Mesa
+        </Button>
       </div>
     );
   }

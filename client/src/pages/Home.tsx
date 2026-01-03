@@ -49,7 +49,7 @@ export default function Home() {
       <div className="md:hidden h-16 border-b border-border bg-card flex items-center justify-between px-4 z-30 shrink-0">
         <Sheet open={isTablesOpen} onOpenChange={setIsTablesOpen}>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" id="mobile-menu-trigger">
               <Menu className="w-6 h-6" />
             </Button>
           </SheetTrigger>
