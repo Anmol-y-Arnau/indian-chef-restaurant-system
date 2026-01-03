@@ -11,6 +11,7 @@ export const CATEGORIES: Category[] = [
   { id: 'wines', label: 'Vinos', icon: '🍷' },
   { id: 'drinks', label: 'Bebidas', icon: '🥤' },
   { id: 'coffees', label: 'Cafés', icon: '☕' },
+  { id: 'desserts', label: 'Postres', icon: '🍰' },
 ];
 
 export const MENU_ITEMS: MenuItem[] = [
@@ -760,5 +761,49 @@ MENU_ITEMS.push(
     price: 4.50,
     category: 'coffees',
     image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=1887&auto=format&fit=crop'
+  }
+);
+
+// POSTRES
+MENU_ITEMS.push(
+  {
+    id: 'ds1',
+    name: 'Kesar Kheer',
+    description: 'Arroz cocinado con leche y azafrán, servido con helado de vainilla.',
+    price: 4.90,
+    category: 'desserts',
+    image: 'https://images.unsplash.com/photo-1595981267035-7b04ca84a82d?q=80&w=2070&auto=format&fit=crop'
+  },
+  {
+    id: 'ds2',
+    name: 'Mix Indian Sweet',
+    description: 'Surtido de pasteles de la india, cocinado especialmente por el chef.',
+    price: 8.90,
+    category: 'desserts',
+    image: 'https://images.unsplash.com/photo-1589119908995-c6837fa14848?q=80&w=2080&auto=format&fit=crop'
+  },
+  {
+    id: 'ds3',
+    name: 'Haridwari Gulab jamun',
+    description: 'Gulab jamun caliente.',
+    price: 4.90,
+    category: 'desserts',
+    image: 'https://images.unsplash.com/photo-1589119908995-c6837fa14848?q=80&w=2080&auto=format&fit=crop'
+  },
+  {
+    id: 'ds4',
+    name: 'Bikaneri Sponge Rashgula',
+    description: 'Postre de leche requesón natural indio, en almíbar de azúcar.',
+    price: 5.90,
+    category: 'desserts',
+    image: 'https://images.unsplash.com/photo-1589119908995-c6837fa14848?q=80&w=2080&auto=format&fit=crop'
+  },
+  {
+    id: 'ds5',
+    name: 'JTH Badami Halwa',
+    description: 'Es una rica receta clásica de postre de zanahoria india hecha con harina de almendras, leche y azúcar.',
+    price: 5.90,
+    category: 'desserts',
+    image: 'https://images.unsplash.com/photo-1514517220017-8ce97a34a7b6?q=80&w=1974&auto=format&fit=crop'
   }
 );
