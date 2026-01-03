@@ -10,10 +10,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRestaurant } from "@/contexts/RestaurantContext";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { History } from "lucide-react";
+import { History, RotateCcw } from "lucide-react";
+import { useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
 export function HistoryDialog() {
-  const { orderHistory } = useRestaurant();
+  const { orderHistory, restoreOrderToTable, tables } = useRestaurant();
+  const [selectedTableForRestore, setSelectedTableForRestore] = useState<string>("");
 
   return (
     <Dialog>
@@ -55,6 +58,33 @@ export function HistoryDialog() {
                   <div className="flex justify-between items-center pt-2 border-t border-border font-bold text-primary">
                     <span>Total</span>
                     <span>{item.total.toFixed(2)}€</span>
+                  </div>
+                  
+                  <div className="pt-2 flex gap-2">
+                    <Select value={selectedTableForRestore} onValueChange={setSelectedTableForRestore}>
+                      <SelectTrigger className="h-8 text-xs w-[140px]">
+                        <SelectValue placeholder="Elegir mesa..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {tables.map(t => (
+                          <SelectItem key={t.id} value={t.id.toString()}>Mesa {t.id}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Button 
+                      size="sm" 
+                      variant="secondary" 
+                      className="h-8 text-xs flex-1"
+                      disabled={!selectedTableForRestore}
+                      onClick={() => {
+                        if (selectedTableForRestore) {
+                          restoreOrderToTable(parseInt(selectedTableForRestore), item.items);
+                          // Close dialog? Maybe not needed, user might want to see confirmation
+                        }
+                      }}
+                    >
+                      <RotateCcw className="w-3 h-3 mr-1" /> Recuperar
+                    </Button>
                   </div>
                 </div>
               ))

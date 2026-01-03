@@ -256,6 +256,11 @@ export default function Home() {
           <SheetContent side="bottom" className="h-[85vh] p-0 rounded-t-[2rem]">
             <div className="h-full pt-4">
               <div className="w-12 h-1.5 bg-muted rounded-full mx-auto mb-4" />
+              <button 
+                id="close-mobile-order-panel" 
+                className="hidden" 
+                onClick={() => setIsOrderOpen(false)}
+              />
               <OrderPanel />
             </div>
           </SheetContent>

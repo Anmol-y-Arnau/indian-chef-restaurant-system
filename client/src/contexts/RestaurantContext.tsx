@@ -15,6 +15,7 @@ interface RestaurantContextType {
   getTableTotal: (tableId: number) => number;
   orderHistory: OrderHistoryItem[];
   closeTable: (tableId: number) => void;
+  restoreOrderToTable: (tableId: number, items: OrderItem[]) => void;
 }
 
 const RestaurantContext = createContext<RestaurantContextType | undefined>(undefined);
@@ -143,6 +144,33 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
     setActiveTableId(null);
   };
 
+  const restoreOrderToTable = (tableId: number, items: OrderItem[]) => {
+    setTables(prev => prev.map(table => {
+      if (table.id === tableId) {
+        // Merge existing orders with restored orders
+        // Or replace? User asked to "add more things", so merge seems safer.
+        // But usually "restore" implies setting state. 
+        // Let's append to existing orders to be safe and allow "adding more things".
+        
+        // We need to regenerate IDs to avoid conflicts if restoring same order multiple times
+        const newItems = items.map(item => ({
+          ...item,
+          id: Math.random().toString(36).substr(2, 9)
+        }));
+
+        return {
+          ...table,
+          status: 'occupied',
+          orders: [...table.orders, ...newItems],
+          startTime: new Date()
+        };
+      }
+      return table;
+    }));
+    setActiveTableId(tableId);
+    toast.success(`Pedido recuperado en Mesa ${tableId}`);
+  };
+
   return (
     <RestaurantContext.Provider value={{
       tables,
@@ -155,7 +183,8 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
       clearTable,
       getTableTotal,
       orderHistory,
-      closeTable
+      closeTable,
+      restoreOrderToTable
     }}>
       {children}
     </RestaurantContext.Provider>

@@ -108,7 +108,7 @@ export function OrderPanel() {
             {table.status === 'free' ? 'Libre' : table.status === 'occupied' ? 'Ocupada' : 'Pagando'}
           </span>
         </div>
-        <Button variant="ghost" size="icon" onClick={() => setActiveTableId(null)} className="md:hidden">
+        <Button variant="ghost" size="icon" onClick={() => document.getElementById('close-mobile-order-panel')?.click()} className="md:hidden">
           <X className="w-5 h-5" />
         </Button>
       </div>
