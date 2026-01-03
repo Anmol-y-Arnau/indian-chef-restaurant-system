@@ -6,6 +6,8 @@ export const CATEGORIES: Category[] = [
   { id: 'tandoor', label: 'Especial Tandoor', icon: '🔥' },
   { id: 'veg_curry', label: 'Curry Vegetariano', icon: '🥦' },
   { id: 'chicken_curry', label: 'Curry de Pollo', icon: '🍗' },
+  { id: 'fish_prawn_curry', label: 'Pescado y Gambas', icon: '🦐' },
+  { id: 'lamb_curry', label: 'Curry Cordero', icon: '🍖' },
   { id: 'biryani', label: 'Biryani (Arroces)', icon: '🍚' },
   { id: 'sides', label: 'Guarniciones (Arroz/Pan)', icon: '🫓' },
   { id: 'wines', label: 'Vinos', icon: '🍷' },
@@ -307,6 +309,70 @@ export const MENU_ITEMS: MenuItem[] = [
     isVeg: false,
     isSpicy: true,
     image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1971&auto=format&fit=crop'
+  },
+
+  // FISH & PRAWN CURRY
+  {
+    id: 'fish_curry',
+    name: 'Fish Curry',
+    description: 'Pescado fresco con salsa de tomate, especias y hierbas.',
+    price: 14.90,
+    category: 'fish_prawn_curry',
+    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1971&auto=format&fit=crop'
+  },
+  {
+    id: 'fish_vandalo',
+    name: 'Fish Vandalo',
+    description: 'El plato que se origina en la región costera de Goa. La salsa intensa con sabor a curry de la pasta vindaloo casera le da a esta receta de curry de pescado su sabor picante y ácido.',
+    price: 13.90,
+    category: 'fish_prawn_curry',
+    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1971&auto=format&fit=crop',
+    isSpicy: true
+  },
+  {
+    id: 'gamba_curry',
+    name: 'Gamba Curry',
+    description: 'Gambas preparadas en salsa de aromáticas especias, tomate y jengibre.',
+    price: 15.90,
+    category: 'fish_prawn_curry',
+    image: 'https://images.unsplash.com/photo-1559314809-0d155014e29e?q=80&w=1974&auto=format&fit=crop'
+  },
+  {
+    id: 'gamba_korma',
+    name: 'Gamba Korma',
+    description: 'Gambas en curry de sabor suave preparado con salsa de yogur, azafrán, almendras y coco.',
+    price: 15.90,
+    category: 'fish_prawn_curry',
+    image: 'https://images.unsplash.com/photo-1559314809-0d155014e29e?q=80&w=1974&auto=format&fit=crop'
+  },
+
+  // LAMB CURRY
+  {
+    id: 'lamb_curry',
+    name: 'Lamb Curry',
+    description: 'Este auténtico curry indio de cabrito está elaborado con paletilla de cabrito se cuece a fuego lento con especias aromáticas, cebollas caramelizadas y yogur griego hasta que esté tierno. (Preferent picante)',
+    price: 15.90,
+    category: 'lamb_curry',
+    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1971&auto=format&fit=crop',
+    isSpicy: true
+  },
+  {
+    id: 'lamb_rogan_josh',
+    name: 'Lamb Rogan Josh',
+    description: 'Deliciosos estofado de cabrito al curry con jengibre, tomate, cilantro fresco y pimentón dulce. (Preferente picante)',
+    price: 15.90,
+    category: 'lamb_curry',
+    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1971&auto=format&fit=crop',
+    isSpicy: true
+  },
+  {
+    id: 'lamb_karahi',
+    name: 'Lamb Karahi',
+    description: 'Cabrito troceado cocinado con cebolla, pimientos y frutos secos. (Preferente picante)',
+    price: 16.90,
+    category: 'lamb_curry',
+    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1971&auto=format&fit=crop',
+    isSpicy: true
   },
 
   // BIRYANI (ARROCES)

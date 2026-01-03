@@ -3,7 +3,7 @@ export interface MenuItem {
   name: string;
   description: string;
   price: number;
-  category: 'starters' | 'salads' | 'tandoor' | 'veg_curry' | 'chicken_curry' | 'biryani' | 'sides' | 'wines' | 'drinks' | 'coffees' | 'desserts';
+  category: 'starters' | 'salads' | 'tandoor' | 'veg_curry' | 'chicken_curry' | 'fish_prawn_curry' | 'lamb_curry' | 'biryani' | 'sides' | 'wines' | 'drinks' | 'coffees' | 'desserts';
   image?: string;
   isSpicy?: boolean;
   isVeg?: boolean;
