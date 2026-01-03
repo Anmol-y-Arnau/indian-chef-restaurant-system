@@ -65,6 +65,7 @@ export function OrderPanel() {
   const handlePayment = () => {
     if (confirm(`¿Confirmar pago de ${total.toFixed(2)}€ y liberar mesa?`)) {
       closeTable(activeTableId);
+      setActiveTableId(null); // Close panel after payment
     }
   };
 
@@ -101,13 +102,13 @@ export function OrderPanel() {
             {table.status === 'free' ? 'Libre' : table.status === 'occupied' ? 'Ocupada' : 'Pagando'}
           </span>
         </div>
-        <Button variant="ghost" size="icon" onClick={() => setActiveTableId(null)}>
+        <Button variant="ghost" size="icon" onClick={() => setActiveTableId(null)} className="md:hidden">
           <X className="w-5 h-5" />
         </Button>
       </div>
 
       {/* Order List */}
-      <ScrollArea className="flex-1 p-4">
+      <ScrollArea className="flex-1 p-4 h-[calc(100vh-280px)] md:h-auto">
         {table.orders.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-40 text-muted-foreground opacity-60 mt-10">
             <img src="/images/empty-state.jpg" alt="Empty" className="w-32 h-32 object-cover rounded-full mb-4 opacity-50 grayscale" />
