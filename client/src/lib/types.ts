@@ -7,6 +7,7 @@ export interface MenuItem {
   image?: string;
   isSpicy?: boolean;
   isVeg?: boolean;
+  number?: number;
 }
 
 export interface OrderItem {

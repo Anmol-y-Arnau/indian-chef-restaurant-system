@@ -20,6 +20,7 @@ export const MENU_ITEMS: MenuItem[] = [
   // VEGETARIAN STARTERS AND CHAATS
   {
     id: 'st1',
+    number: 1,
     name: 'Chaat Samosa',
     description: 'Samosas casera al estilo de la vieja Delhi. (2 UN)',
     price: 6.90,
@@ -29,6 +30,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'st2',
+    number: 2,
     name: 'Mix Vege Pakora',
     description: 'Seis piezas de Pakora con cebolla, patatas, espinacas, mezcladas con especias molidas. Servido con salsa de tamarindo. (6 UN)',
     price: 6.90,
@@ -38,6 +40,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'st3',
+    number: 3,
     name: 'Amritsar Paneer Pakora',
     description: 'Queso natural elaborado con queso creado en el norte de la India, Amritsar. Con tempura de harina de garbanzo y arroz. (6 UN)',
     price: 9.90,
@@ -47,6 +50,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'st4',
+    number: 4,
     name: 'Royal king para dos personas',
     description: 'Surtido variado entrante para dos personas.',
     price: 15.90,
@@ -56,6 +60,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'st5',
+    number: 5,
     name: 'Royal Prawn Pakora',
     description: 'Gambas en tempura, rebozado con harina de garbanzos y lenteja, servido con indian piri piri sauce.',
     price: 12.90,
@@ -65,6 +70,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'st6',
+    number: 6,
     name: 'Fish Pakora',
     description: 'Pescado frito, elaborado con la forma de madraz, rebozado con harina de garbanzos y arroz. (6 UN)',
     price: 10.90,
@@ -74,6 +80,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'st7',
+    number: 7,
     name: 'Murg Pakora',
     description: 'Tiras de pollo rebozadas marinadas con especias y harina de garbanzos, frito, crujiente. Servido con ensalada. (6 UN)',
     price: 9.90,
@@ -85,6 +92,7 @@ export const MENU_ITEMS: MenuItem[] = [
   // SALADS
   {
     id: 'sl1',
+    number: 8,
     name: 'Indian Prawns Salad',
     description: 'Ensalada de temporada, con gambas en la tempura, con harina de garbanzos y arroz. Servida con vinagreta de mango y frutos secos.',
     price: 12.90,
@@ -94,6 +102,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'sl2',
+    number: 9,
     name: 'Crispy Chicken Salad',
     description: 'Brotes verde de temporada, verduras confitadas y pollo, cocinado con el tandoor. Servido con salsa blanca de yogur.',
     price: 8.90,
@@ -103,6 +112,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'sl3',
+    number: 10,
     name: 'Mix Green Salad',
     description: 'Ensalada verde.',
     price: 5.90,
@@ -114,6 +124,7 @@ export const MENU_ITEMS: MenuItem[] = [
   // SPECIAL TANDOOR
   {
     id: 'td1',
+    number: 11,
     name: 'Murg Tandoori',
     description: 'Pollo con especias naturales y preparado con tandoori horno.',
     price: 11.90,
@@ -123,6 +134,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'td2',
+    number: 12,
     name: 'Tandoori Paneer Tikka',
     description: 'Queso natural, elaborado con la antigüedad de los mongoles de la india, en tandoor.',
     price: 14.90,
@@ -132,6 +144,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'td3',
+    number: 13,
     name: 'Tandori Fish Tikka',
     description: 'Un pescado tierno marinado en un tandoori masala indio clásico y crujiente a la perfección.',
     price: 15.90,
@@ -141,6 +154,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'td4',
+    number: 14,
     name: 'Murg Tikka',
     description: 'Pierna de pollo con especias naturales y preparado con tandoori horno.',
     price: 11.90,
@@ -150,6 +164,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'td5',
+    number: 15,
     name: 'Sugerencias del chef',
     description: 'Tandoori mix grill para dos personas.',
     price: 30.00,
@@ -159,6 +174,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'td6',
+    number: 16,
     name: 'Prawn Tandoori',
     description: 'Plato del Tandoori de gambas.',
     price: 11.90,
@@ -170,6 +186,7 @@ export const MENU_ITEMS: MenuItem[] = [
   // VEG AND VEGAN CURRY
   {
     id: 'vc1',
+    number: 17,
     name: 'Sabzi bhaji',
     description: 'Verduras mixtas de la temporada, con queso natural de la india. Cocinado con la manera del chef.',
     price: 9.90,
@@ -179,6 +196,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'vc2',
+    number: 18,
     name: 'Bhaji Mix',
     description: 'Verduras mixtas de la temporada, cocinado con la manera del chef.',
     price: 8.90,
@@ -188,6 +206,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'vc3',
+    number: 19,
     name: 'Mutter Paneer',
     description: 'Un guiso de queso natural con guisantes del campo, acompañada de salsa curry y servido con cilantro fresco.',
     price: 9.90,
@@ -197,6 +216,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'vc4',
+    number: 20,
     name: 'Palak Paneer',
     description: 'Queso Natural cocinado con espinacas frescas al estilo Patiala.',
     price: 10.90,
@@ -206,6 +226,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'vc5',
+    number: 21,
     name: 'Paneer Burji',
     description: 'Queso rallado salteado con especias, especialidad Indian Chef.',
     price: 15.90,
@@ -215,6 +236,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'vc6',
+    number: 22,
     name: 'Dal Makhni',
     description: 'Lentejas negras guisadas con mantequilla y nata.',
     price: 9.90,
@@ -224,6 +246,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'vc7',
+    number: 23,
     name: 'Dal Tadka',
     description: 'Lentejas con especias naturales y preparado con tandoori horno.',
     price: 9.90,
@@ -233,6 +256,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'vc8',
+    number: 24,
     name: 'Chana Masala',
     description: 'Garbanzos de la casa, en salsas de cebolla y tomate, agridulce.',
     price: 9.90,
@@ -244,6 +268,7 @@ export const MENU_ITEMS: MenuItem[] = [
   // CHICKEN CURRY
   {
     id: 'cc1',
+    number: 25,
     name: 'Murg Curry',
     description: 'Pollo picado, cocinado con cebolla, tomate y comino en polvo. (Preferente picante)',
     price: 11.90,
@@ -254,6 +279,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'cc2',
+    number: 26,
     name: 'Murg Korma',
     description: 'Pollo en cubitos cocinado con cebolla, frutas secos y salsa rica en crema.',
     price: 11.90,
@@ -263,6 +289,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'cc3',
+    number: 27,
     name: 'Murg Rogan Josh',
     description: 'Pollo picado, con pimientos verdes, rojos, jeera, jengibres y ajo. (Preferente picante)',
     price: 11.90,
@@ -273,6 +300,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'cc4',
+    number: 28,
     name: 'Murg Tikka Masala',
     description: 'El pollo tikka masala es un plato de curry que consiste en pollo tikka y una espesa salsa de naranja hecha con puré de tomate, yogur, jengibre y una mezcla de especias llamada masala. (Preferente picante)',
     price: 11.90,
@@ -283,6 +311,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'cc5',
+    number: 29,
     name: 'Murg Karahi',
     description: 'Es un plato de pollo, picante preferente, ahumado y lleno de sabor, con una espesa salsa, cebolla y un pimiento asado crujiente.',
     price: 11.90,
@@ -293,6 +322,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'cc6',
+    number: 30,
     name: 'Murg Butter',
     description: 'Un plato clásico donde el pollo se hace a la manera Tandoori, se cuece a fuego lento en una salsa de tomate picante (preferente al gusto), aromática, mantecosa, y cremosa.',
     price: 11.90,
@@ -302,6 +332,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'cc7',
+    number: 31,
     name: 'Murg Vindaloo',
     description: 'El vindaloo es denominado a veces como el rey de los currys por su fuerza en el picante. Te proponemos probar esta receta de curry de pollo picante.',
     price: 12.90,
@@ -314,6 +345,7 @@ export const MENU_ITEMS: MenuItem[] = [
   // FISH & PRAWN CURRY
   {
     id: 'fish_curry',
+    number: 32,
     name: 'Fish Curry',
     description: 'Pescado fresco con salsa de tomate, especias y hierbas.',
     price: 14.90,
@@ -322,6 +354,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'fish_vandalo',
+    number: 33,
     name: 'Fish Vandalo',
     description: 'El plato que se origina en la región costera de Goa. La salsa intensa con sabor a curry de la pasta vindaloo casera le da a esta receta de curry de pescado su sabor picante y ácido.',
     price: 13.90,
@@ -331,6 +364,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'gamba_curry',
+    number: 34,
     name: 'Gamba Curry',
     description: 'Gambas preparadas en salsa de aromáticas especias, tomate y jengibre.',
     price: 15.90,
@@ -339,6 +373,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'gamba_korma',
+    number: 35,
     name: 'Gamba Korma',
     description: 'Gambas en curry de sabor suave preparado con salsa de yogur, azafrán, almendras y coco.',
     price: 15.90,
@@ -349,6 +384,7 @@ export const MENU_ITEMS: MenuItem[] = [
   // LAMB CURRY
   {
     id: 'lamb_curry',
+    number: 36,
     name: 'Lamb Curry',
     description: 'Este auténtico curry indio de cabrito está elaborado con paletilla de cabrito se cuece a fuego lento con especias aromáticas, cebollas caramelizadas y yogur griego hasta que esté tierno. (Preferent picante)',
     price: 15.90,
@@ -358,6 +394,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'lamb_rogan_josh',
+    number: 37,
     name: 'Lamb Rogan Josh',
     description: 'Deliciosos estofado de cabrito al curry con jengibre, tomate, cilantro fresco y pimentón dulce. (Preferente picante)',
     price: 15.90,
@@ -367,6 +404,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'lamb_karahi',
+    number: 38,
     name: 'Lamb Karahi',
     description: 'Cabrito troceado cocinado con cebolla, pimientos y frutos secos. (Preferente picante)',
     price: 16.90,
@@ -378,6 +416,7 @@ export const MENU_ITEMS: MenuItem[] = [
   // BIRYANI (ARROCES)
   {
     id: 'bi1',
+    number: 39,
     name: 'Mix Veg Biryani',
     description: 'Plato clásico de la india cocinando a fuego lento con arroz Basmati salteado y frito con verdura fresca, tomate, jengibre, cardamomo, azafrán y selectas especias.',
     price: 10.90,
@@ -387,6 +426,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'bi2',
+    number: 40,
     name: 'Mix Biryani',
     description: 'Nuestro plato especial con Arroz basmati y la mezcla de carne, pollo, corderito, gambas y especias aromáticas.',
     price: 15.90,
@@ -396,6 +436,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'bi3',
+    number: 41,
     name: 'Murg Biryani',
     description: 'Arroz Basmati con pollo, menta fresca, cilantro fresco, pasta de ajo, jengibre, cúrcuma, cebolla y especias.',
     price: 12.90,
@@ -405,6 +446,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'bi4',
+    number: 42,
     name: 'Lamb Biryani',
     description: 'Arroz Basmati con corderito fresco, menta fresca, cilantro fresco, pasta de ajo, jengibre, cúrcuma, cebolla y especias.',
     price: 14.90,
@@ -414,6 +456,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'bi5',
+    number: 43,
     name: 'Gamba Biryani',
     description: 'Arroz Basmati con gambas, tomate, jengibre y azafrán, condimentado con especias aromáticas.',
     price: 15.90,
@@ -423,6 +466,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'bi6',
+    number: 44,
     name: 'Fish Biryani',
     description: 'Fish biryani es un plato de arroz en capas elaborado con pescado, arroz basmati, especias y hierbas.',
     price: 15.90,
@@ -434,6 +478,7 @@ export const MENU_ITEMS: MenuItem[] = [
   // GUARNICIONES (ARROZ)
   {
     id: 'sd1',
+    number: 45,
     name: 'Plain Rice',
     description: 'Arroz Basmati blanco con aromas agradables y rico en nutrientes cultivado en las montañas del Himalaya.',
     price: 3.90,
@@ -443,6 +488,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'sd2',
+    number: 46,
     name: 'Pulao Rice',
     description: 'Arroz Basmati aromatizado con especias como el cardamomo, clavo, comino y hoja de laurel.',
     price: 4.90,
@@ -452,6 +498,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'sd3',
+    number: 47,
     name: 'Jeera Rice',
     description: 'El arroz jeera es un plato indio que consiste en arroz y semillas de comino.',
     price: 4.90,
@@ -461,6 +508,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'sd4',
+    number: 48,
     name: 'Egg Rice',
     description: 'El arroz muy popular que se prepara con masales indias y termina con un poco de salsa de soya para darle sabor.',
     price: 5.90,
@@ -470,6 +518,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'sd5',
+    number: 49,
     name: 'Lahori jarda\'s Rice',
     description: 'Es un plato tradicional de arroz dulce hervido, originario del subcontinente indio, elaborado con azafrán, leche y azúcar, y aromatizado con cardamomo, pasas, pistachos o almendras.',
     price: 5.90,
@@ -481,6 +530,7 @@ export const MENU_ITEMS: MenuItem[] = [
   // GUARNICIONES (PAN)
   {
     id: 'pn1',
+    number: 50,
     name: 'Plain Naan',
     description: 'Pan de harina de trigo cocinado en horno Tandoor.',
     price: 3.90,
@@ -490,6 +540,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'pn2',
+    number: 51,
     name: 'Garlic Naan',
     description: 'Pan de harina de trigo con rodajas de ajo y cilantro.',
     price: 4.90,
@@ -499,6 +550,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'pn3',
+    number: 52,
     name: 'Aloo Naan',
     description: 'Pan relleno de patatas con una textura crujiente y sutil.',
     price: 4.90,
@@ -508,6 +560,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'pn4',
+    number: 53,
     name: 'Cheese Naan',
     description: 'Pan relleno de queso natural.',
     price: 4.90,
@@ -517,6 +570,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'pn5',
+    number: 54,
     name: 'Kirma Naan',
     description: 'Pan relleno de carne picada y algunas especias con predominancia de comino y cúrcuma.',
     price: 4.90,
@@ -526,6 +580,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'pn6',
+    number: 55,
     name: 'Kulcha Naan',
     description: '',
     price: 4.90,
@@ -535,6 +590,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'pn7',
+    number: 56,
     name: 'Butter Naan',
     description: 'Pan de harina de trigo con un toque de mantequilla.',
     price: 4.90,
@@ -544,6 +600,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'pn8',
+    number: 57,
     name: 'Kashmiri Naan',
     description: 'Pan de harina de trigo con especias y frutos secos.',
     price: 4.90,
@@ -555,6 +612,7 @@ export const MENU_ITEMS: MenuItem[] = [
   // VINOS
   {
     id: 'wn1',
+    number: 58,
     name: 'Bufar i Fer Ampollas Negre',
     description: 'Tinto',
     price: 12.00,
@@ -564,6 +622,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'wn2',
+    number: 59,
     name: 'Cecios',
     description: 'Tinto',
     price: 15.00,
@@ -573,6 +632,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'wn3',
+    number: 60,
     name: 'Pasarell',
     description: 'Tinto',
     price: 17.00,
@@ -582,6 +642,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'wn4',
+    number: 61,
     name: 'Parica Criança',
     description: 'Tinto',
     price: 16.90,
@@ -591,6 +652,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'wn5',
+    number: 62,
     name: 'Marques de Cáceres Negre',
     description: 'Tinto',
     price: 18.00,
@@ -600,6 +662,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'wn6',
+    number: 63,
     name: 'Viña Pomal',
     description: 'Tinto',
     price: 26.90,
@@ -609,6 +672,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'wn7',
+    number: 64,
     name: 'Marqués de Murrieta',
     description: 'Tinto',
     price: 31.90,
@@ -618,6 +682,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'wn8',
+    number: 65,
     name: 'Sangre de Toro',
     description: 'Tinto',
     price: 13.90,
@@ -627,6 +692,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'wn9',
+    number: 66,
     name: 'Valdubón Roble',
     description: 'Tinto',
     price: 17.90,
@@ -636,6 +702,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'wn10',
+    number: 67,
     name: 'El Coto',
     description: 'Tinto',
     price: 15.90,
@@ -645,6 +712,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'wn11',
+    number: 68,
     name: 'Torres de Casta',
     description: 'Rosé & Riesling',
     price: 12.90,
@@ -654,6 +722,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'wn12',
+    number: 69,
     name: 'Bufar i Fer Ampolles Rosado',
     description: 'Rosé & Riesling',
     price: 12.00,
@@ -663,6 +732,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'wn13',
+    number: 70,
     name: 'Daina',
     description: 'Rosé & Riesling',
     price: 15.90,
@@ -672,6 +742,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'wn14',
+    number: 71,
     name: 'Marqués de Cáceres Rosado',
     description: 'Rosé & Riesling',
     price: 15.90,
@@ -681,6 +752,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'wn15',
+    number: 72,
     name: 'Bufar i Fer Ampollas',
     description: 'Blanco',
     price: 12.00,
@@ -690,6 +762,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'wn16',
+    number: 73,
     name: 'Mabre',
     description: 'Blanco',
     price: 17.90,
@@ -699,6 +772,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'wn17',
+    number: 74,
     name: 'Marqués De Cáceres Blanco',
     description: 'Blanco',
     price: 16.90,
@@ -708,6 +782,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'wn18',
+    number: 75,
     name: 'Viña Sol',
     description: 'Blanco',
     price: 14.90,
@@ -717,6 +792,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'wn19',
+    number: 76,
     name: 'El Coto',
     description: 'Blanco',
     price: 15.90,
@@ -728,6 +804,7 @@ export const MENU_ITEMS: MenuItem[] = [
 
 export const INITIAL_TABLES: Table[] = Array.from({ length: 10 }, (_, i) => ({
   id: i,
+  number: 77,
   name: `Mesa ${i}`,
   status: 'free',
   orders: [],
@@ -738,6 +815,7 @@ export const INITIAL_TABLES: Table[] = Array.from({ length: 10 }, (_, i) => ({
 MENU_ITEMS.push(
   {
     id: 'dr1',
+    number: 78,
     name: 'Refresco',
     description: 'Coca-Cola, Fanta, Sprite, etc.',
     price: 3.50,
@@ -746,6 +824,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'dr2',
+    number: 79,
     name: 'Caña',
     description: 'Cerveza de barril',
     price: 3.00,
@@ -754,6 +833,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'dr3',
+    number: 80,
     name: 'Estrella (Botella)',
     description: 'Cerveza Estrella Galicia',
     price: 3.50,
@@ -762,6 +842,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'dr4',
+    number: 81,
     name: 'Cobra',
     description: 'Cerveza India Premium',
     price: 4.00,
@@ -770,6 +851,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'dr5',
+    number: 82,
     name: 'Agua Pequeña',
     description: 'Agua mineral 33cl',
     price: 3.00,
@@ -778,6 +860,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'dr6',
+    number: 83,
     name: 'Agua Grande',
     description: 'Agua mineral 1L',
     price: 4.00,
@@ -786,6 +869,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'dr7',
+    number: 84,
     name: 'Copa de Vino',
     description: 'Vino de la casa (Tinto/Blanco/Rosado)',
     price: 3.50,
@@ -794,6 +878,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'dr8',
+    number: 85,
     name: 'Mango Lassi',
     description: 'Bebida tradicional de yogur y mango',
     price: 4.50,
@@ -802,6 +887,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'dr9',
+    number: 86,
     name: 'Indian Chai',
     description: 'Té indio con especias y leche',
     price: 2.50,
@@ -810,6 +896,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'dr10',
+    number: 87,
     name: 'Chupito',
     description: 'Licor de hierbas, crema, etc.',
     price: 2.50,
@@ -822,6 +909,7 @@ MENU_ITEMS.push(
 MENU_ITEMS.push(
   {
     id: 'cf1',
+    number: 88,
     name: 'Café Solo',
     description: 'Espresso',
     price: 1.80,
@@ -830,6 +918,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'cf2',
+    number: 89,
     name: 'Cortado',
     description: 'Espresso con un poco de leche',
     price: 2.00,
@@ -838,6 +927,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'cf3',
+    number: 90,
     name: 'Café con Leche',
     description: 'Café con leche grande',
     price: 2.50,
@@ -846,6 +936,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'cf4',
+    number: 91,
     name: 'Carajillo',
     description: 'Café con licor (Brandy/Whisky/Ron)',
     price: 4.50,
@@ -858,6 +949,7 @@ MENU_ITEMS.push(
 MENU_ITEMS.push(
   {
     id: 'ds1',
+    number: 92,
     name: 'Kesar Kheer',
     description: 'Arroz cocinado con leche y azafrán, servido con helado de vainilla.',
     price: 4.90,
@@ -866,6 +958,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'ds2',
+    number: 93,
     name: 'Mix Indian Sweet',
     description: 'Surtido de pasteles de la india, cocinado especialmente por el chef.',
     price: 8.90,
@@ -874,6 +967,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'ds3',
+    number: 94,
     name: 'Haridwari Gulab jamun',
     description: 'Gulab jamun caliente.',
     price: 4.90,
@@ -882,6 +976,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'ds4',
+    number: 95,
     name: 'Bikaneri Sponge Rashgula',
     description: 'Postre de leche requesón natural indio, en almíbar de azúcar.',
     price: 5.90,
@@ -890,6 +985,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'ds5',
+    number: 96,
     name: 'JTH Badami Halwa',
     description: 'Es una rica receta clásica de postre de zanahoria india hecha con harina de almendras, leche y azúcar.',
     price: 5.90,

@@ -1,5 +1,6 @@
 import { CustomItemDialog } from "@/components/CustomItemDialog";
 import { HistoryDialog } from "@/components/HistoryDialog";
+import { QuickOrderDialog } from "@/components/QuickOrderDialog";
 import { MenuCard } from "@/components/MenuCard";
 import { OrderPanel } from "@/components/OrderPanel";
 import { Button } from "@/components/ui/button";
@@ -196,8 +197,9 @@ export default function Home() {
                 <div className="p-4 md:p-6 pb-24 md:pb-20">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                     {/* Custom Item Button */}
-                    <div className="h-full min-h-[100px]">
+                    <div className="h-full min-h-[100px] flex flex-col gap-2">
                       <CustomItemDialog />
+                      <QuickOrderDialog />
                     </div>
 
                     {filteredItems.map(item => (

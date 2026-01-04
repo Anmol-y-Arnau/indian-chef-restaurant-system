@@ -15,6 +15,14 @@ export function MenuCard({ item, onAdd }: MenuCardProps) {
     >
       <div className="relative h-32 w-full overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+        
+        {/* Item Number Badge */}
+        {item.number && (
+          <div className="absolute top-2 left-2 z-20 bg-black/60 backdrop-blur-sm border border-white/20 text-white text-xs font-bold px-2 py-1 rounded-md shadow-sm">
+            {item.number}
+          </div>
+        )}
+
         <img 
           src={item.image} 
           alt={item.name}
