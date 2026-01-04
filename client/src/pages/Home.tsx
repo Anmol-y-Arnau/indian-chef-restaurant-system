@@ -197,9 +197,8 @@ export default function Home() {
                 <div className="p-4 md:p-6 pb-24 md:pb-20">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                     {/* Custom Item Button */}
-                    <div className="h-full min-h-[100px] flex flex-col gap-2">
+                    <div className="h-full min-h-[100px]">
                       <CustomItemDialog />
-                      <QuickOrderDialog />
                     </div>
 
                     {filteredItems.map(item => (
@@ -243,18 +242,21 @@ export default function Home() {
           <span className="text-xl font-bold text-primary">{currentTotal.toFixed(2)}€</span>
         </div>
         
-        <Sheet open={isOrderOpen} onOpenChange={setIsOrderOpen}>
-          <SheetTrigger asChild>
-            <Button size="lg" className="gap-2 rounded-full px-6">
-              <ShoppingBag className="w-5 h-5" />
-              Ver Pedido
-              {itemCount > 0 && (
-                <span className="bg-white text-primary text-xs font-bold px-2 py-0.5 rounded-full ml-1">
-                  {itemCount}
-                </span>
-              )}
-            </Button>
-          </SheetTrigger>
+        <div className="flex gap-2">
+          <QuickOrderDialog />
+          
+          <Sheet open={isOrderOpen} onOpenChange={setIsOrderOpen}>
+            <SheetTrigger asChild>
+              <Button size="lg" className="gap-2 rounded-full px-6">
+                <ShoppingBag className="w-5 h-5" />
+                Ver Pedido
+                {itemCount > 0 && (
+                  <span className="bg-white text-primary text-xs font-bold px-2 py-0.5 rounded-full ml-1">
+                    {itemCount}
+                  </span>
+                )}
+              </Button>
+            </SheetTrigger>
           <SheetContent side="bottom" className="h-[85vh] p-0 rounded-t-[2rem]">
             <div className="h-full pt-4">
               <div className="w-12 h-1.5 bg-muted rounded-full mx-auto mb-4" />
@@ -267,6 +269,7 @@ export default function Home() {
             </div>
           </SheetContent>
         </Sheet>
+        </div>
       </div>
 
     </div>
