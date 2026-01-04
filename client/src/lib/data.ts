@@ -791,6 +791,30 @@ MENU_ITEMS.push(
     price: 3.50,
     category: 'drinks',
     image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=2070&auto=format&fit=crop'
+  },
+  {
+    id: 'dr8',
+    name: 'Mango Lassi',
+    description: 'Bebida tradicional de yogur y mango',
+    price: 4.50,
+    category: 'drinks',
+    image: 'https://images.unsplash.com/photo-1626132647523-66f5bf380027?q=80&w=2070&auto=format&fit=crop'
+  },
+  {
+    id: 'dr9',
+    name: 'Indian Chai',
+    description: 'Té indio con especias y leche',
+    price: 2.50,
+    category: 'drinks',
+    image: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?q=80&w=1974&auto=format&fit=crop'
+  },
+  {
+    id: 'dr10',
+    name: 'Chupito',
+    description: 'Licor de hierbas, crema, etc.',
+    price: 2.50,
+    category: 'drinks',
+    image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=1974&auto=format&fit=crop'
   }
 );
 
