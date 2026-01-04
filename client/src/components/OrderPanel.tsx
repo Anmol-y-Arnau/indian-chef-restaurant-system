@@ -114,7 +114,7 @@ export function OrderPanel() {
       </div>
 
       {/* Order List */}
-      <ScrollArea className="flex-1 p-4 h-[calc(100vh-280px)] md:h-auto">
+      <ScrollArea className="flex-1 p-4 min-h-0">
         {table.orders.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-40 text-muted-foreground opacity-60 mt-10">
             <img src="/images/empty-state.jpg" alt="Empty" className="w-32 h-32 object-cover rounded-full mb-4 opacity-50 grayscale" />
@@ -153,7 +153,7 @@ export function OrderPanel() {
       </ScrollArea>
 
       {/* Footer Actions */}
-      <div className="p-4 bg-muted/30 border-t border-border space-y-4">
+      <div className="p-4 bg-muted/30 border-t border-border space-y-4 shrink-0 z-10 bg-card shadow-[0_-5px_10px_rgba(0,0,0,0.1)]">
         <div className="flex justify-between items-end">
           <span className="text-muted-foreground text-sm">Total</span>
           <span className="text-3xl font-heading text-primary">{total.toFixed(2)}€</span>
