@@ -25,12 +25,12 @@ export function HistoryDialog() {
           <History className="w-5 h-5" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md max-h-[80vh] flex flex-col">
+      <DialogContent className="max-w-md h-[80vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="font-heading text-2xl text-primary">Historial de Ventas</DialogTitle>
         </DialogHeader>
         
-        <ScrollArea className="flex-1 pr-4">
+        <ScrollArea className="flex-1 min-h-0 pr-4">
           <div className="space-y-4">
             {orderHistory.length === 0 ? (
               <div className="text-center text-muted-foreground py-8">
