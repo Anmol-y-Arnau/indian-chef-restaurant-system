@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRestaurant } from "@/contexts/RestaurantContext";
-import { Plus } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -20,6 +20,7 @@ export function CustomItemDialog() {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("Varios");
   const [price, setPrice] = useState("");
+  const [quantity, setQuantity] = useState("1");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,6 +36,12 @@ export function CustomItemDialog() {
       return;
     }
 
+    const quantityNum = parseInt(quantity);
+    if (isNaN(quantityNum) || quantityNum <= 0) {
+      toast.error("Introduce una cantidad válida");
+      return;
+    }
+
     addOrderToTable(activeTableId, {
       id: `custom-${Date.now()}`,
       name: name,
@@ -42,12 +49,13 @@ export function CustomItemDialog() {
       price: priceNum,
       category: 'drinks', // Default category for custom items
       image: 'https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?q=80&w=1974&auto=format&fit=crop'
-    });
+    }, quantityNum);
 
-    toast.success("Producto añadido");
+    // toast.success("Producto añadido"); // Removed because context already shows toast
     setOpen(false);
     setName("Varios");
     setPrice("");
+    setQuantity("1");
   };
 
   return (
@@ -95,6 +103,39 @@ export function CustomItemDialog() {
               placeholder="0.00"
               autoFocus
             />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="quantity" className="text-right">
+              Cantidad
+            </Label>
+            <div className="col-span-3 flex items-center gap-2">
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="icon" 
+                className="h-10 w-10"
+                onClick={() => setQuantity(prev => Math.max(1, parseInt(prev || "0") - 1).toString())}
+              >
+                <Minus className="h-4 w-4" />
+              </Button>
+              <Input
+                id="quantity"
+                type="number"
+                min="1"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                className="text-center"
+              />
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="icon" 
+                className="h-10 w-10"
+                onClick={() => setQuantity(prev => (parseInt(prev || "0") + 1).toString())}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
           <DialogFooter>
             <Button type="submit">Añadir a la Mesa</Button>

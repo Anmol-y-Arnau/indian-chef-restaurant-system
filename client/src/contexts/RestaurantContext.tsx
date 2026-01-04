@@ -7,7 +7,7 @@ interface RestaurantContextType {
   tables: Table[];
   activeTableId: number | null;
   setActiveTableId: (id: number | null) => void;
-  addOrderToTable: (tableId: number, menuItem: MenuItem) => void;
+  addOrderToTable: (tableId: number, menuItem: MenuItem, quantity?: number) => void;
   removeOrderFromTable: (tableId: number, orderId: string) => void;
   updateTableStatus: (tableId: number, status: Table['status']) => void;
   updateTableGuests: (tableId: number, guests: number) => void;
@@ -32,13 +32,13 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
     localStorage.setItem('indian_chef_history', JSON.stringify(orderHistory));
   }, [orderHistory]);
 
-  const addOrderToTable = (tableId: number, menuItem: MenuItem) => {
+  const addOrderToTable = (tableId: number, menuItem: MenuItem, quantity: number = 1) => {
     setTables(prev => prev.map(table => {
       if (table.id === tableId) {
         const newOrder: OrderItem = {
           id: Math.random().toString(36).substr(2, 9),
           menuItem,
-          quantity: 1
+          quantity: quantity
         };
         
         // Check if item already exists to increment quantity instead?
@@ -51,7 +51,7 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
         if (existingOrderIndex >= 0) {
           updatedOrders[existingOrderIndex] = {
             ...updatedOrders[existingOrderIndex],
-            quantity: updatedOrders[existingOrderIndex].quantity + 1
+            quantity: updatedOrders[existingOrderIndex].quantity + quantity
           };
         } else {
           updatedOrders.push(newOrder);
@@ -70,7 +70,7 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
       }
       return table;
     }));
-    toast.success(`${menuItem.name} añadido a la Mesa ${tableId}`);
+    toast.success(`${quantity}x ${menuItem.name} añadido a la Mesa ${tableId}`);
   };
 
   const removeOrderFromTable = (tableId: number, orderId: string) => {
