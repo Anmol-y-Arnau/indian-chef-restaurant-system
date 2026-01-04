@@ -33,7 +33,7 @@ function App() {
       >
         <TooltipProvider>
           <RestaurantProvider>
-            <Toaster />
+            <Toaster position="bottom-right" duration={1500} />
             <Router />
           </RestaurantProvider>
         </TooltipProvider>
