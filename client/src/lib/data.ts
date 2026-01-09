@@ -26,7 +26,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 6.90,
     category: 'starters',
     isVeg: true,
-    image: '/images/menu/yvZToE37DY9f.jpg'
+    image: '/images/menu/chaat_samosa.jpg'
   },
   {
     id: 'st2',
@@ -36,7 +36,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 6.90,
     category: 'starters',
     isVeg: true,
-    image: '/images/menu/8tj1nDFQq8Hp.jpg'
+    image: '/images/menu/mix_vege_pakora.jpg'
   },
   {
     id: 'st3',
@@ -46,7 +46,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 9.90,
     category: 'starters',
     isVeg: true,
-    image: '/images/menu/8tj1nDFQq8Hp.jpg'
+    image: '/images/menu/paneer_pakora.jpg'
   },
   {
     id: 'st4',
@@ -66,7 +66,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 12.90,
     category: 'starters',
     isVeg: false,
-    image: '/images/menu/KdEhffSvBVsK.jpg'
+    image: '/images/menu/prawn_pakora.jpg'
   },
   {
     id: 'st6',
@@ -76,7 +76,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 10.90,
     category: 'starters',
     isVeg: false,
-    image: '/images/menu/fish_curry.jpg'
+    image: '/images/menu/fish_pakora.jpg'
   },
   {
     id: 'st7',
@@ -86,7 +86,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 9.90,
     category: 'starters',
     isVeg: false,
-    image: '/images/menu/8tj1nDFQq8Hp.jpg'
+    image: '/images/menu/chicken_pakora.jpg'
   },
 
   // SALADS
@@ -98,7 +98,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 12.90,
     category: 'salads',
     isVeg: false,
-    image: '/images/menu/KdEhffSvBVsK.jpg'
+    image: '/images/menu/indian_prawns_salad.jpg'
   },
   {
     id: 'sl2',
@@ -108,7 +108,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 8.90,
     category: 'salads',
     isVeg: false,
-    image: '/images/menu/iHJT0e2jzgil.jpg'
+    image: '/images/menu/crispy_chicken_salad.jpg'
   },
   {
     id: 'sl3',
@@ -118,7 +118,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 5.90,
     category: 'salads',
     isVeg: true,
-    image: '/images/menu/8tj1nDFQq8Hp.jpg'
+    image: '/images/menu/dt4omQQMmAaG.jpg'
   },
 
   // SPECIAL TANDOOR
@@ -130,7 +130,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 11.90,
     category: 'tandoor',
     isVeg: false,
-    image: '/images/menu/iHJT0e2jzgil.jpg'
+    image: '/images/menu/murg_tandoori.jpg'
   },
   {
     id: 'td2',
@@ -140,7 +140,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 14.90,
     category: 'tandoor',
     isVeg: true,
-    image: '/images/menu/8tj1nDFQq8Hp.jpg'
+    image: '/images/menu/tandoori_paneer_tikka.jpg'
   },
   {
     id: 'td3',
@@ -150,7 +150,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 15.90,
     category: 'tandoor',
     isVeg: false,
-    image: '/images/menu/fish_curry.jpg'
+    image: '/images/menu/fish_tikka.jpg'
   },
   {
     id: 'td4',
@@ -160,7 +160,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 11.90,
     category: 'tandoor',
     isVeg: false,
-    image: '/images/menu/iHJT0e2jzgil.jpg'
+    image: '/images/menu/chicken_tikka.jpg'
   },
   {
     id: 'td5',
@@ -180,7 +180,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 11.90,
     category: 'tandoor',
     isVeg: false,
-    image: '/images/menu/KdEhffSvBVsK.jpg'
+    image: '/images/menu/prawn_tandoori.jpg'
   },
 
   // VEG AND VEGAN CURRY

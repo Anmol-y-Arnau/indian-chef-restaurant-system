@@ -74,3 +74,11 @@
 - [x] Investigar cada plato de curry para entender sus características visuales específicas
 - [x] Generar imágenes únicas con IA para cada curry (vegetariano, pollo, pescado/gambas, cordero)
 - [x] Actualizar el menú con las nuevas imágenes específicas
+
+## Generación de Imágenes Únicas - Entrantes, Ensaladas y Tandoor
+
+- [x] Investigar características visuales de cada entrante (samosas, pakoras, etc.)
+- [x] Investigar características visuales de cada ensalada
+- [x] Investigar características visuales de cada plato tandoor
+- [x] Generar imágenes únicas con IA para cada plato
+- [x] Actualizar el menú con las nuevas imágenes específicas
