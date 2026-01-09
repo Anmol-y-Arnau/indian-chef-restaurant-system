@@ -212,7 +212,7 @@ export default function Home() {
           <div className="flex flex-col bg-background">
             <Tabs defaultValue={CATEGORIES[0].id} value={activeCategory} onValueChange={setActiveCategory} className="flex flex-col">
               {/* Categories - Sticky on mobile */}
-              <div className="sticky top-0 md:relative px-4 md:px-6 py-3 md:py-4 border-b border-border bg-background/95 backdrop-blur-md z-20">
+              <div className="sticky top-0 md:relative px-4 md:px-6 py-3 md:py-4 border-b border-border bg-background/95 backdrop-blur-md z-30">
                 <div className="w-full overflow-x-auto pb-2 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
                   <TabsList className="bg-transparent h-auto p-0 gap-2 justify-start w-max flex">
                     {CATEGORIES.map(category => (

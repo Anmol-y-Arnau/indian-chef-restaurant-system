@@ -60,3 +60,5 @@
 - [x] Mover buscador, historial e idioma a la barra superior móvil (junto a menú y nombre de mesa)
 - [x] Implementar hero dinámico que se oculta al hacer scroll (imagen y título Indian Chef)
 - [x] Hacer la barra de categorías sticky cuando se hace scroll hacia abajo
+
+- [x] Corregir z-index: números y precios de productos pasan por encima de la barra de categorías sticky

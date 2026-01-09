@@ -29,7 +29,7 @@ export function MenuCard({ item, onAdd }: MenuCardProps) {
         
         {/* Item Number Badge */}
         {item.number && (
-          <div className="absolute top-2 left-2 z-20 bg-black/60 backdrop-blur-sm border border-white/20 text-white text-xs font-bold px-2 py-1 rounded-md shadow-sm">
+          <div className="absolute top-2 left-2 z-10 bg-black/60 backdrop-blur-sm border border-white/20 text-white text-xs font-bold px-2 py-1 rounded-md shadow-sm">
             {item.number}
           </div>
         )}
@@ -39,7 +39,7 @@ export function MenuCard({ item, onAdd }: MenuCardProps) {
           alt={item.name}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
-        <div className="absolute bottom-2 left-2 right-2 z-20 flex justify-between items-end">
+        <div className="absolute bottom-2 left-2 right-2 z-10 flex justify-between items-end">
           <span className="font-bold text-white text-lg drop-shadow-md">{item.price.toFixed(2)}€</span>
           <div className="flex gap-1">
             {item.isVeg && (
