@@ -204,13 +204,20 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
 
       const total = getTableTotal(tableId);
       const items = table.orders.map(order => ({
-        menuItem: order.menuItem,
+        id: order.id,
+        menuItem: {
+          id: order.menuItem.id,
+          name: order.menuItem.name,
+          price: order.menuItem.price,
+          category: order.menuItem.category,
+          description: order.menuItem.description || '',
+        },
         quantity: order.quantity,
       }));
 
       await completeTableMutation.mutateAsync({
         tableId: String(tableId),
-        items: items,
+        items: items as any,
         total: total.toFixed(2),
         paymentMethod: 'cash',
       });
@@ -248,7 +255,7 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
     tableId: sale.tableId,
     date: sale.createdAt.toISOString(),
     total: parseFloat(sale.total),
-    items: JSON.parse(sale.items as string),
+    items: sale.items as any, // JSON field from database
   }));
 
   return (
