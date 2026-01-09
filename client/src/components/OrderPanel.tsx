@@ -1,4 +1,5 @@
 import { useRestaurant } from "@/contexts/RestaurantContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import { Copy, MessageCircle, Minus, Printer, Trash2, X } from "lucide-react";
 import { Button } from "./ui/button";
@@ -7,6 +8,7 @@ import { Separator } from "./ui/separator";
 import { toast } from "sonner";
 
 export function OrderPanel() {
+  const { t, language } = useLanguage();
   const { 
     activeTableId, 
     tables, 
@@ -24,13 +26,13 @@ export function OrderPanel() {
         <div className="w-24 h-24 rounded-full bg-muted/50 flex items-center justify-center mb-4">
           <img src="/images/chef-icon.png" alt="Chef" className="w-16 h-16 opacity-50" />
         </div>
-        <h3 className="font-heading text-xl mb-2">Bienvenido a Indian Chef</h3>
-        <p>Selecciona una mesa para comenzar a tomar nota o ver el estado.</p>
+        <h3 className="font-heading text-xl mb-2">{t('welcome_title')}</h3>
+        <p>{t('welcome_message')}</p>
         <Button 
           className="mt-6 md:hidden" 
           onClick={() => document.getElementById('mobile-menu-trigger')?.click()}
         >
-          Seleccionar Mesa
+          {t('select_table')}
         </Button>
       </div>
     );
@@ -43,7 +45,7 @@ export function OrderPanel() {
 
   const handlePrint = () => {
     if (table.orders.length === 0) {
-      toast.error("No hay pedidos para imprimir");
+      toast.error(t('no_orders_print'));
       return;
     }
     
@@ -64,12 +66,12 @@ export function OrderPanel() {
     `;
     
     console.log(printContent);
-    toast.success("Tiquet enviado a impresora");
+    toast.success(t('ticket_sent_printer'));
     updateTableStatus(activeTableId, 'payment_pending');
   };
 
   const handlePayment = () => {
-    if (confirm(`¿Confirmar pago de ${total.toFixed(2)}€ y liberar mesa?`)) {
+    if (confirm(`${t('confirm_payment')} ${total.toFixed(2)}€?`)) {
       closeTable(activeTableId);
       setActiveTableId(null); // Close panel after payment
     }
@@ -84,7 +86,7 @@ export function OrderPanel() {
   const handleCopyTicket = () => {
     if (table.orders.length === 0) return;
     navigator.clipboard.writeText(getTicketText());
-    toast.success("Tiquet copiado al portapapeles");
+    toast.success(t('ticket_copied'));
   };
 
   const handleWhatsApp = () => {
@@ -105,7 +107,7 @@ export function OrderPanel() {
             table.status === 'occupied' ? "bg-secondary/10 border-secondary/50 text-secondary" :
             "bg-accent/10 border-accent/50 text-accent"
           )}>
-            {table.status === 'free' ? 'Libre' : table.status === 'occupied' ? 'Ocupada' : 'Pagando'}
+            {table.status === 'free' ? t('free') : table.status === 'occupied' ? t('occupied') : t('payment_pending')}
           </span>
         </div>
         <Button variant="ghost" size="icon" onClick={() => document.getElementById('close-mobile-order-panel')?.click()} className="md:hidden">
@@ -118,7 +120,7 @@ export function OrderPanel() {
         {table.orders.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-40 text-muted-foreground opacity-60 mt-10">
             <img src="/images/empty-state.jpg" alt="Empty" className="w-32 h-32 object-cover rounded-full mb-4 opacity-50 grayscale" />
-            <p>La comanda está vacía</p>
+            <p>{t('empty_order')}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -128,7 +130,9 @@ export function OrderPanel() {
                   <div className="flex items-baseline justify-between">
                     <span className="font-medium text-sm">
                       <span className="text-primary font-bold mr-2">{order.quantity}x</span>
-                      {order.menuItem.name}
+                      {language === 'en' && order.menuItem.name_en ? order.menuItem.name_en : 
+                       language === 'fr' && order.menuItem.name_fr ? order.menuItem.name_fr : 
+                       order.menuItem.name}
                     </span>
                     <span className="text-sm font-mono ml-2">
                       {(order.menuItem.price * order.quantity).toFixed(2)}€
@@ -155,7 +159,7 @@ export function OrderPanel() {
       {/* Footer Actions */}
       <div className="p-4 bg-muted/30 border-t border-border space-y-4 shrink-0 z-10 bg-card shadow-[0_-5px_10px_rgba(0,0,0,0.1)]">
         <div className="flex justify-between items-end">
-          <span className="text-muted-foreground text-sm">Total</span>
+          <span className="text-muted-foreground text-sm">{t('total')}</span>
           <span className="text-3xl font-heading text-primary">{total.toFixed(2)}€</span>
         </div>
         
@@ -166,7 +170,7 @@ export function OrderPanel() {
               className="flex-1 border-primary/50 hover:bg-primary/10 hover:text-primary px-2"
               onClick={handleCopyTicket}
               disabled={table.orders.length === 0}
-              title="Copiar Tiquet"
+              title={t('copy_ticket')}
             >
               <Copy className="w-4 h-4" />
             </Button>
@@ -175,7 +179,7 @@ export function OrderPanel() {
               className="flex-1 border-primary/50 hover:bg-primary/10 hover:text-primary px-2"
               onClick={handleWhatsApp}
               disabled={table.orders.length === 0}
-              title="Enviar por WhatsApp"
+              title={t('send_whatsapp')}
             >
               <MessageCircle className="w-4 h-4" />
             </Button>
@@ -184,7 +188,7 @@ export function OrderPanel() {
               className="flex-1 border-primary/50 hover:bg-primary/10 hover:text-primary px-2"
               onClick={handlePrint}
               disabled={table.orders.length === 0}
-              title="Imprimir Tiquet"
+              title={t('print_ticket')}
             >
               <Printer className="w-4 h-4" />
             </Button>
@@ -195,7 +199,7 @@ export function OrderPanel() {
             onClick={handlePayment}
             disabled={table.orders.length === 0}
           >
-            Pagar
+            {t('pay')}
           </Button>
         </div>
         
@@ -204,11 +208,11 @@ export function OrderPanel() {
             variant="ghost" 
             className="w-full text-destructive hover:bg-destructive/10 hover:text-destructive text-xs h-8"
             onClick={() => {
-              if(confirm("¿Liberar mesa sin cobrar?")) clearTable(activeTableId);
+              if(confirm(t('confirm_cancel'))) clearTable(activeTableId);
             }}
           >
             <Trash2 className="w-3 h-3 mr-2" />
-            Cancelar / Liberar
+            {t('cancel_release')}
           </Button>
         )}
       </div>

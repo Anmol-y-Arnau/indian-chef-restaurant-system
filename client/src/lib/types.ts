@@ -1,7 +1,11 @@
 export interface MenuItem {
   id: string;
   name: string;
+  name_en?: string;
+  name_fr?: string;
   description: string;
+  description_en?: string;
+  description_fr?: string;
   price: number;
   category: 'starters' | 'salads' | 'tandoor' | 'veg_curry' | 'chicken_curry' | 'fish_prawn_curry' | 'lamb_curry' | 'biryani' | 'sides' | 'wines' | 'drinks' | 'coffees' | 'desserts';
   image?: string;

@@ -1,4 +1,5 @@
 import { CustomItemDialog } from "@/components/CustomItemDialog";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { HistoryDialog } from "@/components/HistoryDialog";
 import { QuickOrderDialog } from "@/components/QuickOrderDialog";
 import { MenuCard } from "@/components/MenuCard";
@@ -8,12 +9,14 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRestaurant } from "@/contexts/RestaurantContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { CATEGORIES, MENU_ITEMS } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { Menu, Search, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 
 export default function Home() {
+  const { t, language } = useLanguage();
   const { 
     tables, 
     activeTableId, 
@@ -95,7 +98,7 @@ export default function Home() {
         </Sheet>
 
         <div className="font-heading text-lg text-primary truncate max-w-[150px]">
-          {activeTableId !== null ? `Mesa ${activeTableId}` : "Sin Mesa"}
+          {activeTableId !== null ? `${t('table')} ${activeTableId}` : t('no_table')}
         </div>
 
         <div className="w-10" /> {/* Spacer for balance */}
@@ -146,21 +149,22 @@ export default function Home() {
           />
           <div className="absolute bottom-4 left-4 md:bottom-6 md:left-8 z-20">
             <h1 className="text-2xl md:text-5xl font-heading text-primary mb-1 md:mb-2 drop-shadow-lg">
-              Indian Chef
+              {t('app_title')}
             </h1>
             <p className="text-muted-foreground text-xs md:text-lg max-w-md hidden md:block">
-              Sistema de Gestión de Restaurante
+              {t('subtitle')}
             </p>
           </div>
           
           {/* Search Bar - Responsive */}
           <div className="absolute bottom-4 right-4 md:bottom-6 md:right-8 z-20 flex items-center gap-2">
+            <LanguageSwitcher />
             <HistoryDialog />
             <div className="relative w-32 md:w-80">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-3 h-3 md:w-4 md:h-4" />
               <input 
                 type="text" 
-                placeholder="Buscar..." 
+                placeholder={t('search_placeholder')} 
                 className="w-full bg-black/50 backdrop-blur-md border border-white/20 rounded-full py-1.5 md:py-2 pl-8 md:pl-10 pr-4 text-xs md:text-base text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -184,7 +188,7 @@ export default function Home() {
                       className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full px-4 py-1.5 md:px-6 md:py-2 border border-border data-[state=active]:border-primary transition-all duration-300 text-sm md:text-base shrink-0"
                     >
                       <span className="mr-2 text-base md:text-lg">{category.icon}</span>
-                      {category.label}
+                      {t(`categories.${category.id}`)}
                     </TabsTrigger>
                   ))}
                 </TabsList>
@@ -238,7 +242,7 @@ export default function Home() {
       {/* MOBILE BOTTOM BAR */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border p-4 z-40 flex items-center justify-between shadow-[0_-5px_20px_rgba(0,0,0,0.3)]">
         <div className="flex flex-col">
-          <span className="text-xs text-muted-foreground">Total Mesa {activeTableId ?? '-'}</span>
+          <span className="text-xs text-muted-foreground">{t('total')} {t('table')} {activeTableId ?? '-'}</span>
           <span className="text-xl font-bold text-primary">{currentTotal.toFixed(2)}€</span>
         </div>
         
@@ -249,7 +253,7 @@ export default function Home() {
             <SheetTrigger asChild>
               <Button size="lg" className="gap-2 rounded-full px-6">
                 <ShoppingBag className="w-5 h-5" />
-                Ver Pedido
+                {t('view_order')}
                 {itemCount > 0 && (
                   <span className="bg-white text-primary text-xs font-bold px-2 py-0.5 rounded-full ml-1">
                     {itemCount}

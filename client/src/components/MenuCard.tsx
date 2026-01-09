@@ -1,6 +1,7 @@
 import { MenuItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Flame, Leaf } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface MenuCardProps {
   item: MenuItem;
@@ -8,6 +9,16 @@ interface MenuCardProps {
 }
 
 export function MenuCard({ item, onAdd }: MenuCardProps) {
+  const { language } = useLanguage();
+
+  const displayName = language === 'en' && item.name_en ? item.name_en : 
+                      language === 'fr' && item.name_fr ? item.name_fr : 
+                      item.name;
+                      
+  const displayDescription = language === 'en' && item.description_en ? item.description_en : 
+                             language === 'fr' && item.description_fr ? item.description_fr : 
+                             item.description;
+
   return (
     <button
       onClick={onAdd}
@@ -47,10 +58,10 @@ export function MenuCard({ item, onAdd }: MenuCardProps) {
       
       <div className="p-3 flex flex-col flex-grow">
         <h4 className="font-heading text-base leading-tight mb-1 group-hover:text-primary transition-colors">
-          {item.name}
+          {displayName}
         </h4>
         <p className="text-xs text-muted-foreground line-clamp-2 mt-auto">
-          {item.description}
+          {displayDescription}
         </p>
       </div>
       
