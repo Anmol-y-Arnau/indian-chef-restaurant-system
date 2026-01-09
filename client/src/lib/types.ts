@@ -18,7 +18,7 @@ export interface OrderItem {
 }
 
 export interface Table {
-  id: number;
+  id: number | string;
   name: string;
   status: 'free' | 'occupied' | 'payment_pending';
   orders: OrderItem[];
@@ -34,7 +34,7 @@ export interface Category {
 
 export interface OrderHistoryItem {
   id: string;
-  tableId: number;
+  tableId: number | string;
   date: string; // ISO string
   total: number;
   items: OrderItem[];

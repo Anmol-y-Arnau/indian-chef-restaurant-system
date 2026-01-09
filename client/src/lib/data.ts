@@ -802,14 +802,17 @@ export const MENU_ITEMS: MenuItem[] = [
   },
 ];
 
-export const INITIAL_TABLES: Table[] = Array.from({ length: 10 }, (_, i) => ({
-  id: i,
-  number: 77,
-  name: `Mesa ${i}`,
-  status: 'free',
-  orders: [],
-  guests: 0
-}));
+export const INITIAL_TABLES: Table[] = [
+  { id: '0+', name: 'Mesa 0+', status: 'free', orders: [], guests: 0 },
+  { id: '0-', name: 'Mesa 0-', status: 'free', orders: [], guests: 0 },
+  ...Array.from({ length: 10 }, (_, i) => ({
+    id: i + 1,
+    name: `Mesa ${i + 1}`,
+    status: 'free' as const,
+    orders: [],
+    guests: 0
+  }))
+];
 
 // BEBIDAS
 MENU_ITEMS.push(

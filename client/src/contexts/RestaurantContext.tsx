@@ -5,24 +5,24 @@ import { toast } from "sonner";
 
 interface RestaurantContextType {
   tables: Table[];
-  activeTableId: number | null;
-  setActiveTableId: (id: number | null) => void;
-  addOrderToTable: (tableId: number, menuItem: MenuItem, quantity?: number) => void;
-  removeOrderFromTable: (tableId: number, orderId: string) => void;
-  updateTableStatus: (tableId: number, status: Table['status']) => void;
-  updateTableGuests: (tableId: number, guests: number) => void;
-  clearTable: (tableId: number) => void;
-  getTableTotal: (tableId: number) => number;
+  activeTableId: number | string | null;
+  setActiveTableId: (id: number | string | null) => void;
+  addOrderToTable: (tableId: number | string, menuItem: MenuItem, quantity?: number) => void;
+  removeOrderFromTable: (tableId: number | string, orderId: string) => void;
+  updateTableStatus: (tableId: number | string, status: Table['status']) => void;
+  updateTableGuests: (tableId: number | string, guests: number) => void;
+  clearTable: (tableId: number | string) => void;
+  getTableTotal: (tableId: number | string) => number;
   orderHistory: OrderHistoryItem[];
-  closeTable: (tableId: number) => void;
-  restoreOrderToTable: (tableId: number, items: OrderItem[]) => void;
+  closeTable: (tableId: number | string) => void;
+  restoreOrderToTable: (tableId: number | string, items: OrderItem[]) => void;
 }
 
 const RestaurantContext = createContext<RestaurantContextType | undefined>(undefined);
 
 export function RestaurantProvider({ children }: { children: React.ReactNode }) {
   const [tables, setTables] = useState<Table[]>(INITIAL_TABLES);
-  const [activeTableId, setActiveTableId] = useState<number | null>(null);
+  const [activeTableId, setActiveTableId] = useState<number | string | null>(null);
   const [orderHistory, setOrderHistory] = useState<OrderHistoryItem[]>(() => {
     const saved = localStorage.getItem('indian_chef_history');
     return saved ? JSON.parse(saved) : [];
@@ -32,7 +32,7 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
     localStorage.setItem('indian_chef_history', JSON.stringify(orderHistory));
   }, [orderHistory]);
 
-  const addOrderToTable = (tableId: number, menuItem: MenuItem, quantity: number = 1) => {
+  const addOrderToTable = (tableId: number | string, menuItem: MenuItem, quantity: number = 1) => {
     setTables(prev => prev.map(table => {
       if (table.id === tableId) {
         const newOrder: OrderItem = {
@@ -73,7 +73,7 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
     toast.success(`${quantity}x ${menuItem.name} añadido a la Mesa ${tableId}`);
   };
 
-  const removeOrderFromTable = (tableId: number, orderId: string) => {
+  const removeOrderFromTable = (tableId: number | string, orderId: string) => {
     setTables(prev => prev.map(table => {
       if (table.id === tableId) {
         const order = table.orders.find(o => o.id === orderId);
@@ -92,19 +92,19 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
     }));
   };
 
-  const updateTableStatus = (tableId: number, status: Table['status']) => {
+  const updateTableStatus = (tableId: number | string, status: Table['status']) => {
     setTables(prev => prev.map(table => 
       table.id === tableId ? { ...table, status } : table
     ));
   };
 
-  const updateTableGuests = (tableId: number, guests: number) => {
+  const updateTableGuests = (tableId: number | string, guests: number) => {
     setTables(prev => prev.map(table => 
       table.id === tableId ? { ...table, guests } : table
     ));
   };
 
-  const clearTable = (tableId: number) => {
+  const clearTable = (tableId: number | string) => {
     setTables(prev => prev.map(table => 
       table.id === tableId ? { 
         ...table, 
@@ -117,13 +117,13 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
     toast.info(`Mesa ${tableId} liberada`);
   };
 
-  const getTableTotal = (tableId: number) => {
+  const getTableTotal = (tableId: number | string) => {
     const table = tables.find(t => t.id === tableId);
     if (!table) return 0;
     return table.orders.reduce((total, order) => total + (order.menuItem.price * order.quantity), 0);
   };
 
-  const closeTable = (tableId: number) => {
+  const closeTable = (tableId: number | string) => {
     setTables(prev => prev.map(table => {
       if (table.id === tableId) {
         if (table.orders.length > 0) {
@@ -144,7 +144,7 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
     setActiveTableId(null);
   };
 
-  const restoreOrderToTable = (tableId: number, items: OrderItem[]) => {
+  const restoreOrderToTable = (tableId: number | string, items: OrderItem[]) => {
     setTables(prev => prev.map(table => {
       if (table.id === tableId) {
         // Merge existing orders with restored orders

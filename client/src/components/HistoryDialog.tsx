@@ -78,7 +78,9 @@ export function HistoryDialog() {
                       disabled={!selectedTableForRestore}
                       onClick={() => {
                         if (selectedTableForRestore) {
-                          restoreOrderToTable(parseInt(selectedTableForRestore), item.items);
+                          // Check if ID is numeric or string (like '0+')
+                          const tableId = isNaN(Number(selectedTableForRestore)) ? selectedTableForRestore : Number(selectedTableForRestore);
+                          restoreOrderToTable(tableId, item.items);
                           // Close dialog? Maybe not needed, user might want to see confirmation
                         }
                       }}
