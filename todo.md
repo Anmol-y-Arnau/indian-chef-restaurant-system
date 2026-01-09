@@ -82,3 +82,7 @@
 - [x] Investigar características visuales de cada plato tandoor
 - [x] Generar imágenes únicas con IA para cada plato
 - [x] Actualizar el menú con las nuevas imágenes específicas
+
+## Optimización de Rendimiento
+
+- [x] Comprimir todas las imágenes del menú para reducir peso y mejorar velocidad de carga (83% de reducción: 49MB → 8.3MB)
