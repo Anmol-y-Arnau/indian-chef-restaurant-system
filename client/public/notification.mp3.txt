@@ -1,0 +1,2 @@
+# Usaremos Web Audio API para generar el sonido directamente en el navegador
+# No necesitamos archivo MP3, lo generaremos con código

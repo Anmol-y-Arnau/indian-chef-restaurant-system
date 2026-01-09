@@ -98,3 +98,5 @@
 - [x] Mostrar pedidos ordenados de más antiguo a más reciente
 - [x] Implementar botón "Entregado" para marcar pedidos completados
 - [x] Diseño limpio enfocado solo en cocinar
+
+- [x] Implementar notificación sonora cuando lleguen nuevos pedidos a la cocina

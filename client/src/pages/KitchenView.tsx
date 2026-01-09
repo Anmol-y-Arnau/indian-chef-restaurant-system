@@ -7,6 +7,7 @@ export default function KitchenView() {
   const { tables } = useRestaurant();
   const { t } = useLanguage();
   const [completedOrders, setCompletedOrders] = useState<Set<string>>(new Set());
+  const [previousOrderCount, setPreviousOrderCount] = useState(0);
 
   // Obtener todos los pedidos activos de todas las mesas
   const allOrders = tables.flatMap(table => 
@@ -17,6 +18,62 @@ export default function KitchenView() {
       timestamp: Date.now() // Usar timestamp actual por ahora
     }))
   );
+
+  // Función para reproducir sonido de notificación
+  const playNotificationSound = () => {
+    try {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      
+      // Crear oscilador para el sonido
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      // Configurar sonido: dos tonos rápidos
+      oscillator.frequency.value = 800; // Frecuencia alta para llamar atención
+      oscillator.type = 'sine';
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.1);
+      
+      // Segundo tono
+      setTimeout(() => {
+        const oscillator2 = audioContext.createOscillator();
+        const gainNode2 = audioContext.createGain();
+        
+        oscillator2.connect(gainNode2);
+        gainNode2.connect(audioContext.destination);
+        
+        oscillator2.frequency.value = 1000;
+        oscillator2.type = 'sine';
+        
+        gainNode2.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+        
+        oscillator2.start(audioContext.currentTime);
+        oscillator2.stop(audioContext.currentTime + 0.1);
+      }, 150);
+    } catch (error) {
+      console.error('Error reproduciendo sonido:', error);
+    }
+  };
+
+  // Detectar nuevos pedidos y reproducir sonido
+  useEffect(() => {
+    const currentOrderCount = allOrders.length;
+    
+    // Si hay más pedidos que antes, reproducir sonido
+    if (previousOrderCount > 0 && currentOrderCount > previousOrderCount) {
+      playNotificationSound();
+    }
+    
+    setPreviousOrderCount(currentOrderCount);
+  }, [allOrders.length]);
 
   // Categorizar pedidos
   const starters = allOrders.filter(order => 
