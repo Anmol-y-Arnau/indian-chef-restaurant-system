@@ -105,7 +105,7 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
 
       return {
         ...initialTable,
-        status: (dbTable?.status as Table['status']) || 'free',
+        status: orders.length > 0 ? 'occupied' : 'free',
         orders,
         startTime: orders.length > 0 ? new Date() : undefined,
       };

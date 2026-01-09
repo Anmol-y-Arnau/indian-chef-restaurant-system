@@ -50,3 +50,7 @@
 - Los cambios se reflejan automáticamente en todos los dispositivos conectados
 - Polling cada 3 segundos para actualizaciones de mesas y pedidos
 - Polling cada 5 segundos para historial de ventas
+
+## Bugs Reportados
+
+- [x] Eliminar indicador lila que aparece en mesas vacías (0+, 0-, 1, 2, 3) - solo debería mostrarse en mesas con pedidos activos

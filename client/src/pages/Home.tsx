@@ -83,7 +83,7 @@ export default function Home() {
                       )}
                     >
                       <span className="font-heading text-lg">{table.id}</span>
-                      {table.status !== 'free' && (
+                      {table.orders.length > 0 && (
                         <div className={cn(
                           "absolute top-1 right-1 w-2 h-2 rounded-full",
                           table.status === 'occupied' ? "bg-secondary" : "bg-accent"
@@ -125,7 +125,7 @@ export default function Home() {
                 )}
               >
                 <span className="font-heading text-xl">{table.id}</span>
-                {table.status !== 'free' && (
+                {table.orders.length > 0 && (
                   <div className={cn(
                     "absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-background",
                     table.status === 'occupied' ? "bg-secondary" : "bg-accent"
