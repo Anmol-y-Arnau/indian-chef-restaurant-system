@@ -100,3 +100,11 @@
 - [x] Diseño limpio enfocado solo en cocinar
 
 - [x] Implementar notificación sonora cuando lleguen nuevos pedidos a la cocina
+
+## Rediseño Modo Cocina KDS
+
+- [x] Agrupar pedidos por mesa (todos los items de una mesa juntos)
+- [x] Mesa arriba en grande y destacada
+- [x] Texto de platos en letras grandes para ver desde lejos
+- [x] Botón "Delivered" que elimina permanentemente la mesa completa
+- [x] Organización: entrantes arriba, principales medio, bebidas abajo
