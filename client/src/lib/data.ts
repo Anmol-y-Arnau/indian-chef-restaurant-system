@@ -192,7 +192,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 9.90,
     category: 'veg_curry',
     isVeg: true,
-    image: '/images/menu/palak_paneer.jpg'
+    image: '/images/menu/sabzi_bhaji.jpg'
   },
   {
     id: 'vc2',
@@ -202,7 +202,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 8.90,
     category: 'veg_curry',
     isVeg: true,
-    image: '/images/menu/palak_paneer.jpg'
+    image: '/images/menu/sabzi_bhaji.jpg'
   },
   {
     id: 'vc3',
@@ -212,7 +212,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 9.90,
     category: 'veg_curry',
     isVeg: true,
-    image: '/images/menu/palak_paneer.jpg'
+    image: '/images/menu/mutter_paneer.jpg'
   },
   {
     id: 'vc4',
@@ -252,7 +252,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 9.90,
     category: 'veg_curry',
     isVeg: true,
-    image: '/images/menu/dal_makhani.jpg'
+    image: '/images/menu/dal_tadka.jpg'
   },
   {
     id: 'vc8',
@@ -262,7 +262,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 9.90,
     category: 'veg_curry',
     isVeg: true,
-    image: '/images/menu/dal_makhani.jpg'
+    image: '/images/menu/chana_masala.jpg'
   },
 
   // CHICKEN CURRY
@@ -285,7 +285,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 11.90,
     category: 'chicken_curry',
     isVeg: false,
-    image: '/images/menu/dt4omQQMmAaG.jpg'
+    image: '/images/menu/murg_korma.jpg'
   },
   {
     id: 'cc3',
@@ -296,7 +296,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: 'chicken_curry',
     isVeg: false,
     isSpicy: true,
-    image: '/images/menu/VWToQA037TYU.jpg'
+    image: '/images/menu/murg_rogan_josh.jpg'
   },
   {
     id: 'cc4',
@@ -307,7 +307,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: 'chicken_curry',
     isVeg: false,
     isSpicy: true,
-    image: '/images/menu/dt4omQQMmAaG.jpg'
+    image: '/images/menu/murg_tikka_masala.jpg'
   },
   {
     id: 'cc5',
@@ -318,7 +318,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: 'chicken_curry',
     isVeg: false,
     isSpicy: true,
-    image: '/images/menu/lamb_karahi.jpg'
+    image: '/images/menu/murg_karahi.jpg'
   },
   {
     id: 'cc6',
@@ -339,7 +339,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: 'chicken_curry',
     isVeg: false,
     isSpicy: true,
-    image: '/images/menu/vindaloo.jpg'
+    image: '/images/menu/murg_vindaloo.jpg'
   },
 
   // FISH & PRAWN CURRY
@@ -359,7 +359,7 @@ export const MENU_ITEMS: MenuItem[] = [
     description: 'El plato que se origina en la región costera de Goa. La salsa intensa con sabor a curry de la pasta vindaloo casera le da a esta receta de curry de pescado su sabor picante y ácido.',
     price: 13.90,
     category: 'fish_prawn_curry',
-    image: '/images/menu/vindaloo.jpg',
+    image: '/images/menu/fish_vandalo.jpg',
     isSpicy: true
   },
   {
@@ -369,7 +369,7 @@ export const MENU_ITEMS: MenuItem[] = [
     description: 'Gambas preparadas en salsa de aromáticas especias, tomate y jengibre.',
     price: 15.90,
     category: 'fish_prawn_curry',
-    image: '/images/menu/KdEhffSvBVsK.jpg'
+    image: '/images/menu/gamba_curry.jpg'
   },
   {
     id: 'gamba_korma',
@@ -378,7 +378,7 @@ export const MENU_ITEMS: MenuItem[] = [
     description: 'Gambas en curry de sabor suave preparado con salsa de yogur, azafrán, almendras y coco.',
     price: 15.90,
     category: 'fish_prawn_curry',
-    image: '/images/menu/KdEhffSvBVsK.jpg'
+    image: '/images/menu/gamba_korma.jpg'
   },
 
   // LAMB CURRY
@@ -389,7 +389,7 @@ export const MENU_ITEMS: MenuItem[] = [
     description: 'Este auténtico curry indio de cabrito está elaborado con paletilla de cabrito se cuece a fuego lento con especias aromáticas, cebollas caramelizadas y yogur griego hasta que esté tierno. (Preferent picante)',
     price: 15.90,
     category: 'lamb_curry',
-    image: '/images/menu/VWToQA037TYU.jpg',
+    image: '/images/menu/lamb_curry.jpg',
     isSpicy: true
   },
   {
@@ -399,7 +399,7 @@ export const MENU_ITEMS: MenuItem[] = [
     description: 'Deliciosos estofado de cabrito al curry con jengibre, tomate, cilantro fresco y pimentón dulce. (Preferente picante)',
     price: 15.90,
     category: 'lamb_curry',
-    image: '/images/menu/VWToQA037TYU.jpg',
+    image: '/images/menu/lamb_rogan_josh.jpg',
     isSpicy: true
   },
   {

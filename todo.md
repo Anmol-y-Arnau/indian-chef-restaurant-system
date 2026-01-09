@@ -68,3 +68,9 @@
 - [x] Revisar y actualizar todas las imágenes del menú para que coincidan con el producto real
 - [x] Usar la misma imagen para productos similares (todos los naan, cervezas, cafés, etc.)
 - [x] Asegurar que cada imagen representa correctamente el plato descrito
+
+## Generación de Imágenes Únicas de Curry
+
+- [x] Investigar cada plato de curry para entender sus características visuales específicas
+- [x] Generar imágenes únicas con IA para cada curry (vegetariano, pollo, pescado/gambas, cordero)
+- [x] Actualizar el menú con las nuevas imágenes específicas
