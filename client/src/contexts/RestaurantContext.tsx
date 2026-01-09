@@ -1,3 +1,4 @@
+import { trpc } from "@/lib/trpc";
 import { INITIAL_TABLES, MENU_ITEMS } from "@/lib/data";
 import { MenuItem, OrderHistoryItem, OrderItem, Table } from "@/lib/types";
 import React, { createContext, useContext, useState, useEffect } from "react";
@@ -16,6 +17,7 @@ interface RestaurantContextType {
   orderHistory: OrderHistoryItem[];
   closeTable: (tableId: number | string) => void;
   restoreOrderToTable: (tableId: number | string, items: OrderItem[]) => void;
+  isLoading: boolean;
 }
 
 const RestaurantContext = createContext<RestaurantContextType | undefined>(undefined);
@@ -23,76 +25,148 @@ const RestaurantContext = createContext<RestaurantContextType | undefined>(undef
 export function RestaurantProvider({ children }: { children: React.ReactNode }) {
   const [tables, setTables] = useState<Table[]>(INITIAL_TABLES);
   const [activeTableId, setActiveTableId] = useState<number | string | null>(null);
-  const [orderHistory, setOrderHistory] = useState<OrderHistoryItem[]>(() => {
-    const saved = localStorage.getItem('indian_chef_history');
-    return saved ? JSON.parse(saved) : [];
+  const [isLoading, setIsLoading] = useState(true);
+
+  // tRPC hooks
+  const { data: dbTables, refetch: refetchTables } = trpc.restaurant.getTables.useQuery(undefined, {
+    refetchInterval: 3000, // Poll every 3 seconds for real-time sync
+  });
+  const { data: dbOrders, refetch: refetchOrders } = trpc.restaurant.getAllOrders.useQuery(undefined, {
+    refetchInterval: 3000, // Poll every 3 seconds
+  });
+  const { data: dbSales } = trpc.restaurant.getSales.useQuery(undefined, {
+    refetchInterval: 5000, // Less frequent for history
   });
 
+  const addOrderMutation = trpc.restaurant.addOrder.useMutation({
+    onSuccess: () => {
+      refetchTables();
+      refetchOrders();
+    },
+  });
+
+  const deleteOrderMutation = trpc.restaurant.deleteOrder.useMutation({
+    onSuccess: () => {
+      refetchTables();
+      refetchOrders();
+    },
+  });
+
+  const updateOrderMutation = trpc.restaurant.updateOrderQuantity.useMutation({
+    onSuccess: () => {
+      refetchOrders();
+    },
+  });
+
+  const completeTableMutation = trpc.restaurant.completeTable.useMutation({
+    onSuccess: () => {
+      refetchTables();
+      refetchOrders();
+    },
+  });
+
+  const initializeTablesMutation = trpc.restaurant.initializeTables.useMutation();
+
+  // Initialize tables in database on first load
   useEffect(() => {
-    localStorage.setItem('indian_chef_history', JSON.stringify(orderHistory));
-  }, [orderHistory]);
+    const initTables = async () => {
+      const tableIds = INITIAL_TABLES.map(t => String(t.id));
+      await initializeTablesMutation.mutateAsync({ tableIds });
+      setIsLoading(false);
+    };
+    initTables();
+  }, []);
 
-  const addOrderToTable = (tableId: number | string, menuItem: MenuItem, quantity: number = 1) => {
-    setTables(prev => prev.map(table => {
-      if (table.id === tableId) {
-        const newOrder: OrderItem = {
-          id: Math.random().toString(36).substr(2, 9),
-          menuItem,
-          quantity: quantity
+  // Sync database state with local state
+  useEffect(() => {
+    if (!dbTables || !dbOrders) return;
+
+    // Build tables with their orders
+    const syncedTables: Table[] = INITIAL_TABLES.map(initialTable => {
+      const dbTable = dbTables.find(t => t.tableId === String(initialTable.id));
+      const tableOrders = dbOrders.filter(order => String(order.tableId) === String(initialTable.id));
+
+      // Convert database orders to OrderItem format
+      const orders: OrderItem[] = tableOrders.map(dbOrder => {
+        const menuItem = MENU_ITEMS.find(item => item.id === dbOrder.itemId);
+        return {
+          id: String(dbOrder.id),
+          menuItem: menuItem || {
+            id: dbOrder.itemId,
+            name: dbOrder.itemName,
+            price: parseFloat(dbOrder.itemPrice),
+            category: 'starters' as const,
+            description: '',
+            image: '',
+          },
+          quantity: dbOrder.quantity,
         };
-        
-        // Check if item already exists to increment quantity instead?
-        // For this design, let's keep them as separate lines for easier modification/notes later
-        // or we can group them. Let's group them for cleaner ticket.
-        
-        const existingOrderIndex = table.orders.findIndex(o => o.menuItem.id === menuItem.id);
-        
-        let updatedOrders = [...table.orders];
-        if (existingOrderIndex >= 0) {
-          updatedOrders[existingOrderIndex] = {
-            ...updatedOrders[existingOrderIndex],
-            quantity: updatedOrders[existingOrderIndex].quantity + quantity
-          };
-        } else {
-          updatedOrders.push(newOrder);
-        }
+      });
 
-        // Auto-set status to occupied if it was free
-        const newStatus = table.status === 'free' ? 'occupied' : table.status;
-        const newStartTime = table.status === 'free' ? new Date() : table.startTime;
+      return {
+        ...initialTable,
+        status: (dbTable?.status as Table['status']) || 'free',
+        orders,
+        startTime: orders.length > 0 ? new Date() : undefined,
+      };
+    });
 
-        return { 
-          ...table, 
-          orders: updatedOrders,
-          status: newStatus,
-          startTime: newStartTime
-        };
+    setTables(syncedTables);
+  }, [dbTables, dbOrders]);
+
+  const addOrderToTable = async (tableId: number | string, menuItem: MenuItem, quantity: number = 1) => {
+    try {
+      // Check if order already exists in database
+      const existingOrders = dbOrders?.filter(o => o.tableId === String(tableId) && o.itemId === menuItem.id) || [];
+      
+      if (existingOrders.length > 0) {
+        // Update quantity of existing order
+        const existingOrder = existingOrders[0];
+        await updateOrderMutation.mutateAsync({
+          orderId: existingOrder.id,
+          quantity: existingOrder.quantity + quantity,
+        });
+      } else {
+        // Add new order
+        await addOrderMutation.mutateAsync({
+          tableId: String(tableId),
+          itemId: menuItem.id,
+          itemName: menuItem.name,
+          itemPrice: menuItem.price.toFixed(2),
+          quantity,
+        });
       }
-      return table;
-    }));
-    toast.success(`${quantity}x ${menuItem.name} añadido a la Mesa ${tableId}`);
+      
+      toast.success(`${quantity}x ${menuItem.name} añadido a la Mesa ${tableId}`);
+    } catch (error) {
+      toast.error('Error al añadir el pedido');
+      console.error(error);
+    }
   };
 
-  const removeOrderFromTable = (tableId: number | string, orderId: string) => {
-    setTables(prev => prev.map(table => {
-      if (table.id === tableId) {
-        const order = table.orders.find(o => o.id === orderId);
-        if (order && order.quantity > 1) {
-           return {
-             ...table,
-             orders: table.orders.map(o => o.id === orderId ? {...o, quantity: o.quantity - 1} : o)
-           };
-        }
-        return {
-          ...table,
-          orders: table.orders.filter(o => o.id !== orderId)
-        };
+  const removeOrderFromTable = async (tableId: number | string, orderId: string) => {
+    try {
+      const order = dbOrders?.find(o => o.id === parseInt(orderId));
+      if (!order) return;
+
+      if (order.quantity > 1) {
+        await updateOrderMutation.mutateAsync({
+          orderId: parseInt(orderId),
+          quantity: order.quantity - 1,
+        });
+      } else {
+        await deleteOrderMutation.mutateAsync({
+          orderId: parseInt(orderId),
+        });
       }
-      return table;
-    }));
+    } catch (error) {
+      toast.error('Error al eliminar el pedido');
+      console.error(error);
+    }
   };
 
   const updateTableStatus = (tableId: number | string, status: Table['status']) => {
+    // This is handled automatically by the API when orders are added/removed
     setTables(prev => prev.map(table => 
       table.id === tableId ? { ...table, status } : table
     ));
@@ -104,17 +178,17 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
     ));
   };
 
-  const clearTable = (tableId: number | string) => {
-    setTables(prev => prev.map(table => 
-      table.id === tableId ? { 
-        ...table, 
-        status: 'free', 
-        orders: [], 
-        guests: 0,
-        startTime: undefined 
-      } : table
-    ));
-    toast.info(`Mesa ${tableId} liberada`);
+  const clearTable = async (tableId: number | string) => {
+    try {
+      const tableOrders = dbOrders?.filter(o => o.tableId === String(tableId)) || [];
+      for (const order of tableOrders) {
+        await deleteOrderMutation.mutateAsync({ orderId: order.id });
+      }
+      toast.info(`Mesa ${tableId} liberada`);
+    } catch (error) {
+      toast.error('Error al limpiar la mesa');
+      console.error(error);
+    }
   };
 
   const getTableTotal = (tableId: number | string) => {
@@ -123,53 +197,59 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
     return table.orders.reduce((total, order) => total + (order.menuItem.price * order.quantity), 0);
   };
 
-  const closeTable = (tableId: number | string) => {
-    setTables(prev => prev.map(table => {
-      if (table.id === tableId) {
-        if (table.orders.length > 0) {
-          const total = table.orders.reduce((sum, order) => sum + order.menuItem.price * order.quantity, 0);
-          const historyItem: OrderHistoryItem = {
-            id: Date.now().toString(),
-            tableId: table.id,
-            date: new Date().toISOString(),
-            total,
-            items: [...table.orders]
-          };
-          setOrderHistory(prevHistory => [historyItem, ...prevHistory]);
-        }
-        return { ...table, status: 'free', orders: [], guests: 0, startTime: undefined };
-      }
-      return table;
-    }));
-    setActiveTableId(null);
+  const closeTable = async (tableId: number | string) => {
+    try {
+      const table = tables.find(t => t.id === tableId);
+      if (!table || table.orders.length === 0) return;
+
+      const total = getTableTotal(tableId);
+      const items = table.orders.map(order => ({
+        menuItem: order.menuItem,
+        quantity: order.quantity,
+      }));
+
+      await completeTableMutation.mutateAsync({
+        tableId: String(tableId),
+        items: items,
+        total: total.toFixed(2),
+        paymentMethod: 'cash',
+      });
+
+      setActiveTableId(null);
+      toast.success(`Mesa ${tableId} cerrada correctamente`);
+    } catch (error) {
+      toast.error('Error al cerrar la mesa');
+      console.error(error);
+    }
   };
 
-  const restoreOrderToTable = (tableId: number | string, items: OrderItem[]) => {
-    setTables(prev => prev.map(table => {
-      if (table.id === tableId) {
-        // Merge existing orders with restored orders
-        // Or replace? User asked to "add more things", so merge seems safer.
-        // But usually "restore" implies setting state. 
-        // Let's append to existing orders to be safe and allow "adding more things".
-        
-        // We need to regenerate IDs to avoid conflicts if restoring same order multiple times
-        const newItems = items.map(item => ({
-          ...item,
-          id: Math.random().toString(36).substr(2, 9)
-        }));
-
-        return {
-          ...table,
-          status: 'occupied',
-          orders: [...table.orders, ...newItems],
-          startTime: new Date()
-        };
+  const restoreOrderToTable = async (tableId: number | string, items: OrderItem[]) => {
+    try {
+      for (const item of items) {
+        await addOrderMutation.mutateAsync({
+          tableId: String(tableId),
+          itemId: item.menuItem.id,
+          itemName: item.menuItem.name,
+          itemPrice: item.menuItem.price.toFixed(2),
+          quantity: item.quantity,
+        });
       }
-      return table;
-    }));
-    setActiveTableId(tableId);
-    toast.success(`Pedido recuperado en Mesa ${tableId}`);
+      setActiveTableId(tableId);
+      toast.success(`Pedido recuperado en Mesa ${tableId}`);
+    } catch (error) {
+      toast.error('Error al recuperar el pedido');
+      console.error(error);
+    }
   };
+
+  // Convert database sales to order history format
+  const orderHistory: OrderHistoryItem[] = (dbSales || []).map(sale => ({
+    id: String(sale.id),
+    tableId: sale.tableId,
+    date: sale.createdAt.toISOString(),
+    total: parseFloat(sale.total),
+    items: JSON.parse(sale.items as string),
+  }));
 
   return (
     <RestaurantContext.Provider value={{
@@ -184,7 +264,8 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
       getTableTotal,
       orderHistory,
       closeTable,
-      restoreOrderToTable
+      restoreOrderToTable,
+      isLoading,
     }}>
       {children}
     </RestaurantContext.Provider>
