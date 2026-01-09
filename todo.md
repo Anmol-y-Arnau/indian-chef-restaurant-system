@@ -108,3 +108,11 @@
 - [x] Texto de platos en letras grandes para ver desde lejos
 - [x] Botón "Delivered" que elimina permanentemente la mesa completa
 - [x] Organización: entrantes arriba, principales medio, bebidas abajo
+
+## Seguimiento de Entrega por Plato Individual
+
+- [x] Añadir botón pequeño al lado de cada plato para marcar como entregado individualmente
+- [x] Estados visuales: platos pendientes brillan, platos entregados comprimidos y opacos
+- [x] Mesas completadas no desaparecen, se van al final de la lista comprimidas
+- [x] Botón "DELIVERED" general marca todos los platos como entregados
+- [x] Ordenamiento dinámico: mesas con platos pendientes arriba, completadas abajo

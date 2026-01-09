@@ -1,23 +1,40 @@
 import { useRestaurant } from '@/contexts/RestaurantContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { ChefHat, Clock, Check } from 'lucide-react';
+import { ChefHat, Check, CheckCircle2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 export default function KitchenView() {
   const { tables } = useRestaurant();
   const { t } = useLanguage();
-  const [completedTables, setCompletedTables] = useState<Set<string | number>>(new Set());
+  // Almacenar qué platos específicos están entregados: "tableId-orderId"
+  const [deliveredItems, setDeliveredItems] = useState<Set<string>>(new Set());
   const [previousOrderCount, setPreviousOrderCount] = useState(0);
 
-  // Obtener mesas activas (con pedidos) que no están completadas
+  // Obtener mesas activas (con pedidos)
   const activeTables = tables
-    .filter(table => table.orders.length > 0 && !completedTables.has(table.id))
-    .map(table => ({
-      ...table,
-      // Añadir timestamp más antiguo de los pedidos
-      oldestTimestamp: Date.now() // Por ahora usamos timestamp actual
-    }))
-    .sort((a, b) => a.oldestTimestamp - b.oldestTimestamp); // Más antiguo primero
+    .filter(table => table.orders.length > 0)
+    .map(table => {
+      // Calcular cuántos items están pendientes
+      const pendingCount = table.orders.filter(
+        order => !deliveredItems.has(`${table.id}-${order.id}`)
+      ).length;
+      
+      return {
+        ...table,
+        pendingCount,
+        isFullyDelivered: pendingCount === 0,
+        oldestTimestamp: Date.now()
+      };
+    })
+    .sort((a, b) => {
+      // Primero: mesas con pedidos pendientes (brillan)
+      // Después: mesas completamente entregadas (comprimidas)
+      if (a.isFullyDelivered !== b.isFullyDelivered) {
+        return a.isFullyDelivered ? 1 : -1;
+      }
+      // Dentro de cada grupo, ordenar por antigüedad
+      return a.oldestTimestamp - b.oldestTimestamp;
+    });
 
   // Función para reproducir sonido de notificación
   const playNotificationSound = () => {
@@ -71,62 +88,136 @@ export default function KitchenView() {
     setPreviousOrderCount(currentOrderCount);
   }, [activeTables.length]);
 
-  const handleMarkTableAsDelivered = (tableId: string | number) => {
-    setCompletedTables(prev => new Set(prev).add(tableId));
+  const handleMarkItemAsDelivered = (tableId: string | number, orderId: string) => {
+    setDeliveredItems(prev => new Set(prev).add(`${tableId}-${orderId}`));
+  };
+
+  const handleMarkAllAsDelivered = (tableId: string | number, orderIds: string[]) => {
+    setDeliveredItems(prev => {
+      const newSet = new Set(prev);
+      orderIds.forEach(orderId => newSet.add(`${tableId}-${orderId}`));
+      return newSet;
+    });
   };
 
   // Categorizar items de una mesa
-  const categorizeTableOrders = (orders: any[]) => {
+  const categorizeTableOrders = (tableId: string | number, orders: any[]) => {
     const starters = orders.filter(o => o.menuItem.category === 'starters');
     const mains = orders.filter(o => o.menuItem.category !== 'starters' && o.menuItem.category !== 'drinks');
     const drinks = orders.filter(o => o.menuItem.category === 'drinks');
     
-    return { starters, mains, drinks };
+    // Separar entregados y pendientes
+    const categorize = (items: any[]) => ({
+      pending: items.filter(o => !deliveredItems.has(`${tableId}-${o.id}`)),
+      delivered: items.filter(o => deliveredItems.has(`${tableId}-${o.id}`))
+    });
+    
+    return {
+      starters: categorize(starters),
+      mains: categorize(mains),
+      drinks: categorize(drinks)
+    };
+  };
+
+  const OrderItem = ({ order, tableId, isPending }: { order: any; tableId: string | number; isPending: boolean }) => {
+    const isDelivered = !isPending;
+    
+    return (
+      <div 
+        className={`
+          flex justify-between items-center rounded p-3 transition-all duration-300
+          ${isDelivered 
+            ? 'bg-slate-900/30 opacity-50 scale-95' 
+            : 'bg-slate-900/50 shadow-lg'
+          }
+        `}
+      >
+        <div className="flex items-center gap-3 flex-1">
+          <span className={`text-white font-semibold ${isDelivered ? 'text-lg line-through' : 'text-2xl'}`}>
+            {order.menuItem.name}
+          </span>
+          {isDelivered && (
+            <CheckCircle2 className="w-5 h-5 text-green-500" />
+          )}
+        </div>
+        <div className="flex items-center gap-3">
+          <span className={`font-bold ${isDelivered ? 'text-xl text-slate-500' : 'text-3xl text-white'}`}>
+            x{order.quantity}
+          </span>
+          {!isDelivered && (
+            <button
+              onClick={() => handleMarkItemAsDelivered(tableId, order.id)}
+              className="bg-green-600 hover:bg-green-700 active:scale-90 text-white p-2 rounded-lg transition-all"
+              title="Marcar como entregado"
+            >
+              <Check className="w-5 h-5" />
+            </button>
+          )}
+        </div>
+      </div>
+    );
   };
 
   const TableCard = ({ table }: { table: any }) => {
-    const { starters, mains, drinks } = categorizeTableOrders(table.orders);
-    const hasStarters = starters.length > 0;
+    const categorized = categorizeTableOrders(table.id, table.orders);
+    const hasPendingStarters = categorized.starters.pending.length > 0;
+    const isFullyDelivered = table.isFullyDelivered;
 
     return (
       <div 
         className={`
-          bg-slate-800 rounded-xl p-6 border-4 transition-all duration-300 shadow-2xl
-          ${hasStarters ? 'border-orange-500 ring-4 ring-orange-500/30' : 'border-slate-700'}
+          bg-slate-800 rounded-xl p-6 border-4 transition-all duration-500 shadow-2xl
+          ${isFullyDelivered 
+            ? 'border-slate-700 opacity-60 scale-95' 
+            : hasPendingStarters 
+              ? 'border-orange-500 ring-4 ring-orange-500/30 animate-pulse' 
+              : 'border-slate-600'
+          }
         `}
       >
         {/* HEADER - MESA */}
         <div className="flex justify-between items-center mb-6 pb-4 border-b-2 border-slate-700">
           <div className="flex items-center gap-4">
-            {hasStarters && (
+            {hasPendingStarters && !isFullyDelivered && (
               <div className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-bold animate-pulse">
                 🔥 PRIORIDAD
               </div>
             )}
-            <h2 className="text-5xl font-bold text-orange-400">
+            {isFullyDelivered && (
+              <div className="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-bold">
+                ✓ ENTREGADO
+              </div>
+            )}
+            <h2 className={`font-bold text-orange-400 ${isFullyDelivered ? 'text-3xl' : 'text-5xl'}`}>
               {table.name}
             </h2>
           </div>
           <div className="text-right">
-            <div className="text-slate-400 text-sm">Total items</div>
-            <div className="text-4xl font-bold text-white">{table.orders.length}</div>
+            <div className="text-slate-400 text-sm">Pendientes</div>
+            <div className={`font-bold ${isFullyDelivered ? 'text-2xl text-green-500' : 'text-4xl text-white'}`}>
+              {table.pendingCount}/{table.orders.length}
+            </div>
           </div>
         </div>
 
         {/* ENTRANTES - PRIORIDAD */}
-        {starters.length > 0 && (
+        {(categorized.starters.pending.length > 0 || categorized.starters.delivered.length > 0) && (
           <div className="mb-6">
-            <div className="bg-orange-500/20 border-2 border-orange-500 rounded-lg p-4">
+            <div className={`border-2 rounded-lg p-4 transition-all ${
+              categorized.starters.pending.length > 0 
+                ? 'bg-orange-500/20 border-orange-500' 
+                : 'bg-slate-700/20 border-slate-600'
+            }`}>
               <div className="text-orange-400 font-bold text-lg mb-3 flex items-center gap-2">
                 <span>🔥</span>
                 <span>ENTRANTES</span>
               </div>
               <div className="space-y-2">
-                {starters.map((order, idx) => (
-                  <div key={idx} className="flex justify-between items-center bg-slate-900/50 rounded p-3">
-                    <span className="text-white text-2xl font-semibold">{order.menuItem.name}</span>
-                    <span className="text-orange-400 text-3xl font-bold">x{order.quantity}</span>
-                  </div>
+                {categorized.starters.pending.map((order, idx) => (
+                  <OrderItem key={`pending-${idx}`} order={order} tableId={table.id} isPending={true} />
+                ))}
+                {categorized.starters.delivered.map((order, idx) => (
+                  <OrderItem key={`delivered-${idx}`} order={order} tableId={table.id} isPending={false} />
                 ))}
               </div>
             </div>
@@ -134,18 +225,22 @@ export default function KitchenView() {
         )}
 
         {/* PLATOS PRINCIPALES */}
-        {mains.length > 0 && (
+        {(categorized.mains.pending.length > 0 || categorized.mains.delivered.length > 0) && (
           <div className="mb-6">
-            <div className="bg-slate-700/50 border-2 border-slate-600 rounded-lg p-4">
+            <div className={`border-2 rounded-lg p-4 transition-all ${
+              categorized.mains.pending.length > 0 
+                ? 'bg-slate-700/50 border-slate-600' 
+                : 'bg-slate-700/20 border-slate-700'
+            }`}>
               <div className="text-slate-300 font-bold text-lg mb-3">
                 🍛 PLATOS PRINCIPALES
               </div>
               <div className="space-y-2">
-                {mains.map((order, idx) => (
-                  <div key={idx} className="flex justify-between items-center bg-slate-900/50 rounded p-3">
-                    <span className="text-white text-2xl font-semibold">{order.menuItem.name}</span>
-                    <span className="text-white text-3xl font-bold">x{order.quantity}</span>
-                  </div>
+                {categorized.mains.pending.map((order, idx) => (
+                  <OrderItem key={`pending-${idx}`} order={order} tableId={table.id} isPending={true} />
+                ))}
+                {categorized.mains.delivered.map((order, idx) => (
+                  <OrderItem key={`delivered-${idx}`} order={order} tableId={table.id} isPending={false} />
                 ))}
               </div>
             </div>
@@ -153,31 +248,34 @@ export default function KitchenView() {
         )}
 
         {/* BEBIDAS - MENOS VISIBLE */}
-        {drinks.length > 0 && (
+        {(categorized.drinks.pending.length > 0 || categorized.drinks.delivered.length > 0) && (
           <div className="mb-6 opacity-40">
             <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-3">
               <div className="text-slate-500 font-bold text-sm mb-2">
                 🥤 BEBIDAS (Camarero)
               </div>
-              <div className="flex flex-wrap gap-2">
-                {drinks.map((order, idx) => (
-                  <div key={idx} className="bg-slate-900/50 rounded px-3 py-1">
-                    <span className="text-slate-400 text-sm">{order.menuItem.name} x{order.quantity}</span>
-                  </div>
+              <div className="space-y-1">
+                {categorized.drinks.pending.map((order, idx) => (
+                  <OrderItem key={`pending-${idx}`} order={order} tableId={table.id} isPending={true} />
+                ))}
+                {categorized.drinks.delivered.map((order, idx) => (
+                  <OrderItem key={`delivered-${idx}`} order={order} tableId={table.id} isPending={false} />
                 ))}
               </div>
             </div>
           </div>
         )}
 
-        {/* BOTÓN DELIVERED */}
-        <button
-          onClick={() => handleMarkTableAsDelivered(table.id)}
-          className="w-full bg-green-600 hover:bg-green-700 active:scale-95 text-white py-6 rounded-xl font-bold text-2xl transition-all flex items-center justify-center gap-3 shadow-lg"
-        >
-          <Check className="w-8 h-8" />
-          DELIVERED
-        </button>
+        {/* BOTÓN DELIVERED TODO */}
+        {!isFullyDelivered && (
+          <button
+            onClick={() => handleMarkAllAsDelivered(table.id, table.orders.map((o: any) => o.id))}
+            className="w-full bg-green-600 hover:bg-green-700 active:scale-95 text-white py-6 rounded-xl font-bold text-2xl transition-all flex items-center justify-center gap-3 shadow-lg"
+          >
+            <Check className="w-8 h-8" />
+            DELIVERED TODO
+          </button>
+        )}
       </div>
     );
   };
@@ -193,7 +291,8 @@ export default function KitchenView() {
               <div>
                 <h1 className="text-2xl font-bold">KITCHEN DISPLAY SYSTEM</h1>
                 <p className="text-orange-100 text-sm">
-                  {activeTables.length} {activeTables.length === 1 ? 'mesa activa' : 'mesas activas'}
+                  {activeTables.filter(t => !t.isFullyDelivered).length} mesas activas · {' '}
+                  {activeTables.filter(t => t.isFullyDelivered).length} completadas
                 </p>
               </div>
             </div>
