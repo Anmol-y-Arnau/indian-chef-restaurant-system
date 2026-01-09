@@ -89,3 +89,12 @@
 
 - [x] Implementar caché de imágenes con service worker para carga instantánea en visitas posteriores
 - [x] Configurar estrategia de precaching para recursos estáticos
+
+## Modo Vista de Cocina
+
+- [x] Crear componente KitchenView para vista dedicada de cocina
+- [x] Añadir botón "Modo Cocina" en menú deslizante móvil
+- [x] Organizar pedidos por prioridad: entrantes arriba, platos principales medio, bebidas abajo
+- [x] Mostrar pedidos ordenados de más antiguo a más reciente
+- [x] Implementar botón "Entregado" para marcar pedidos completados
+- [x] Diseño limpio enfocado solo en cocinar

@@ -12,8 +12,9 @@ import { useRestaurant } from "@/contexts/RestaurantContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { CATEGORIES, MENU_ITEMS } from "@/lib/data";
 import { cn } from "@/lib/utils";
-import { Menu, Search, ShoppingBag } from "lucide-react";
+import { Menu, Search, ShoppingBag, ChefHat } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import KitchenView from "./KitchenView";
 
 export default function Home() {
   const { t, language } = useLanguage();
@@ -30,6 +31,7 @@ export default function Home() {
   const [isOrderOpen, setIsOrderOpen] = useState(false);
   const [isTablesOpen, setIsTablesOpen] = useState(false);
   const [showHero, setShowHero] = useState(true);
+  const [isKitchenMode, setIsKitchenMode] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const filteredItems = MENU_ITEMS.filter(item => {
@@ -61,6 +63,22 @@ export default function Home() {
     scrollContainer.addEventListener('scroll', handleScroll);
     return () => scrollContainer.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Si está en modo cocina, mostrar KitchenView
+  if (isKitchenMode) {
+    return (
+      <div className="relative">
+        <button
+          onClick={() => setIsKitchenMode(false)}
+          className="fixed top-4 right-4 z-50 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 transition-all"
+        >
+          <Menu className="w-5 h-5" />
+          Volver al Menú
+        </button>
+        <KitchenView />
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen w-full flex flex-col md:flex-row overflow-hidden bg-background text-foreground">
@@ -110,6 +128,20 @@ export default function Home() {
                     ))}
                   </div>
                 </ScrollArea>
+                
+                {/* Botón Modo Cocina */}
+                <div className="mt-auto pt-4 border-t border-border">
+                  <button
+                    onClick={() => {
+                      setIsKitchenMode(true);
+                      setIsTablesOpen(false);
+                    }}
+                    className="w-full bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white rounded-lg py-4 px-4 flex items-center justify-center gap-3 transition-all shadow-lg hover:shadow-xl active:scale-95"
+                  >
+                    <ChefHat className="w-6 h-6" />
+                    <span className="font-bold text-lg">Modo Cocina</span>
+                  </button>
+                </div>
               </div>
             </SheetContent>
           </Sheet>
