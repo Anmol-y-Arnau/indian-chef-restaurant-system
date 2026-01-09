@@ -15,6 +15,76 @@ const plugins = [
   VitePWA({
     registerType: 'autoUpdate',
     includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+    workbox: {
+      // Estrategia de caché para imágenes del menú
+      runtimeCaching: [
+        {
+          urlPattern: /\/images\/menu\/.+\.(jpg|jpeg|png|webp)$/i,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'menu-images-cache',
+            expiration: {
+              maxEntries: 100,
+              maxAgeSeconds: 60 * 60 * 24 * 30 // 30 días
+            },
+            cacheableResponse: {
+              statuses: [0, 200]
+            }
+          }
+        },
+        // Caché para otras imágenes
+        {
+          urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/i,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'images-cache',
+            expiration: {
+              maxEntries: 50,
+              maxAgeSeconds: 60 * 60 * 24 * 7 // 7 días
+            }
+          }
+        },
+        // Caché para fuentes
+        {
+          urlPattern: /\.(?:woff|woff2|ttf|eot)$/i,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'fonts-cache',
+            expiration: {
+              maxEntries: 20,
+              maxAgeSeconds: 60 * 60 * 24 * 365 // 1 año
+            }
+          }
+        },
+        // Caché para CSS y JS
+        {
+          urlPattern: /\.(?:css|js)$/i,
+          handler: 'StaleWhileRevalidate',
+          options: {
+            cacheName: 'static-resources',
+            expiration: {
+              maxEntries: 50,
+              maxAgeSeconds: 60 * 60 * 24 * 7 // 7 días
+            }
+          }
+        },
+        // Caché para API calls con estrategia NetworkFirst
+        {
+          urlPattern: /\/api\/.*/i,
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'api-cache',
+            networkTimeoutSeconds: 10,
+            expiration: {
+              maxEntries: 50,
+              maxAgeSeconds: 60 * 5 // 5 minutos
+            }
+          }
+        }
+      ],
+      // Precachear recursos críticos
+      globPatterns: ['**/*.{js,css,html,ico,png,svg}']
+    },
     manifest: {
       name: 'Indian Chef - Sistema de Gestión',
       short_name: 'Indian Chef',

@@ -86,3 +86,6 @@
 ## Optimización de Rendimiento
 
 - [x] Comprimir todas las imágenes del menú para reducir peso y mejorar velocidad de carga (83% de reducción: 49MB → 8.3MB)
+
+- [x] Implementar caché de imágenes con service worker para carga instantánea en visitas posteriores
+- [x] Configurar estrategia de precaching para recursos estáticos
