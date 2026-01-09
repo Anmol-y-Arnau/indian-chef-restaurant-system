@@ -13,7 +13,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { CATEGORIES, MENU_ITEMS } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { Menu, Search, ShoppingBag } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function Home() {
   const { t, language } = useLanguage();
@@ -29,6 +29,8 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState(CATEGORIES[0].id);
   const [isOrderOpen, setIsOrderOpen] = useState(false);
   const [isTablesOpen, setIsTablesOpen] = useState(false);
+  const [showHero, setShowHero] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const filteredItems = MENU_ITEMS.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -46,62 +48,91 @@ export default function Home() {
   const currentTotal = activeTableId ? getTableTotal(activeTableId) : 0;
   const itemCount = activeTable?.orders.length || 0;
 
+  // Handle scroll to hide/show hero
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer) return;
+
+    const handleScroll = () => {
+      const scrollTop = scrollContainer.scrollTop;
+      setShowHero(scrollTop < 50);
+    };
+
+    scrollContainer.addEventListener('scroll', handleScroll);
+    return () => scrollContainer.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <div className="h-screen w-full flex flex-col md:flex-row overflow-hidden bg-background text-foreground">
       
-      {/* MOBILE HEADER */}
-      <div className="md:hidden h-16 border-b border-border bg-card flex items-center justify-between px-4 z-30 shrink-0">
-        <Sheet open={isTablesOpen} onOpenChange={setIsTablesOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" id="mobile-menu-trigger">
-              <Menu className="w-6 h-6" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-[300px] p-0 bg-sidebar border-r border-border">
-            <div className="p-6 flex flex-col h-full">
-              <div className="flex items-center gap-3 mb-8">
-                <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center border border-primary p-1">
-                  <img src="/images/chef-icon.png" alt="Logo" className="w-full h-full object-contain" />
+      {/* MOBILE HEADER - COMPACT */}
+      <div className="md:hidden h-14 border-b border-border bg-card/95 backdrop-blur-md flex items-center justify-between px-3 z-30 shrink-0 sticky top-0">
+        <div className="flex items-center gap-2">
+          <Sheet open={isTablesOpen} onOpenChange={setIsTablesOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-9 w-9" id="mobile-menu-trigger">
+                <Menu className="w-5 h-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[300px] p-0 bg-sidebar border-r border-border">
+              <div className="p-6 flex flex-col h-full">
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center border border-primary p-1">
+                    <img src="/images/chef-icon.png" alt="Logo" className="w-full h-full object-contain" />
+                  </div>
+                  <h2 className="font-heading text-xl text-primary">Indian Chef</h2>
                 </div>
-                <h2 className="font-heading text-xl text-primary">Indian Chef</h2>
+                <ScrollArea className="flex-1 -mx-2 px-2">
+                  <div className="grid grid-cols-3 gap-3">
+                    {tables.map(table => (
+                      <button
+                        key={table.id}
+                        onClick={() => {
+                          setActiveTableId(table.id);
+                          setIsTablesOpen(false);
+                        }}
+                        className={cn(
+                          "aspect-square rounded-xl flex flex-col items-center justify-center transition-all duration-300 relative border",
+                          activeTableId === table.id 
+                            ? "bg-primary text-primary-foreground border-primary shadow-lg scale-105" 
+                            : "bg-card hover:bg-accent hover:text-accent-foreground border-border",
+                          table.status === 'occupied' && activeTableId !== table.id && "border-secondary border-2"
+                        )}
+                      >
+                        <span className="font-heading text-lg">{table.id}</span>
+                        {table.orders.length > 0 && (
+                          <div className={cn(
+                            "absolute top-1 right-1 w-2 h-2 rounded-full",
+                            table.status === 'occupied' ? "bg-secondary" : "bg-accent"
+                          )} />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </ScrollArea>
               </div>
-              <ScrollArea className="flex-1 -mx-2 px-2">
-                <div className="grid grid-cols-3 gap-3">
-                  {tables.map(table => (
-                    <button
-                      key={table.id}
-                      onClick={() => {
-                        setActiveTableId(table.id);
-                        setIsTablesOpen(false);
-                      }}
-                      className={cn(
-                        "aspect-square rounded-xl flex flex-col items-center justify-center transition-all duration-300 relative border",
-                        activeTableId === table.id 
-                          ? "bg-primary text-primary-foreground border-primary shadow-lg scale-105" 
-                          : "bg-card hover:bg-accent hover:text-accent-foreground border-border",
-                        table.status === 'occupied' && activeTableId !== table.id && "border-secondary border-2"
-                      )}
-                    >
-                      <span className="font-heading text-lg">{table.id}</span>
-                      {table.orders.length > 0 && (
-                        <div className={cn(
-                          "absolute top-1 right-1 w-2 h-2 rounded-full",
-                          table.status === 'occupied' ? "bg-secondary" : "bg-accent"
-                        )} />
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </ScrollArea>
-            </div>
-          </SheetContent>
-        </Sheet>
+            </SheetContent>
+          </Sheet>
 
-        <div className="font-heading text-lg text-primary truncate max-w-[150px]">
-          {activeTableId !== null ? `${t('table')} ${activeTableId}` : t('no_table')}
+          <div className="font-heading text-sm text-primary truncate max-w-[80px]">
+            {activeTableId !== null ? `${t('table')} ${activeTableId}` : t('no_table')}
+          </div>
         </div>
 
-        <div className="w-10" /> {/* Spacer for balance */}
+        <div className="flex items-center gap-1">
+          <div className="relative w-28">
+            <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground w-3 h-3" />
+            <input 
+              type="text" 
+              placeholder={t('search_placeholder')} 
+              className="w-full bg-muted/50 border border-border rounded-full py-1.5 pl-7 pr-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary transition-all"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <HistoryDialog />
+          <LanguageSwitcher />
+        </div>
       </div>
 
       {/* DESKTOP SIDEBAR - TABLES */}
@@ -138,67 +169,70 @@ export default function Home() {
       </div>
 
       {/* MAIN CONTENT */}
-      <div className="flex-1 flex flex-col min-w-0 relative h-full">
-        {/* Hero Header - Responsive Height */}
-        <div className="h-32 md:h-48 w-full relative flex-shrink-0 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent z-10" />
-          <img 
-            src="/images/hero-bg.jpg" 
-            alt="Spices" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute bottom-4 left-4 md:bottom-6 md:left-8 z-20">
-            <h1 className="text-2xl md:text-5xl font-heading text-primary mb-1 md:mb-2 drop-shadow-lg">
-              {t('app_title')}
-            </h1>
-            <p className="text-muted-foreground text-xs md:text-lg max-w-md hidden md:block">
-              {t('subtitle')}
-            </p>
-          </div>
-          
-          {/* Search Bar - Responsive */}
-          <div className="absolute bottom-4 right-4 md:bottom-6 md:right-8 z-20 flex items-center gap-2">
-            <LanguageSwitcher />
-            <HistoryDialog />
-            <div className="relative w-32 md:w-80">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-3 h-3 md:w-4 md:h-4" />
-              <input 
-                type="text" 
-                placeholder={t('search_placeholder')} 
-                className="w-full bg-black/50 backdrop-blur-md border border-white/20 rounded-full py-1.5 md:py-2 pl-8 md:pl-10 pr-4 text-xs md:text-base text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+      <div className="flex-1 flex flex-col min-w-0 relative h-full overflow-hidden">
+        <div ref={scrollContainerRef} className="flex-1 overflow-y-auto">
+          {/* Hero Header - Only visible on mobile at top */}
+          <div className={cn(
+            "md:h-48 w-full relative overflow-hidden transition-all duration-300",
+            showHero ? "h-32" : "h-0 md:h-48"
+          )}>
+            <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent z-10" />
+            <img 
+              src="/images/hero-bg.jpg" 
+              alt="Spices" 
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute bottom-4 left-4 md:bottom-6 md:left-8 z-20">
+              <h1 className="text-2xl md:text-5xl font-heading text-primary mb-1 md:mb-2 drop-shadow-lg">
+                {t('app_title')}
+              </h1>
+              <p className="text-muted-foreground text-xs md:text-lg max-w-md hidden md:block">
+                {t('subtitle')}
+              </p>
             </div>
-          </div>
-        </div>
-
-        {/* Categories & Menu Grid */}
-        <div className="flex-1 flex flex-col overflow-hidden bg-background/95 backdrop-blur-sm">
-          <Tabs defaultValue={CATEGORIES[0].id} value={activeCategory} onValueChange={setActiveCategory} className="flex-1 flex flex-col h-full">
-            {/* Categories - Horizontal Scroll */}
-            <div className="px-4 md:px-6 py-3 md:py-4 border-b border-border shrink-0">
-              <div className="w-full overflow-x-auto pb-2 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
-                <TabsList className="bg-transparent h-auto p-0 gap-2 justify-start w-max flex">
-                  {CATEGORIES.map(category => (
-                    <TabsTrigger 
-                      key={category.id} 
-                      value={category.id}
-                      onClick={() => setSearchQuery("")} // Clear search when picking a category
-                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full px-4 py-1.5 md:px-6 md:py-2 border border-border data-[state=active]:border-primary transition-all duration-300 text-sm md:text-base shrink-0"
-                    >
-                      <span className="mr-2 text-base md:text-lg">{category.icon}</span>
-                      {t(`categories.${category.id}`)}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
+            
+            {/* Search Bar - Desktop only */}
+            <div className="hidden md:flex absolute bottom-6 right-8 z-20 items-center gap-2">
+              <LanguageSwitcher />
+              <HistoryDialog />
+              <div className="relative w-80">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                <input 
+                  type="text" 
+                  placeholder={t('search_placeholder')} 
+                  className="w-full bg-black/50 backdrop-blur-md border border-white/20 rounded-full py-2 pl-10 pr-4 text-base text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
               </div>
             </div>
+          </div>
 
-            {/* Menu Grid - Scrollable */}
-            <div className="flex-1 overflow-hidden relative bg-background">
-              <ScrollArea className="h-full">
-                <div className="p-4 md:p-6 pb-24 md:pb-20">
+          {/* Categories & Menu Grid */}
+          <div className="flex flex-col bg-background">
+            <Tabs defaultValue={CATEGORIES[0].id} value={activeCategory} onValueChange={setActiveCategory} className="flex flex-col">
+              {/* Categories - Sticky on mobile */}
+              <div className="sticky top-0 md:relative px-4 md:px-6 py-3 md:py-4 border-b border-border bg-background/95 backdrop-blur-md z-20">
+                <div className="w-full overflow-x-auto pb-2 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
+                  <TabsList className="bg-transparent h-auto p-0 gap-2 justify-start w-max flex">
+                    {CATEGORIES.map(category => (
+                      <TabsTrigger 
+                        key={category.id} 
+                        value={category.id}
+                        onClick={() => setSearchQuery("")}
+                        className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full px-4 py-1.5 md:px-6 md:py-2 border border-border data-[state=active]:border-primary transition-all duration-300 text-sm md:text-base shrink-0"
+                      >
+                        <span className="mr-2 text-base md:text-lg">{category.icon}</span>
+                        {t(`categories.${category.id}`)}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                </div>
+              </div>
+
+              {/* Menu Grid - Scrollable */}
+              <div className="bg-background">
+                <div className="p-4 md:p-6 pb-24 md:pb-6">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                     {/* Custom Item Button */}
                     <div className="h-full min-h-[100px]">
@@ -228,9 +262,9 @@ export default function Home() {
                     ))}
                   </div>
                 </div>
-              </ScrollArea>
-            </div>
-          </Tabs>
+              </div>
+            </Tabs>
+          </div>
         </div>
       </div>
 
