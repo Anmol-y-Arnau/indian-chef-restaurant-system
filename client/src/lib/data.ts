@@ -26,7 +26,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 6.90,
     category: 'starters',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=2070&auto=format&fit=crop'
+    image: '/images/menu/yvZToE37DY9f.jpg'
   },
   {
     id: 'st2',
@@ -36,7 +36,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 6.90,
     category: 'starters',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1626132647523-66f5bf380027?q=80&w=2070&auto=format&fit=crop'
+    image: '/images/menu/8tj1nDFQq8Hp.jpg'
   },
   {
     id: 'st3',
@@ -46,7 +46,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 9.90,
     category: 'starters',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1567337710282-00832b415979?q=80&w=2070&auto=format&fit=crop'
+    image: '/images/menu/8tj1nDFQq8Hp.jpg'
   },
   {
     id: 'st4',
@@ -56,7 +56,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 15.90,
     category: 'starters',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=2070&auto=format&fit=crop'
+    image: '/images/menu/mixed_grill.jpg'
   },
   {
     id: 'st5',
@@ -66,7 +66,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 12.90,
     category: 'starters',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1971&auto=format&fit=crop'
+    image: '/images/menu/KdEhffSvBVsK.jpg'
   },
   {
     id: 'st6',
@@ -76,7 +76,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 10.90,
     category: 'starters',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1626132647523-66f5bf380027?q=80&w=2070&auto=format&fit=crop'
+    image: '/images/menu/fish_curry.jpg'
   },
   {
     id: 'st7',
@@ -86,7 +86,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 9.90,
     category: 'starters',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1971&auto=format&fit=crop'
+    image: '/images/menu/8tj1nDFQq8Hp.jpg'
   },
 
   // SALADS
@@ -98,7 +98,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 12.90,
     category: 'salads',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=2070&auto=format&fit=crop'
+    image: '/images/menu/KdEhffSvBVsK.jpg'
   },
   {
     id: 'sl2',
@@ -108,7 +108,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 8.90,
     category: 'salads',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1780&auto=format&fit=crop'
+    image: '/images/menu/iHJT0e2jzgil.jpg'
   },
   {
     id: 'sl3',
@@ -118,7 +118,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 5.90,
     category: 'salads',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=2070&auto=format&fit=crop'
+    image: '/images/menu/8tj1nDFQq8Hp.jpg'
   },
 
   // SPECIAL TANDOOR
@@ -130,7 +130,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 11.90,
     category: 'tandoor',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?q=80&w=2150&auto=format&fit=crop'
+    image: '/images/menu/iHJT0e2jzgil.jpg'
   },
   {
     id: 'td2',
@@ -140,7 +140,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 14.90,
     category: 'tandoor',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1567337710282-00832b415979?q=80&w=2070&auto=format&fit=crop'
+    image: '/images/menu/8tj1nDFQq8Hp.jpg'
   },
   {
     id: 'td3',
@@ -150,7 +150,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 15.90,
     category: 'tandoor',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?q=80&w=2150&auto=format&fit=crop'
+    image: '/images/menu/fish_curry.jpg'
   },
   {
     id: 'td4',
@@ -160,7 +160,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 11.90,
     category: 'tandoor',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?q=80&w=2150&auto=format&fit=crop'
+    image: '/images/menu/iHJT0e2jzgil.jpg'
   },
   {
     id: 'td5',
@@ -170,7 +170,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 30.00,
     category: 'tandoor',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=2070&auto=format&fit=crop'
+    image: '/images/menu/mixed_grill.jpg'
   },
   {
     id: 'td6',
@@ -180,7 +180,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 11.90,
     category: 'tandoor',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1971&auto=format&fit=crop'
+    image: '/images/menu/KdEhffSvBVsK.jpg'
   },
 
   // VEG AND VEGAN CURRY
@@ -192,7 +192,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 9.90,
     category: 'veg_curry',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1606471191009-63994c53433b?q=80&w=2127&auto=format&fit=crop'
+    image: '/images/menu/palak_paneer.jpg'
   },
   {
     id: 'vc2',
@@ -202,7 +202,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 8.90,
     category: 'veg_curry',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1606471191009-63994c53433b?q=80&w=2127&auto=format&fit=crop'
+    image: '/images/menu/palak_paneer.jpg'
   },
   {
     id: 'vc3',
@@ -212,7 +212,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 9.90,
     category: 'veg_curry',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1567337710282-00832b415979?q=80&w=2070&auto=format&fit=crop'
+    image: '/images/menu/palak_paneer.jpg'
   },
   {
     id: 'vc4',
@@ -222,7 +222,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 10.90,
     category: 'veg_curry',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1606471191009-63994c53433b?q=80&w=2127&auto=format&fit=crop'
+    image: '/images/menu/palak_paneer.jpg'
   },
   {
     id: 'vc5',
@@ -232,7 +232,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 15.90,
     category: 'veg_curry',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1567337710282-00832b415979?q=80&w=2070&auto=format&fit=crop'
+    image: '/images/menu/paneer_burji.jpg'
   },
   {
     id: 'vc6',
@@ -242,7 +242,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 9.90,
     category: 'veg_curry',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1567337710282-00832b415979?q=80&w=2070&auto=format&fit=crop'
+    image: '/images/menu/dal_makhani.jpg'
   },
   {
     id: 'vc7',
@@ -252,7 +252,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 9.90,
     category: 'veg_curry',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1567337710282-00832b415979?q=80&w=2070&auto=format&fit=crop'
+    image: '/images/menu/dal_makhani.jpg'
   },
   {
     id: 'vc8',
@@ -262,7 +262,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 9.90,
     category: 'veg_curry',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1567337710282-00832b415979?q=80&w=2070&auto=format&fit=crop'
+    image: '/images/menu/dal_makhani.jpg'
   },
 
   // CHICKEN CURRY
@@ -275,7 +275,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: 'chicken_curry',
     isVeg: false,
     isSpicy: true,
-    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1971&auto=format&fit=crop'
+    image: '/images/menu/dt4omQQMmAaG.jpg'
   },
   {
     id: 'cc2',
@@ -285,7 +285,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 11.90,
     category: 'chicken_curry',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1971&auto=format&fit=crop'
+    image: '/images/menu/dt4omQQMmAaG.jpg'
   },
   {
     id: 'cc3',
@@ -296,7 +296,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: 'chicken_curry',
     isVeg: false,
     isSpicy: true,
-    image: 'https://images.unsplash.com/photo-1567337710282-00832b415979?q=80&w=2070&auto=format&fit=crop'
+    image: '/images/menu/VWToQA037TYU.jpg'
   },
   {
     id: 'cc4',
@@ -307,7 +307,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: 'chicken_curry',
     isVeg: false,
     isSpicy: true,
-    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1971&auto=format&fit=crop'
+    image: '/images/menu/dt4omQQMmAaG.jpg'
   },
   {
     id: 'cc5',
@@ -318,7 +318,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: 'chicken_curry',
     isVeg: false,
     isSpicy: true,
-    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1971&auto=format&fit=crop'
+    image: '/images/menu/lamb_karahi.jpg'
   },
   {
     id: 'cc6',
@@ -328,7 +328,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 11.90,
     category: 'chicken_curry',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?q=80&w=1968&auto=format&fit=crop'
+    image: '/images/menu/butter_chicken.jpg'
   },
   {
     id: 'cc7',
@@ -339,7 +339,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: 'chicken_curry',
     isVeg: false,
     isSpicy: true,
-    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1971&auto=format&fit=crop'
+    image: '/images/menu/vindaloo.jpg'
   },
 
   // FISH & PRAWN CURRY
@@ -350,7 +350,7 @@ export const MENU_ITEMS: MenuItem[] = [
     description: 'Pescado fresco con salsa de tomate, especias y hierbas.',
     price: 14.90,
     category: 'fish_prawn_curry',
-    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1971&auto=format&fit=crop'
+    image: '/images/menu/fish_curry.jpg'
   },
   {
     id: 'fish_vandalo',
@@ -359,7 +359,7 @@ export const MENU_ITEMS: MenuItem[] = [
     description: 'El plato que se origina en la región costera de Goa. La salsa intensa con sabor a curry de la pasta vindaloo casera le da a esta receta de curry de pescado su sabor picante y ácido.',
     price: 13.90,
     category: 'fish_prawn_curry',
-    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1971&auto=format&fit=crop',
+    image: '/images/menu/vindaloo.jpg',
     isSpicy: true
   },
   {
@@ -369,7 +369,7 @@ export const MENU_ITEMS: MenuItem[] = [
     description: 'Gambas preparadas en salsa de aromáticas especias, tomate y jengibre.',
     price: 15.90,
     category: 'fish_prawn_curry',
-    image: 'https://images.unsplash.com/photo-1559314809-0d155014e29e?q=80&w=1974&auto=format&fit=crop'
+    image: '/images/menu/KdEhffSvBVsK.jpg'
   },
   {
     id: 'gamba_korma',
@@ -378,7 +378,7 @@ export const MENU_ITEMS: MenuItem[] = [
     description: 'Gambas en curry de sabor suave preparado con salsa de yogur, azafrán, almendras y coco.',
     price: 15.90,
     category: 'fish_prawn_curry',
-    image: 'https://images.unsplash.com/photo-1559314809-0d155014e29e?q=80&w=1974&auto=format&fit=crop'
+    image: '/images/menu/KdEhffSvBVsK.jpg'
   },
 
   // LAMB CURRY
@@ -389,7 +389,7 @@ export const MENU_ITEMS: MenuItem[] = [
     description: 'Este auténtico curry indio de cabrito está elaborado con paletilla de cabrito se cuece a fuego lento con especias aromáticas, cebollas caramelizadas y yogur griego hasta que esté tierno. (Preferent picante)',
     price: 15.90,
     category: 'lamb_curry',
-    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1971&auto=format&fit=crop',
+    image: '/images/menu/VWToQA037TYU.jpg',
     isSpicy: true
   },
   {
@@ -399,7 +399,7 @@ export const MENU_ITEMS: MenuItem[] = [
     description: 'Deliciosos estofado de cabrito al curry con jengibre, tomate, cilantro fresco y pimentón dulce. (Preferente picante)',
     price: 15.90,
     category: 'lamb_curry',
-    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1971&auto=format&fit=crop',
+    image: '/images/menu/VWToQA037TYU.jpg',
     isSpicy: true
   },
   {
@@ -409,7 +409,7 @@ export const MENU_ITEMS: MenuItem[] = [
     description: 'Cabrito troceado cocinado con cebolla, pimientos y frutos secos. (Preferente picante)',
     price: 16.90,
     category: 'lamb_curry',
-    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1971&auto=format&fit=crop',
+    image: '/images/menu/lamb_karahi.jpg',
     isSpicy: true
   },
 
@@ -422,7 +422,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 10.90,
     category: 'biryani',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&w=2010&auto=format&fit=crop'
+    image: '/images/menu/TQe8u2sibGiG.jpg'
   },
   {
     id: 'bi2',
@@ -432,7 +432,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 15.90,
     category: 'biryani',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&w=2010&auto=format&fit=crop'
+    image: '/images/menu/TQe8u2sibGiG.jpg'
   },
   {
     id: 'bi3',
@@ -442,7 +442,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 12.90,
     category: 'biryani',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&w=2010&auto=format&fit=crop'
+    image: '/images/menu/TQe8u2sibGiG.jpg'
   },
   {
     id: 'bi4',
@@ -452,7 +452,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 14.90,
     category: 'biryani',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&w=2010&auto=format&fit=crop'
+    image: '/images/menu/TQe8u2sibGiG.jpg'
   },
   {
     id: 'bi5',
@@ -462,7 +462,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 15.90,
     category: 'biryani',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&w=2010&auto=format&fit=crop'
+    image: '/images/menu/TQe8u2sibGiG.jpg'
   },
   {
     id: 'bi6',
@@ -472,7 +472,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 15.90,
     category: 'biryani',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&w=2010&auto=format&fit=crop'
+    image: '/images/menu/TQe8u2sibGiG.jpg'
   },
 
   // GUARNICIONES (ARROZ)
@@ -484,7 +484,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 3.90,
     category: 'sides',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1516684732162-798a0062be99?q=80&w=1925&auto=format&fit=crop'
+    image: '/images/menu/kMSjnBlbuR3p.jpg'
   },
   {
     id: 'sd2',
@@ -494,7 +494,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 4.90,
     category: 'sides',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1516684732162-798a0062be99?q=80&w=1925&auto=format&fit=crop'
+    image: '/images/menu/kMSjnBlbuR3p.jpg'
   },
   {
     id: 'sd3',
@@ -504,7 +504,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 4.90,
     category: 'sides',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1516684732162-798a0062be99?q=80&w=1925&auto=format&fit=crop'
+    image: '/images/menu/kMSjnBlbuR3p.jpg'
   },
   {
     id: 'sd4',
@@ -514,7 +514,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 5.90,
     category: 'sides',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1516684732162-798a0062be99?q=80&w=1925&auto=format&fit=crop'
+    image: '/images/menu/kMSjnBlbuR3p.jpg'
   },
   {
     id: 'sd5',
@@ -536,7 +536,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 3.90,
     category: 'sides',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?q=80&w=1976&auto=format&fit=crop'
+    image: '/images/menu/CUgKMafxMSwp.jpg'
   },
   {
     id: 'pn2',
@@ -546,7 +546,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 4.90,
     category: 'sides',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1626074353765-517a681e40be?q=80&w=1974&auto=format&fit=crop'
+    image: '/images/menu/CUgKMafxMSwp.jpg'
   },
   {
     id: 'pn3',
@@ -566,7 +566,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 4.90,
     category: 'sides',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?q=80&w=1976&auto=format&fit=crop'
+    image: '/images/menu/CUgKMafxMSwp.jpg'
   },
   {
     id: 'pn5',
@@ -596,7 +596,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 4.90,
     category: 'sides',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?q=80&w=1976&auto=format&fit=crop'
+    image: '/images/menu/CUgKMafxMSwp.jpg'
   },
   {
     id: 'pn8',
@@ -850,7 +850,7 @@ MENU_ITEMS.push(
     description: 'Cerveza India Premium',
     price: 4.00,
     category: 'drinks',
-    image: 'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?q=80&w=2070&auto=format&fit=crop'
+    image: '/images/menu/uC7Dx3XnvFWj.jpg'
   },
   {
     id: 'dr5',
@@ -886,7 +886,7 @@ MENU_ITEMS.push(
     description: 'Bebida tradicional de yogur y mango',
     price: 4.50,
     category: 'drinks',
-    image: 'https://images.unsplash.com/photo-1626132647523-66f5bf380027?q=80&w=2070&auto=format&fit=crop'
+    image: '/images/menu/dYIQBU0DunUn.jpg'
   },
   {
     id: 'dr9',
@@ -917,7 +917,7 @@ MENU_ITEMS.push(
     description: 'Espresso',
     price: 1.80,
     category: 'coffees',
-    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=1887&auto=format&fit=crop'
+    image: '/images/menu/NdmVjKVEDhZc.jpg'
   },
   {
     id: 'cf2',
@@ -935,7 +935,7 @@ MENU_ITEMS.push(
     description: 'Café con leche grande',
     price: 2.50,
     category: 'coffees',
-    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=1887&auto=format&fit=crop'
+    image: '/images/menu/NdmVjKVEDhZc.jpg'
   },
   {
     id: 'cf4',
@@ -944,7 +944,7 @@ MENU_ITEMS.push(
     description: 'Café con licor (Brandy/Whisky/Ron)',
     price: 4.50,
     category: 'coffees',
-    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=1887&auto=format&fit=crop'
+    image: '/images/menu/NdmVjKVEDhZc.jpg'
   }
 );
 

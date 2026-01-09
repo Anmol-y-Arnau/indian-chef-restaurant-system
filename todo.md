@@ -62,3 +62,9 @@
 - [x] Hacer la barra de categorías sticky cuando se hace scroll hacia abajo
 
 - [x] Corregir z-index: números y precios de productos pasan por encima de la barra de categorías sticky
+
+## Mejora de Imágenes del Menú
+
+- [x] Revisar y actualizar todas las imágenes del menú para que coincidan con el producto real
+- [x] Usar la misma imagen para productos similares (todos los naan, cervezas, cafés, etc.)
+- [x] Asegurar que cada imagen representa correctamente el plato descrito
