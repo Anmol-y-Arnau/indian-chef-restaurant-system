@@ -139,3 +139,5 @@
 - [x] Efecto prioridad (borde naranja) solo en sección de entrantes, no en toda la tarjeta
 - [x] Eliminar animate-pulse que parpadea y duele a la vista
 - [x] Cambiar "MESA" por "TABLE" para mejor comprensión de cocineros
+
+- [x] Hacer botón "Volver al Menú" más sutil y menos obstructivo (más pequeño, menos contraste)

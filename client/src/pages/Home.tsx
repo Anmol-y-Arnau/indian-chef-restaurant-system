@@ -73,10 +73,11 @@ export default function Home() {
       <div className="relative">
         <button
           onClick={() => setIsKitchenMode(false)}
-          className="fixed top-4 right-4 z-[60] bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 transition-all"
+          className="fixed top-2 right-2 z-[60] bg-slate-700/60 hover:bg-slate-600/80 text-slate-300 hover:text-white px-2 py-1 rounded text-xs flex items-center gap-1 transition-all backdrop-blur-sm"
+          title="Volver al Menú"
         >
-          <Menu className="w-5 h-5" />
-          Volver al Menú
+          <Menu className="w-3 h-3" />
+          <span className="hidden sm:inline">Menú</span>
         </button>
         <KitchenView />
       </div>
