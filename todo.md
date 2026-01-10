@@ -154,3 +154,7 @@
 ## Bug Reportado
 
 - [x] Botón individual de marcar como entregado en modo cocina no actualiza el estado (ejemplo: agua grande)
+
+## Bug Crítico
+
+- [x] NINGÚN botón de delivered funciona en modo cocina (ni individuales ni "DELIVERED TODO")

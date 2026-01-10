@@ -8,9 +8,16 @@ export default function KitchenView() {
   const { tables } = useRestaurant();
   const { t } = useLanguage();
   const [previousOrderCount, setPreviousOrderCount] = useState(0);
+  const utils = trpc.useUtils();
   
   // Mutation para actualizar estado de entrega
-  const updateDeliveryMutation = trpc.restaurant.updateOrderDeliveryStatus.useMutation();
+  const updateDeliveryMutation = trpc.restaurant.updateOrderDeliveryStatus.useMutation({
+    onSuccess: () => {
+      // Forzar recarga inmediata de datos
+      utils.restaurant.getTables.invalidate();
+      utils.restaurant.getAllOrders.invalidate();
+    },
+  });
 
   // Obtener mesas activas (con pedidos) y ordenar por antigüedad
   const activeTables = tables
