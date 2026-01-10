@@ -161,7 +161,8 @@ export default function KitchenView() {
   };
 
   const OrderItem = ({ order, isPending }: { order: any; isPending: boolean }) => {
-    const isDelivered = !isPending;
+    // Usar el valor real de la base de datos, no el calculado
+    const isDelivered = Boolean(order.isDelivered);
     
     return (
       <div 

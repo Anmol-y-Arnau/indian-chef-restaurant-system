@@ -150,3 +150,7 @@
 - [x] Calcular y mostrar monto por persona según método de pago
 - [x] Guardar método de pago en base de datos (tabla sales)
 - [x] Mostrar resumen de pago antes de confirmar
+
+## Bug Reportado
+
+- [x] Botón individual de marcar como entregado en modo cocina no actualiza el estado (ejemplo: agua grande)
