@@ -157,4 +157,4 @@
 
 ## Bug Crítico
 
-- [x] NINGÚN botón de delivered funciona en modo cocina (ni individuales ni "DELIVERED TODO")
+- [x] NINGÚN botón de delivered funciona en modo cocina (ni individuales ni "DELIVERED TODO") - RESUELTO: orderId era string en lugar de number

@@ -103,18 +103,24 @@ export default function KitchenView() {
   }, [activeTables.length]);
 
   const handleToggleItemDelivery = async (orderId: number, currentStatus: boolean) => {
-    // Toggle: si está entregado, vuelve a pendiente; si está pendiente, marca como entregado
-    await updateDeliveryMutation.mutateAsync({
-      orderId,
-      isDelivered: !currentStatus
-    });
+    console.log('handleToggleItemDelivery called:', { orderId, currentStatus, newStatus: !currentStatus });
+    try {
+      // Toggle: si está entregado, vuelve a pendiente; si está pendiente, marca como entregado
+      await updateDeliveryMutation.mutateAsync({
+        orderId: Number(orderId), // Asegurar que sea un número
+        isDelivered: !currentStatus
+      });
+      console.log('Mutation successful');
+    } catch (error) {
+      console.error('Error updating delivery status:', error);
+    }
   };
 
   const handleMarkAllAsDelivered = async (orderIds: number[]) => {
     // Marcar todos los pedidos de la mesa como entregados
     for (const orderId of orderIds) {
       await updateDeliveryMutation.mutateAsync({
-        orderId,
+        orderId: Number(orderId), // Asegurar que sea un número
         isDelivered: true
       });
     }

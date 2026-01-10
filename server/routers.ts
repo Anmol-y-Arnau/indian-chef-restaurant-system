@@ -78,8 +78,15 @@ export const appRouter = router({
         isDelivered: z.boolean(),
       }))
       .mutation(async ({ input }) => {
-        await restaurantDb.updateOrderDeliveryStatus(input.orderId, input.isDelivered);
-        return { success: true };
+        console.log('[updateOrderDeliveryStatus] Received:', input);
+        try {
+          await restaurantDb.updateOrderDeliveryStatus(input.orderId, input.isDelivered);
+          console.log('[updateOrderDeliveryStatus] Success');
+          return { success: true };
+        } catch (error) {
+          console.error('[updateOrderDeliveryStatus] Error:', error);
+          throw error;
+        }
       }),
 
     // Complete a table (move to sales and clear orders)

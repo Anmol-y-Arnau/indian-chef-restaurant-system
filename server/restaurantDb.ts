@@ -58,8 +58,13 @@ export async function updateOrderQuantity(orderId: number, quantity: number) {
 
 export async function updateOrderDeliveryStatus(orderId: number, isDelivered: boolean) {
   const db = await getDb();
-  if (!db) return;
-  await db.update(orders).set({ isDelivered: isDelivered ? 1 : 0, updatedAt: new Date() }).where(eq(orders.id, orderId));
+  if (!db) {
+    console.error('[updateOrderDeliveryStatus] No database connection');
+    return;
+  }
+  console.log(`[updateOrderDeliveryStatus] Updating order ${orderId} to isDelivered=${isDelivered ? 1 : 0}`);
+  const result = await db.update(orders).set({ isDelivered: isDelivered ? 1 : 0, updatedAt: new Date() }).where(eq(orders.id, orderId));
+  console.log('[updateOrderDeliveryStatus] Update result:', result);
 }
 
 export async function deleteOrder(orderId: number) {
