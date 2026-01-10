@@ -116,3 +116,9 @@
 - [x] Mesas completadas no desaparecen, se van al final de la lista comprimidas
 - [x] Botón "DELIVERED" general marca todos los platos como entregados
 - [x] Ordenamiento dinámico: mesas con platos pendientes arriba, completadas abajo
+
+## Bugs UX Móvil
+
+- [x] Barra superior se oculta al hacer scroll - debe estar siempre visible
+- [x] Vibración al buscar productos (scroll automático causa movimiento errático)
+- [x] Botón "Varios / Personalizado" debe estar al final de la lista, no al principio

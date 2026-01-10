@@ -30,7 +30,7 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState(CATEGORIES[0].id);
   const [isOrderOpen, setIsOrderOpen] = useState(false);
   const [isTablesOpen, setIsTablesOpen] = useState(false);
-  const [showHero, setShowHero] = useState(true);
+  const [showHero, setShowHero] = useState(true); // Siempre true en móvil
   const [isKitchenMode, setIsKitchenMode] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -50,14 +50,17 @@ export default function Home() {
   const currentTotal = activeTableId ? getTableTotal(activeTableId) : 0;
   const itemCount = activeTable?.orders.length || 0;
 
-  // Handle scroll to hide/show hero
+  // Hero siempre visible en móvil, se oculta en desktop al hacer scroll
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
     if (!scrollContainer) return;
 
     const handleScroll = () => {
       const scrollTop = scrollContainer.scrollTop;
-      setShowHero(scrollTop < 50);
+      // Solo ocultar hero en desktop (>= 768px)
+      if (window.innerWidth >= 768) {
+        setShowHero(scrollTop < 50);
+      }
     };
 
     scrollContainer.addEventListener('scroll', handleScroll);
@@ -206,7 +209,8 @@ export default function Home() {
           {/* Hero Header - Only visible on mobile at top */}
           <div className={cn(
             "md:h-48 w-full relative overflow-hidden transition-all duration-300",
-            showHero ? "h-32" : "h-0 md:h-48"
+            "h-32 md:h-48", // Siempre visible en móvil
+            !showHero && "md:h-0" // Solo se oculta en desktop
           )}>
             <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent z-10" />
             <img 
@@ -266,11 +270,6 @@ export default function Home() {
               <div className="bg-background">
                 <div className="p-4 md:p-6 pb-24 md:pb-6">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-                    {/* Custom Item Button */}
-                    <div className="h-full min-h-[100px]">
-                      <CustomItemDialog />
-                    </div>
-
                     {filteredItems.map(item => (
                       <MenuCard 
                         key={item.id} 
@@ -292,6 +291,11 @@ export default function Home() {
                         }} 
                       />
                     ))}
+                    
+                    {/* Custom Item Button - Al final */}
+                    <div className="h-full min-h-[100px]">
+                      <CustomItemDialog />
+                    </div>
                   </div>
                 </div>
               </div>
