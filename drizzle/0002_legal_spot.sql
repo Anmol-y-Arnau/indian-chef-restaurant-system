@@ -1,0 +1,1 @@
+ALTER TABLE `orders` ADD `isDelivered` tinyint DEFAULT 0 NOT NULL;

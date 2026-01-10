@@ -122,3 +122,12 @@
 - [x] Barra superior se oculta al hacer scroll - debe estar siempre visible
 - [x] Vibración al buscar productos (scroll automático causa movimiento errático)
 - [x] Botón "Varios / Personalizado" debe estar al final de la lista, no al principio
+
+## Bugs Modo Cocina
+
+- [x] Botón "Volver al Menú" no funciona - no se puede salir del modo cocina
+- [x] Postres, cafés y té deben ir separados abajo como las bebidas (no son para cocinar)
+- [x] Nuevos pedidos añadidos después de marcar "Entregado Todo" no aparecen como pendientes (se marcan automáticamente como entregados)
+- [x] Estado de entrega debe persistir en base de datos, no solo en memoria local del navegador
+- [x] Añadir toggle para deshacer entrega por error (pulsar plato entregado para volver a pendiente)
+- [x] Ordenar pedidos por antigüedad (más antiguo primero) usando campo createdAt

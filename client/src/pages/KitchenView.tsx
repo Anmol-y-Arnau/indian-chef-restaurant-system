@@ -1,29 +1,36 @@
 import { useRestaurant } from '@/contexts/RestaurantContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { ChefHat, Check, CheckCircle2 } from 'lucide-react';
+import { ChefHat, Check, CheckCircle2, RotateCcw } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { trpc } from '@/lib/trpc';
 
 export default function KitchenView() {
   const { tables } = useRestaurant();
   const { t } = useLanguage();
-  // Almacenar qué platos específicos están entregados: "tableId-orderId"
-  const [deliveredItems, setDeliveredItems] = useState<Set<string>>(new Set());
   const [previousOrderCount, setPreviousOrderCount] = useState(0);
+  
+  // Mutation para actualizar estado de entrega
+  const updateDeliveryMutation = trpc.restaurant.updateOrderDeliveryStatus.useMutation();
 
-  // Obtener mesas activas (con pedidos)
+  // Obtener mesas activas (con pedidos) y ordenar por antigüedad
   const activeTables = tables
     .filter(table => table.orders.length > 0)
     .map(table => {
-      // Calcular cuántos items están pendientes
-      const pendingCount = table.orders.filter(
-        order => !deliveredItems.has(`${table.id}-${order.id}`)
-      ).length;
+      // Calcular cuántos items están pendientes (isDelivered === 0)
+      const pendingCount = table.orders.filter(order => !order.isDelivered).length;
+      
+      // Encontrar el pedido más antiguo de la mesa
+      const oldestOrder = table.orders.reduce((oldest, current) => {
+        const oldestTime = oldest.createdAt ? new Date(oldest.createdAt).getTime() : Date.now();
+        const currentTime = current.createdAt ? new Date(current.createdAt).getTime() : Date.now();
+        return currentTime < oldestTime ? current : oldest;
+      }, table.orders[0]);
       
       return {
         ...table,
         pendingCount,
         isFullyDelivered: pendingCount === 0,
-        oldestTimestamp: Date.now()
+        oldestTimestamp: oldestOrder.createdAt ? new Date(oldestOrder.createdAt).getTime() : Date.now()
       };
     })
     .sort((a, b) => {
@@ -32,7 +39,7 @@ export default function KitchenView() {
       if (a.isFullyDelivered !== b.isFullyDelivered) {
         return a.isFullyDelivered ? 1 : -1;
       }
-      // Dentro de cada grupo, ordenar por antigüedad
+      // Dentro de cada grupo, ordenar por antigüedad (más antiguo primero)
       return a.oldestTimestamp - b.oldestTimestamp;
     });
 
@@ -88,38 +95,65 @@ export default function KitchenView() {
     setPreviousOrderCount(currentOrderCount);
   }, [activeTables.length]);
 
-  const handleMarkItemAsDelivered = (tableId: string | number, orderId: string) => {
-    setDeliveredItems(prev => new Set(prev).add(`${tableId}-${orderId}`));
+  const handleToggleItemDelivery = async (orderId: number, currentStatus: boolean) => {
+    // Toggle: si está entregado, vuelve a pendiente; si está pendiente, marca como entregado
+    await updateDeliveryMutation.mutateAsync({
+      orderId,
+      isDelivered: !currentStatus
+    });
   };
 
-  const handleMarkAllAsDelivered = (tableId: string | number, orderIds: string[]) => {
-    setDeliveredItems(prev => {
-      const newSet = new Set(prev);
-      orderIds.forEach(orderId => newSet.add(`${tableId}-${orderId}`));
-      return newSet;
-    });
+  const handleMarkAllAsDelivered = async (orderIds: number[]) => {
+    // Marcar todos los pedidos de la mesa como entregados
+    for (const orderId of orderIds) {
+      await updateDeliveryMutation.mutateAsync({
+        orderId,
+        isDelivered: true
+      });
+    }
   };
 
   // Categorizar items de una mesa
-  const categorizeTableOrders = (tableId: string | number, orders: any[]) => {
+  const categorizeTableOrders = (orders: any[]) => {
     const starters = orders.filter(o => o.menuItem.category === 'starters');
-    const mains = orders.filter(o => o.menuItem.category !== 'starters' && o.menuItem.category !== 'drinks');
-    const drinks = orders.filter(o => o.menuItem.category === 'drinks');
+    // Postres, cafés, té y bebidas van juntos (no son para cocinar)
+    const drinksAndDesserts = orders.filter(o => 
+      o.menuItem.category === 'drinks' || 
+      o.menuItem.category === 'desserts' ||
+      o.menuItem.category === 'coffee' ||
+      o.menuItem.category === 'tea'
+    );
+    // Platos principales: todo lo que no es entrante ni bebida/postre/café/té
+    const mains = orders.filter(o => 
+      o.menuItem.category !== 'starters' && 
+      o.menuItem.category !== 'drinks' &&
+      o.menuItem.category !== 'desserts' &&
+      o.menuItem.category !== 'coffee' &&
+      o.menuItem.category !== 'tea'
+    );
     
-    // Separar entregados y pendientes
-    const categorize = (items: any[]) => ({
-      pending: items.filter(o => !deliveredItems.has(`${tableId}-${o.id}`)),
-      delivered: items.filter(o => deliveredItems.has(`${tableId}-${o.id}`))
-    });
+    // Separar entregados y pendientes, ordenar por antigüedad
+    const categorize = (items: any[]) => {
+      const sorted = items.sort((a, b) => {
+        const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return aTime - bTime; // Más antiguo primero
+      });
+      
+      return {
+        pending: sorted.filter(o => !o.isDelivered),
+        delivered: sorted.filter(o => o.isDelivered)
+      };
+    };
     
     return {
       starters: categorize(starters),
       mains: categorize(mains),
-      drinks: categorize(drinks)
+      drinks: categorize(drinksAndDesserts)
     };
   };
 
-  const OrderItem = ({ order, tableId, isPending }: { order: any; tableId: string | number; isPending: boolean }) => {
+  const OrderItem = ({ order, isPending }: { order: any; isPending: boolean }) => {
     const isDelivered = !isPending;
     
     return (
@@ -144,22 +178,24 @@ export default function KitchenView() {
           <span className={`font-bold ${isDelivered ? 'text-xl text-slate-500' : 'text-3xl text-white'}`}>
             x{order.quantity}
           </span>
-          {!isDelivered && (
-            <button
-              onClick={() => handleMarkItemAsDelivered(tableId, order.id)}
-              className="bg-green-600 hover:bg-green-700 active:scale-90 text-white p-2 rounded-lg transition-all"
-              title="Marcar como entregado"
-            >
-              <Check className="w-5 h-5" />
-            </button>
-          )}
+          <button
+            onClick={() => handleToggleItemDelivery(order.id, isDelivered)}
+            className={`p-2 rounded-lg transition-all ${
+              isDelivered 
+                ? 'bg-orange-600 hover:bg-orange-700' 
+                : 'bg-green-600 hover:bg-green-700'
+            } active:scale-90 text-white`}
+            title={isDelivered ? "Marcar como pendiente" : "Marcar como entregado"}
+          >
+            {isDelivered ? <RotateCcw className="w-5 h-5" /> : <Check className="w-5 h-5" />}
+          </button>
         </div>
       </div>
     );
   };
 
   const TableCard = ({ table }: { table: any }) => {
-    const categorized = categorizeTableOrders(table.id, table.orders);
+    const categorized = categorizeTableOrders(table.orders);
     const hasPendingStarters = categorized.starters.pending.length > 0;
     const isFullyDelivered = table.isFullyDelivered;
 
@@ -214,10 +250,10 @@ export default function KitchenView() {
               </div>
               <div className="space-y-2">
                 {categorized.starters.pending.map((order, idx) => (
-                  <OrderItem key={`pending-${idx}`} order={order} tableId={table.id} isPending={true} />
+                  <OrderItem key={`pending-${idx}`} order={order} isPending={true} />
                 ))}
                 {categorized.starters.delivered.map((order, idx) => (
-                  <OrderItem key={`delivered-${idx}`} order={order} tableId={table.id} isPending={false} />
+                  <OrderItem key={`delivered-${idx}`} order={order} isPending={false} />
                 ))}
               </div>
             </div>
@@ -237,29 +273,29 @@ export default function KitchenView() {
               </div>
               <div className="space-y-2">
                 {categorized.mains.pending.map((order, idx) => (
-                  <OrderItem key={`pending-${idx}`} order={order} tableId={table.id} isPending={true} />
+                  <OrderItem key={`pending-${idx}`} order={order} isPending={true} />
                 ))}
                 {categorized.mains.delivered.map((order, idx) => (
-                  <OrderItem key={`delivered-${idx}`} order={order} tableId={table.id} isPending={false} />
+                  <OrderItem key={`delivered-${idx}`} order={order} isPending={false} />
                 ))}
               </div>
             </div>
           </div>
         )}
 
-        {/* BEBIDAS - MENOS VISIBLE */}
+        {/* BEBIDAS, POSTRES, CAFÉ & TÉ - MENOS VISIBLE */}
         {(categorized.drinks.pending.length > 0 || categorized.drinks.delivered.length > 0) && (
           <div className="mb-6 opacity-40">
             <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-3">
               <div className="text-slate-500 font-bold text-sm mb-2">
-                🥤 BEBIDAS (Camarero)
+                🥤 BEBIDAS, POSTRES, CAFÉ & TÉ (Camarero)
               </div>
               <div className="space-y-1">
                 {categorized.drinks.pending.map((order, idx) => (
-                  <OrderItem key={`pending-${idx}`} order={order} tableId={table.id} isPending={true} />
+                  <OrderItem key={`pending-${idx}`} order={order} isPending={true} />
                 ))}
                 {categorized.drinks.delivered.map((order, idx) => (
-                  <OrderItem key={`delivered-${idx}`} order={order} tableId={table.id} isPending={false} />
+                  <OrderItem key={`delivered-${idx}`} order={order} isPending={false} />
                 ))}
               </div>
             </div>
@@ -269,7 +305,7 @@ export default function KitchenView() {
         {/* BOTÓN DELIVERED TODO */}
         {!isFullyDelivered && (
           <button
-            onClick={() => handleMarkAllAsDelivered(table.id, table.orders.map((o: any) => o.id))}
+            onClick={() => handleMarkAllAsDelivered(table.orders.map((o: any) => o.id))}
             className="w-full bg-green-600 hover:bg-green-700 active:scale-95 text-white py-6 rounded-xl font-bold text-2xl transition-all flex items-center justify-center gap-3 shadow-lg"
           >
             <Check className="w-8 h-8" />

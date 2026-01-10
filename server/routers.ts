@@ -71,6 +71,17 @@ export const appRouter = router({
         return { success: true };
       }),
 
+    // Update order delivery status
+    updateOrderDeliveryStatus: publicProcedure
+      .input(z.object({
+        orderId: z.number(),
+        isDelivered: z.boolean(),
+      }))
+      .mutation(async ({ input }) => {
+        await restaurantDb.updateOrderDeliveryStatus(input.orderId, input.isDelivered);
+        return { success: true };
+      }),
+
     // Complete a table (move to sales and clear orders)
     completeTable: publicProcedure
       .input(z.object({

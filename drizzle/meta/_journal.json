@@ -15,6 +15,13 @@
       "when": 1767983543509,
       "tag": "0001_silky_virginia_dare",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1768064859185,
+      "tag": "0002_legal_spot",
+      "breakpoints": true
     }
   ]
 }

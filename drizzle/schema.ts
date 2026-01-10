@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, decimal, json } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, decimal, json, tinyint } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -48,6 +48,7 @@ export const orders = mysqlTable("orders", {
   itemName: text("itemName").notNull(),
   itemPrice: decimal("itemPrice", { precision: 10, scale: 2 }).notNull(),
   quantity: int("quantity").notNull().default(1),
+  isDelivered: tinyint("isDelivered").notNull().default(0), // 0 = pendiente, 1 = entregado
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

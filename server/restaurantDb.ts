@@ -56,6 +56,12 @@ export async function updateOrderQuantity(orderId: number, quantity: number) {
   await db.update(orders).set({ quantity, updatedAt: new Date() }).where(eq(orders.id, orderId));
 }
 
+export async function updateOrderDeliveryStatus(orderId: number, isDelivered: boolean) {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(orders).set({ isDelivered: isDelivered ? 1 : 0, updatedAt: new Date() }).where(eq(orders.id, orderId));
+}
+
 export async function deleteOrder(orderId: number) {
   const db = await getDb();
   if (!db) return;

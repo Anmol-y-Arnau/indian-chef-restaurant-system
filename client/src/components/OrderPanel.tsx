@@ -146,7 +146,7 @@ export function OrderPanel() {
                   variant="ghost"
                   size="icon"
                   className="h-6 w-6 ml-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                  onClick={() => removeOrderFromTable(activeTableId, order.id)}
+                  onClick={() => removeOrderFromTable(activeTableId, String(order.id))}
                 >
                   <Minus className="w-3 h-3" />
                 </Button>

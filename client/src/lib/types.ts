@@ -15,10 +15,12 @@ export interface MenuItem {
 }
 
 export interface OrderItem {
-  id: string;
+  id: string | number;
   menuItem: MenuItem;
   quantity: number;
   notes?: string;
+  isDelivered?: boolean | number; // boolean en frontend, 0/1 en DB
+  createdAt?: string | Date; // timestamp de creación
 }
 
 export interface Table {
