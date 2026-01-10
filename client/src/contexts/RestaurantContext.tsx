@@ -15,7 +15,7 @@ interface RestaurantContextType {
   clearTable: (tableId: number | string) => void;
   getTableTotal: (tableId: number | string) => number;
   orderHistory: OrderHistoryItem[];
-  closeTable: (tableId: number | string) => void;
+  closeTable: (tableId: number | string, paymentData?: { method: string; splitBetween: number; cashPayers: number; cardPayers: number }) => void;
   restoreOrderToTable: (tableId: number | string, items: OrderItem[]) => void;
   isLoading: boolean;
 }
@@ -197,7 +197,7 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
     return table.orders.reduce((total, order) => total + (order.menuItem.price * order.quantity), 0);
   };
 
-  const closeTable = async (tableId: number | string) => {
+  const closeTable = async (tableId: number | string, paymentData?: { method: string; splitBetween: number; cashPayers: number; cardPayers: number }) => {
     try {
       const table = tables.find(t => t.id === tableId);
       if (!table || table.orders.length === 0) return;
@@ -219,7 +219,10 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
         tableId: String(tableId),
         items: items as any,
         total: total.toFixed(2),
-        paymentMethod: 'cash',
+        paymentMethod: paymentData?.method || 'cash',
+        splitBetween: paymentData?.splitBetween,
+        cashPayers: paymentData?.cashPayers,
+        cardPayers: paymentData?.cardPayers,
       });
 
       setActiveTableId(null);

@@ -141,3 +141,12 @@
 - [x] Cambiar "MESA" por "TABLE" para mejor comprensión de cocineros
 
 - [x] Hacer botón "Volver al Menú" más sutil y menos obstructivo (más pequeño, menos contraste)
+
+## Sistema de Pago Avanzado
+
+- [x] Modal de pago al cerrar mesa con selección de método (Efectivo/Tarjeta/Mixto)
+- [x] Opción para dividir cuenta entre X personas
+- [x] En pago mixto, especificar cuántas personas pagan efectivo y cuántas tarjeta
+- [x] Calcular y mostrar monto por persona según método de pago
+- [x] Guardar método de pago en base de datos (tabla sales)
+- [x] Mostrar resumen de pago antes de confirmar

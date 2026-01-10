@@ -89,6 +89,9 @@ export const appRouter = router({
         items: z.array(z.any()),
         total: z.string(), // decimal as string
         paymentMethod: z.string().optional(),
+        splitBetween: z.number().optional(),
+        cashPayers: z.number().optional(),
+        cardPayers: z.number().optional(),
       }))
       .mutation(async ({ input }) => {
         await restaurantDb.addSale({
@@ -96,6 +99,9 @@ export const appRouter = router({
           items: input.items,
           total: input.total,
           paymentMethod: input.paymentMethod,
+          splitBetween: input.splitBetween,
+          cashPayers: input.cashPayers,
+          cardPayers: input.cardPayers,
         });
         await restaurantDb.clearTableOrders(input.tableId);
         await restaurantDb.upsertTable(input.tableId, "free");

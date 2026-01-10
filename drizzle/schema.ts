@@ -64,7 +64,10 @@ export const sales = mysqlTable("sales", {
   tableId: varchar("tableId", { length: 20 }).notNull(),
   items: json("items").notNull(), // Array of order items
   total: decimal("total", { precision: 10, scale: 2 }).notNull(),
-  paymentMethod: varchar("paymentMethod", { length: 50 }), // "cash", "card", etc.
+  paymentMethod: varchar("paymentMethod", { length: 50 }), // "cash", "card", "mixed"
+  splitBetween: int("splitBetween").default(1), // Number of people splitting the bill
+  cashPayers: int("cashPayers").default(0), // Number of people paying cash (for mixed payments)
+  cardPayers: int("cardPayers").default(0), // Number of people paying card (for mixed payments)
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 

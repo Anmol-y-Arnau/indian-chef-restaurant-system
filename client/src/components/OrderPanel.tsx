@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { useRestaurant } from "@/contexts/RestaurantContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import { Copy, MessageCircle, Minus, Printer, Trash2, X } from "lucide-react";
+import PaymentModal, { type PaymentData } from "./PaymentModal";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import { Separator } from "./ui/separator";
@@ -19,6 +21,8 @@ export function OrderPanel() {
     setActiveTableId,
     closeTable
   } = useRestaurant();
+
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   if (!activeTableId) {
     return (
@@ -71,10 +75,18 @@ export function OrderPanel() {
   };
 
   const handlePayment = () => {
-    if (confirm(`${t('confirm_payment')} ${total.toFixed(2)}€?`)) {
-      closeTable(activeTableId);
-      setActiveTableId(null); // Close panel after payment
+    if (table.orders.length === 0) {
+      toast.error('No hay pedidos para pagar');
+      return;
     }
+    setShowPaymentModal(true);
+  };
+
+  const handleConfirmPayment = (paymentData: PaymentData) => {
+    closeTable(activeTableId, paymentData);
+    setShowPaymentModal(false);
+    setActiveTableId(null); // Close panel after payment
+    toast.success('Pago registrado correctamente');
   };
 
   const getTicketText = () => {
@@ -216,6 +228,14 @@ export function OrderPanel() {
           </Button>
         )}
       </div>
+
+      {/* Payment Modal */}
+      <PaymentModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        total={total}
+        onConfirm={handleConfirmPayment}
+      />
     </div>
   );
 }
