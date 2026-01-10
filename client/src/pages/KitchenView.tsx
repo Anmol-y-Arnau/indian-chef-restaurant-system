@@ -116,18 +116,24 @@ export default function KitchenView() {
   // Categorizar items de una mesa
   const categorizeTableOrders = (orders: any[]) => {
     const starters = orders.filter(o => o.menuItem.category === 'starters');
-    // Postres, cafés, té y bebidas van juntos (no son para cocinar)
-    const drinksAndDesserts = orders.filter(o => 
+    
+    // Postres van separados (para chef, brillante)
+    const desserts = orders.filter(o => o.menuItem.category === 'desserts');
+    
+    // Bebidas, café y té van juntos al final (para camarero, menos visible)
+    const drinks = orders.filter(o => 
       o.menuItem.category === 'drinks' || 
-      o.menuItem.category === 'desserts' ||
+      o.menuItem.category === 'coffees' ||
       o.menuItem.category === 'coffee' ||
       o.menuItem.category === 'tea'
     );
-    // Platos principales: todo lo que no es entrante ni bebida/postre/café/té
+    
+    // Platos principales: todo lo que no es entrante, postre ni bebida/café/té
     const mains = orders.filter(o => 
       o.menuItem.category !== 'starters' && 
       o.menuItem.category !== 'drinks' &&
       o.menuItem.category !== 'desserts' &&
+      o.menuItem.category !== 'coffees' &&
       o.menuItem.category !== 'coffee' &&
       o.menuItem.category !== 'tea'
     );
@@ -149,7 +155,8 @@ export default function KitchenView() {
     return {
       starters: categorize(starters),
       mains: categorize(mains),
-      drinks: categorize(drinksAndDesserts)
+      desserts: categorize(desserts),
+      drinks: categorize(drinks)
     };
   };
 
@@ -205,9 +212,7 @@ export default function KitchenView() {
           bg-slate-800 rounded-xl p-6 border-4 transition-all duration-500 shadow-2xl
           ${isFullyDelivered 
             ? 'border-slate-700 opacity-60 scale-95' 
-            : hasPendingStarters 
-              ? 'border-orange-500 ring-4 ring-orange-500/30 animate-pulse' 
-              : 'border-slate-600'
+            : 'border-slate-600'
           }
         `}
       >
@@ -215,7 +220,7 @@ export default function KitchenView() {
         <div className="flex justify-between items-center mb-6 pb-4 border-b-2 border-slate-700">
           <div className="flex items-center gap-4">
             {hasPendingStarters && !isFullyDelivered && (
-              <div className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-bold animate-pulse">
+              <div className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-bold">
                 🔥 PRIORIDAD
               </div>
             )}
@@ -225,7 +230,7 @@ export default function KitchenView() {
               </div>
             )}
             <h2 className={`font-bold text-orange-400 ${isFullyDelivered ? 'text-3xl' : 'text-5xl'}`}>
-              {table.name}
+              TABLE {table.name}
             </h2>
           </div>
           <div className="text-right">
@@ -283,12 +288,35 @@ export default function KitchenView() {
           </div>
         )}
 
-        {/* BEBIDAS, POSTRES, CAFÉ & TÉ - MENOS VISIBLE */}
+        {/* POSTRES - PARA CHEF */}
+        {(categorized.desserts.pending.length > 0 || categorized.desserts.delivered.length > 0) && (
+          <div className="mb-6">
+            <div className={`border-2 rounded-lg p-4 transition-all ${
+              categorized.desserts.pending.length > 0 
+                ? 'bg-slate-700/50 border-slate-600' 
+                : 'bg-slate-700/20 border-slate-700'
+            }`}>
+              <div className="text-slate-300 font-bold text-lg mb-3">
+                🍰 POSTRES
+              </div>
+              <div className="space-y-2">
+                {categorized.desserts.pending.map((order, idx) => (
+                  <OrderItem key={`pending-${idx}`} order={order} isPending={true} />
+                ))}
+                {categorized.desserts.delivered.map((order, idx) => (
+                  <OrderItem key={`delivered-${idx}`} order={order} isPending={false} />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* BEBIDAS, CAFÉ & TÉ - MENOS VISIBLE (CAMARERO) */}
         {(categorized.drinks.pending.length > 0 || categorized.drinks.delivered.length > 0) && (
           <div className="mb-6 opacity-40">
             <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-3">
               <div className="text-slate-500 font-bold text-sm mb-2">
-                🥤 BEBIDAS, POSTRES, CAFÉ & TÉ (Camarero)
+                🥤 BEBIDAS, CAFÉ & TÉ (Camarero)
               </div>
               <div className="space-y-1">
                 {categorized.drinks.pending.map((order, idx) => (

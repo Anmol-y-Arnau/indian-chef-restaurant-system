@@ -131,3 +131,11 @@
 - [x] Estado de entrega debe persistir en base de datos, no solo en memoria local del navegador
 - [x] Añadir toggle para deshacer entrega por error (pulsar plato entregado para volver a pendiente)
 - [x] Ordenar pedidos por antigüedad (más antiguo primero) usando campo createdAt
+
+## Ajustes Modo Cocina
+
+- [x] Separar postres de bebidas - postres van en sección propia brillante para chef (entre mains y bebidas)
+- [x] Bebidas, café y té van al final separados (solo para camarero)
+- [x] Efecto prioridad (borde naranja) solo en sección de entrantes, no en toda la tarjeta
+- [x] Eliminar animate-pulse que parpadea y duele a la vista
+- [x] Cambiar "MESA" por "TABLE" para mejor comprensión de cocineros
