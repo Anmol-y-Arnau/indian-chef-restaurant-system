@@ -150,21 +150,22 @@ export default function KitchenView() {
     // Categorías que NO son comida (no deben sonar)
     const nonFoodCategories = ['drinks', 'wines', 'coffees'];
     
-    // Contar solo pedidos de comida
+    // Contar solo pedidos de comida pendientes (no entregados)
     const currentFoodOrderCount = activeTables.reduce((sum, table) => {
       const foodOrders = table.orders.filter(order => 
-        !nonFoodCategories.includes(order.menuItem.category)
+        !nonFoodCategories.includes(order.menuItem.category) && !order.isDelivered
       );
       return sum + foodOrders.length;
     }, 0);
     
-    // Si hay nuevos pedidos de comida y han pasado más de 10 segundos desde la última notificación
+    // Si hay más pedidos de comida que antes (nueva mesa O items adicionales en mesa existente)
     if (previousOrderCount > 0 && currentFoodOrderCount > previousOrderCount) {
       const now = Date.now();
       const timeSinceLastNotification = now - lastNotificationTime;
       
       // Solo sonar si han pasado al menos 10 segundos (10000ms)
       if (timeSinceLastNotification >= 10000 || lastNotificationTime === 0) {
+        console.log('[SOUND] Nueva comida detectada:', { previous: previousOrderCount, current: currentFoodOrderCount });
         playNotificationSound();
         setLastNotificationTime(now);
       }
@@ -525,6 +526,19 @@ export default function KitchenView() {
           </div>
         )}
       </div>
+
+      {/* Botón de prueba de sonido */}
+      <button
+        onClick={playNotificationSound}
+        className="fixed bottom-4 left-4 bg-slate-700/80 hover:bg-slate-600 text-slate-300 p-3 rounded-full shadow-lg transition-all active:scale-95 z-50"
+        title="Probar sonido de notificación"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+        </svg>
+      </button>
     </div>
   );
 }

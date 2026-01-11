@@ -252,3 +252,21 @@
 - [x] Sonido discreto de dos tonos (800Hz + 1000Hz, 0.1s cada uno)
 - [x] Throttling solo afecta al sonido, no a la funcionalidad normal
 - [x] Sistema detecta nuevos pedidos de comida y reproduce sonido automáticamente
+
+
+## Nueva Funcionalidad - Botón de Prueba de Sonido
+
+- [x] Añadir botón discreto en esquina inferior izquierda del modo cocina
+- [x] Botón reproduce el sonido de notificación al hacer clic
+- [x] Permite probar el sonido cuantas veces se quiera
+- [x] Diseño sutil con icono de altavoz, fondo semi-transparente
+- [x] Posicionado con fixed bottom-4 left-4
+
+
+## Corrección - Notificación Sonora Detecta Items Adicionales
+
+- [x] El sonido debe sonar cuando se añaden items a mesas existentes, no solo mesas nuevas
+- [x] Ejemplo: Mesa 1 tiene 2 platos → se añade 1 naan → debe sonar
+- [x] Modificada la lógica para contar solo pedidos pendientes de comida
+- [x] Mantener el throttling de 10 segundos
+- [x] Añadido log de consola para debugging
