@@ -10,7 +10,18 @@ import { sortOrdersByCategory, getCategoryOrder } from '@/lib/orderUtils';
 export default function KitchenView() {
   const { t } = useLanguage();
   const [previousOrderCount, setPreviousOrderCount] = useState(0);
+  const [lastNotificationTime, setLastNotificationTime] = useState(0);
+  const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
   
+  // Inicializar AudioContext
+  useEffect(() => {
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    setAudioContext(ctx);
+    return () => {
+      ctx.close();
+    };
+  }, []);
+
   // Queries directas con datos propios (no del contexto)
   const { data: dbTables, refetch: refetchTables } = trpc.restaurant.getTables.useQuery(undefined, {
     refetchInterval: 3000, // Polling cada 3 segundos
@@ -134,16 +145,33 @@ export default function KitchenView() {
     }
   };
 
-  // Detectar nuevas mesas con pedidos
+  // Detectar nuevos pedidos de comida (no bebidas)
   useEffect(() => {
-    const currentOrderCount = activeTables.reduce((sum, table) => sum + table.orders.length, 0);
+    // Categorías que NO son comida (no deben sonar)
+    const nonFoodCategories = ['drinks', 'wines', 'coffees'];
     
-    if (previousOrderCount > 0 && currentOrderCount > previousOrderCount) {
-      playNotificationSound();
+    // Contar solo pedidos de comida
+    const currentFoodOrderCount = activeTables.reduce((sum, table) => {
+      const foodOrders = table.orders.filter(order => 
+        !nonFoodCategories.includes(order.menuItem.category)
+      );
+      return sum + foodOrders.length;
+    }, 0);
+    
+    // Si hay nuevos pedidos de comida y han pasado más de 10 segundos desde la última notificación
+    if (previousOrderCount > 0 && currentFoodOrderCount > previousOrderCount) {
+      const now = Date.now();
+      const timeSinceLastNotification = now - lastNotificationTime;
+      
+      // Solo sonar si han pasado al menos 10 segundos (10000ms)
+      if (timeSinceLastNotification >= 10000 || lastNotificationTime === 0) {
+        playNotificationSound();
+        setLastNotificationTime(now);
+      }
     }
     
-    setPreviousOrderCount(currentOrderCount);
-  }, [activeTables.length]);
+    setPreviousOrderCount(currentFoodOrderCount);
+  }, [activeTables, previousOrderCount, lastNotificationTime]);
 
   const handleToggleItemDelivery = useCallback(async (orderId: number, currentStatus: boolean | number) => {
     // Convertir currentStatus a boolean si es number (tinyint de DB)

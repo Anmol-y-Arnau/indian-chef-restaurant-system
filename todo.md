@@ -241,3 +241,14 @@
 - [x] Personalizaciones mostradas en el modo cocina
 - [x] Personalizaciones incluidas en los tickets de impresión
 - [x] Verificado: modal funciona correctamente, datos se guardan y muestran en todas las vistas
+
+
+## Nueva Funcionalidad - Notificación Sonora Inteligente en Modo Cocina
+
+- [x] Añadir sonido cuando se añaden productos de comida a las comandas
+- [x] El sonido NO suena para bebidas, vinos ni cafés (solo comida)
+- [x] Implementar throttling: máximo 1 sonido cada 10 segundos
+- [x] Aunque se añadan múltiples productos, solo suena una vez
+- [x] Sonido discreto de dos tonos (800Hz + 1000Hz, 0.1s cada uno)
+- [x] Throttling solo afecta al sonido, no a la funcionalidad normal
+- [x] Sistema detecta nuevos pedidos de comida y reproduce sonido automáticamente
