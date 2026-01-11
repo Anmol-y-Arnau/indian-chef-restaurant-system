@@ -1,21 +1,61 @@
 import { useRestaurant } from '@/contexts/RestaurantContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ChefHat, Check, CheckCircle2, RotateCcw } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { trpc } from '@/lib/trpc';
+import { MENU_ITEMS, INITIAL_TABLES } from '@/lib/data';
+import { OrderItem } from '@/lib/types';
 
 export default function KitchenView() {
-  const { tables } = useRestaurant();
   const { t } = useLanguage();
   const [previousOrderCount, setPreviousOrderCount] = useState(0);
-  const utils = trpc.useUtils();
+  
+  // Queries directas con datos propios (no del contexto)
+  const { data: dbTables, refetch: refetchTables } = trpc.restaurant.getTables.useQuery(undefined, {
+    refetchInterval: 3000, // Polling cada 3 segundos
+  });
+  const { data: dbOrders, refetch: refetchOrders } = trpc.restaurant.getAllOrders.useQuery(undefined, {
+    refetchInterval: 3000,
+  });
+  
+  // Construir tables con orders incluidos (igual que en RestaurantContext)
+  const tables = INITIAL_TABLES.map(initialTable => {
+    const dbTable = dbTables?.find(t => t.tableId === String(initialTable.id));
+    const tableOrders = (dbOrders || []).filter(order => String(order.tableId) === String(initialTable.id));
+
+    // Convertir database orders a OrderItem format
+    const orders: OrderItem[] = tableOrders.map(dbOrder => {
+      const menuItem = MENU_ITEMS.find(item => item.id === dbOrder.itemId);
+      return {
+        id: String(dbOrder.id),
+        menuItem: menuItem || {
+          id: dbOrder.itemId,
+          name: dbOrder.itemName,
+          price: parseFloat(dbOrder.itemPrice),
+          category: 'starters' as const,
+          description: '',
+          image: '',
+        },
+        quantity: dbOrder.quantity,
+        isDelivered: dbOrder.isDelivered, // Incluir el estado de delivered
+      };
+    });
+
+    return {
+      ...initialTable,
+      status: orders.length > 0 ? 'occupied' as const : 'free' as const,
+      orders,
+      startTime: orders.length > 0 ? new Date() : undefined,
+    };
+  });
   
   // Mutation para actualizar estado de entrega
   const updateDeliveryMutation = trpc.restaurant.updateOrderDeliveryStatus.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       // Forzar recarga inmediata de datos
-      utils.restaurant.getTables.invalidate();
-      utils.restaurant.getAllOrders.invalidate();
+      await refetchTables();
+      await refetchOrders();
+      console.log('[DELIVERED] Data refetched');
     },
   });
 
@@ -102,7 +142,7 @@ export default function KitchenView() {
     setPreviousOrderCount(currentOrderCount);
   }, [activeTables.length]);
 
-  const handleToggleItemDelivery = async (orderId: number, currentStatus: boolean | number) => {
+  const handleToggleItemDelivery = useCallback(async (orderId: number, currentStatus: boolean | number) => {
     // Convertir currentStatus a boolean si es number (tinyint de DB)
     const isCurrentlyDelivered = Boolean(currentStatus);
     const newStatus = !isCurrentlyDelivered;
@@ -118,9 +158,9 @@ export default function KitchenView() {
     } catch (error) {
       console.error('[DELIVERED] Error:', error);
     }
-  };
+  }, [updateDeliveryMutation]);
 
-  const handleMarkAllAsDelivered = async (orderIds: number[]) => {
+  const handleMarkAllAsDelivered = useCallback(async (orderIds: number[]) => {
     console.log('[DELIVERED] Mark all as delivered:', orderIds);
     
     try {
@@ -134,7 +174,7 @@ export default function KitchenView() {
     } catch (error) {
       console.error('[DELIVERED] Error marking all:', error);
     }
-  };
+  }, [updateDeliveryMutation]);
 
   // Categorizar items de una mesa
   const categorizeTableOrders = (orders: any[]) => {

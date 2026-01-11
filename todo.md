@@ -172,3 +172,10 @@
   - Número de tickets
   - Ticket promedio
   - Útil para cierre de caja
+## Bug Reportado - Botones Delivered No Responden
+
+- [x] Los botones de "delivered" en modo cocina no responden al hacer clic
+- [x] Problema: KitchenView usaba datos del contexto que no se actualizaban inmediatamente
+- [x] Solución: Crear queries propias en KitchenView con refetch() en lugar de invalidate()
+- [x] Construir estructura de datos completa con menuItem desde MENU_ITEMS
+- [x] Tests verificados: todos los tests de delivered.test.ts pasan correctamente
