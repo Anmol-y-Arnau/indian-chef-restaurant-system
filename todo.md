@@ -179,3 +179,12 @@
 - [x] Solución: Crear queries propias en KitchenView con refetch() en lugar de invalidate()
 - [x] Construir estructura de datos completa con menuItem desde MENU_ITEMS
 - [x] Tests verificados: todos los tests de delivered.test.ts pasan correctamente
+
+
+## Bug Reportado - Pedidos Duplicados Heredan Estado Delivered
+
+- [x] Cuando se añade un nuevo pedido del mismo plato después de marcarlo como entregado, el nuevo pedido aparece también como entregado
+- [x] Ejemplo: Mesa pide 1 agua → se entrega → mesa pide otra agua → en cocina aparecen 2 aguas entregadas en lugar de 1 entregada + 1 pendiente
+- [x] Solución: Modificar RestaurantContext para buscar solo pedidos pendientes al actualizar cantidad
+- [x] Si todos los pedidos del item están entregados, crear nuevo pedido independiente
+- [x] Verificado: funciona correctamente en modo cocina

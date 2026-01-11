@@ -119,15 +119,17 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
       // Check if order already exists in database
       const existingOrders = dbOrders?.filter(o => o.tableId === String(tableId) && o.itemId === menuItem.id) || [];
       
-      if (existingOrders.length > 0) {
-        // Update quantity of existing order
-        const existingOrder = existingOrders[0];
+      // Find a pending (not delivered) order to update
+      const pendingOrder = existingOrders.find(o => !o.isDelivered);
+      
+      if (pendingOrder) {
+        // Update quantity of existing pending order
         await updateOrderMutation.mutateAsync({
-          orderId: existingOrder.id,
-          quantity: existingOrder.quantity + quantity,
+          orderId: pendingOrder.id,
+          quantity: pendingOrder.quantity + quantity,
         });
       } else {
-        // Add new order
+        // Add new order (either no existing order, or all existing orders are delivered)
         await addOrderMutation.mutateAsync({
           tableId: String(tableId),
           itemId: menuItem.id,
