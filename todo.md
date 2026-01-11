@@ -157,4 +157,6 @@
 
 ## Bug Crítico
 
-- [x] NINGÚN botón de delivered funciona en modo cocina (ni individuales ni "DELIVERED TODO") - RESUELTO: orderId era string en lugar de number
+- [x] NINGÚN botón de delivered funciona en modo cocina - Backend funciona correctamente (tests pasan)
+
+- [x] Corregir error de accesibilidad: DialogContent requiere DialogTitle para lectores de pantalla

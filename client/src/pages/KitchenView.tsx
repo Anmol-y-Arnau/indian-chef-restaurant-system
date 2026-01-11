@@ -102,27 +102,37 @@ export default function KitchenView() {
     setPreviousOrderCount(currentOrderCount);
   }, [activeTables.length]);
 
-  const handleToggleItemDelivery = async (orderId: number, currentStatus: boolean) => {
-    console.log('handleToggleItemDelivery called:', { orderId, currentStatus, newStatus: !currentStatus });
+  const handleToggleItemDelivery = async (orderId: number, currentStatus: boolean | number) => {
+    // Convertir currentStatus a boolean si es number (tinyint de DB)
+    const isCurrentlyDelivered = Boolean(currentStatus);
+    const newStatus = !isCurrentlyDelivered;
+    
+    console.log('[DELIVERED] Toggle item:', { orderId, currentStatus, isCurrentlyDelivered, newStatus });
+    
     try {
-      // Toggle: si está entregado, vuelve a pendiente; si está pendiente, marca como entregado
       await updateDeliveryMutation.mutateAsync({
-        orderId: Number(orderId), // Asegurar que sea un número
-        isDelivered: !currentStatus
+        orderId: Number(orderId),
+        isDelivered: newStatus
       });
-      console.log('Mutation successful');
+      console.log('[DELIVERED] Success');
     } catch (error) {
-      console.error('Error updating delivery status:', error);
+      console.error('[DELIVERED] Error:', error);
     }
   };
 
   const handleMarkAllAsDelivered = async (orderIds: number[]) => {
-    // Marcar todos los pedidos de la mesa como entregados
-    for (const orderId of orderIds) {
-      await updateDeliveryMutation.mutateAsync({
-        orderId: Number(orderId), // Asegurar que sea un número
-        isDelivered: true
-      });
+    console.log('[DELIVERED] Mark all as delivered:', orderIds);
+    
+    try {
+      for (const orderId of orderIds) {
+        await updateDeliveryMutation.mutateAsync({
+          orderId: Number(orderId),
+          isDelivered: true
+        });
+      }
+      console.log('[DELIVERED] All marked successfully');
+    } catch (error) {
+      console.error('[DELIVERED] Error marking all:', error);
     }
   };
 
