@@ -49,7 +49,7 @@ export function CustomItemDialog() {
       price: priceNum,
       category: 'drinks', // Default category for custom items
       image: 'https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?q=80&w=1974&auto=format&fit=crop'
-    }, quantityNum);
+    }, { quantity: quantityNum });
 
     // toast.success("Producto añadido"); // Removed because context already shows toast
     setOpen(false);

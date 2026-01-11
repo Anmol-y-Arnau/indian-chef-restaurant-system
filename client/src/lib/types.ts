@@ -18,6 +18,7 @@ export interface OrderItem {
   id: string | number;
   menuItem: MenuItem;
   quantity: number;
+  spiceLevel?: string; // "-", "+-", "+", "++"
   notes?: string;
   isDelivered?: boolean | number; // boolean en frontend, 0/1 en DB
   createdAt?: string | Date; // timestamp de creación

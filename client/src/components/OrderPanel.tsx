@@ -64,7 +64,12 @@ export function OrderPanel() {
       Mesa: ${table.name}
       Fecha: ${new Date().toLocaleString()}
       ----------------------
-      ${sortedOrders.map(o => `${o.quantity}x ${o.menuItem.name.padEnd(20)} ${(o.menuItem.price * o.quantity).toFixed(2)}€`).join('\n')}
+      ${sortedOrders.map(o => {
+        let line = `${o.quantity}x ${o.menuItem.name.padEnd(20)} ${(o.menuItem.price * o.quantity).toFixed(2)}€`;
+        if (o.spiceLevel) line += `\n   🌶️ Picante: ${o.spiceLevel}`;
+        if (o.notes) line += `\n   📝 ${o.notes}`;
+        return line;
+      }).join('\n')}
       ----------------------
       TOTAL: ${total.toFixed(2)}€
       ----------------------
@@ -94,7 +99,12 @@ export function OrderPanel() {
   const getTicketText = () => {
     const date = new Date().toLocaleString();
     const sortedOrders = sortOrdersByCategory(table.orders);
-    const items = sortedOrders.map(o => `${o.quantity}x ${o.menuItem.name} (${(o.menuItem.price * o.quantity).toFixed(2)}€)`).join('\n');
+    const items = sortedOrders.map(o => {
+      let line = `${o.quantity}x ${o.menuItem.name} (${(o.menuItem.price * o.quantity).toFixed(2)}€)`;
+      if (o.spiceLevel) line += `\n   🌶️ Picante: ${o.spiceLevel}`;
+      if (o.notes) line += `\n   📝 ${o.notes}`;
+      return line;
+    }).join('\n');
     return `*INDIAN CHEF RESTAURANT*\n----------------------\nMesa: ${table.name}\nFecha: ${date}\n----------------------\n${items}\n----------------------\n*TOTAL: ${total.toFixed(2)}€*\n----------------------\n¡Gracias por su visita!`;
   };
 
@@ -153,9 +163,21 @@ export function OrderPanel() {
                       {(order.menuItem.price * order.quantity).toFixed(2)}€
                     </span>
                   </div>
-                  <p className="text-[10px] text-muted-foreground truncate max-w-[180px]">
-                    {order.menuItem.category}
-                  </p>
+                  <div className="flex flex-col gap-0.5">
+                    <p className="text-[10px] text-muted-foreground truncate max-w-[180px]">
+                      {order.menuItem.category}
+                    </p>
+                    {order.spiceLevel && (
+                      <p className="text-[10px] text-orange-500 font-medium">
+                        🌶️ Picante: {order.spiceLevel}
+                      </p>
+                    )}
+                    {order.notes && (
+                      <p className="text-[10px] text-blue-500 italic truncate max-w-[180px]">
+                        📝 {order.notes}
+                      </p>
+                    )}
+                  </div>
                 </div>
                 <Button
                   variant="ghost"

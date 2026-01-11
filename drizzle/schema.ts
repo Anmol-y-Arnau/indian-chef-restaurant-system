@@ -49,6 +49,8 @@ export const orders = mysqlTable("orders", {
   itemPrice: decimal("itemPrice", { precision: 10, scale: 2 }).notNull(),
   quantity: int("quantity").notNull().default(1),
   isDelivered: tinyint("isDelivered").notNull().default(0), // 0 = pendiente, 1 = entregado
+  spiceLevel: varchar("spiceLevel", { length: 10 }), // "-", "+-", "+", "++"
+  notes: text("notes"), // Observaciones adicionales
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

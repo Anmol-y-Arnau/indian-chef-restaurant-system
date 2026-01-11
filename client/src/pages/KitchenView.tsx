@@ -38,7 +38,9 @@ export default function KitchenView() {
           image: '',
         },
         quantity: dbOrder.quantity,
-        isDelivered: dbOrder.isDelivered, // Incluir el estado de delivered
+        isDelivered: dbOrder.isDelivered,
+        spiceLevel: dbOrder.spiceLevel || undefined,
+        notes: dbOrder.notes || undefined,
       };
     });
 
@@ -269,12 +271,24 @@ export default function KitchenView() {
           }
         `}
       >
-        <div className="flex items-center gap-3 flex-1">
-          <span className={`text-white font-semibold ${isDelivered ? 'text-lg line-through' : 'text-2xl'}`}>
-            {order.menuItem.name}
-          </span>
-          {isDelivered && (
-            <CheckCircle2 className="w-5 h-5 text-green-500" />
+        <div className="flex flex-col gap-1 flex-1">
+          <div className="flex items-center gap-3">
+            <span className={`text-white font-semibold ${isDelivered ? 'text-lg line-through' : 'text-2xl'}`}>
+              {order.menuItem.name}
+            </span>
+            {isDelivered && (
+              <CheckCircle2 className="w-5 h-5 text-green-500" />
+            )}
+          </div>
+          {order.spiceLevel && (
+            <span className="text-orange-400 text-sm font-medium">
+              🌶️ Picante: {order.spiceLevel}
+            </span>
+          )}
+          {order.notes && (
+            <span className="text-blue-400 text-sm italic">
+              📝 {order.notes}
+            </span>
           )}
         </div>
         <div className="flex items-center gap-3">

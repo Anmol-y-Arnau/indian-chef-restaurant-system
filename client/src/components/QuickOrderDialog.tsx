@@ -65,7 +65,7 @@ export function QuickOrderDialog() {
         // Add item multiple times if quantity > 1
         // We call addOrderToTable once with quantity if supported, or loop
         // The context's addOrderToTable now supports quantity from previous task
-        addOrderToTable(activeTableId, item, quantity);
+        addOrderToTable(activeTableId, item, { quantity });
         addedCount += quantity;
       } else {
         notFound.push(itemNumber);

@@ -228,3 +228,16 @@
 - [x] Aplicada ordenación en el modo cocina (KitchenView.tsx)
 - [x] Aplicada ordenación en el ticket de impresión (handlePrint y getTicketText)
 - [x] Tests creados y pasando: order-sorting.test.ts (5/5 tests)
+
+
+## Nueva Funcionalidad - Modal de Personalización para Curry y Biryani
+
+- [x] Al añadir platos de curry o biryani, mostrar modal de personalización
+- [x] Modal incluye 4 botones para nivel de picante: - (no picante), +- (toque picante), + (picante), ++ (muy picante)
+- [x] Campo de texto para observaciones adicionales implementado
+- [x] Actualizado esquema de base de datos con campos spiceLevel y notes
+- [x] Personalizaciones guardadas correctamente en la base de datos
+- [x] Personalizaciones mostradas en el panel lateral con iconos 🌶️ y 📝
+- [x] Personalizaciones mostradas en el modo cocina
+- [x] Personalizaciones incluidas en los tickets de impresión
+- [x] Verificado: modal funciona correctamente, datos se guardan y muestran en todas las vistas

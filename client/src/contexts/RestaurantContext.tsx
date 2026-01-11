@@ -8,7 +8,7 @@ interface RestaurantContextType {
   tables: Table[];
   activeTableId: number | string | null;
   setActiveTableId: (id: number | string | null) => void;
-  addOrderToTable: (tableId: number | string, menuItem: MenuItem, quantity?: number) => void;
+  addOrderToTable: (tableId: number | string, menuItem: MenuItem, customization?: { quantity?: number; spiceLevel?: string; notes?: string }) => void;
   removeOrderFromTable: (tableId: number | string, orderId: string) => void;
   updateTableStatus: (tableId: number | string, status: Table['status']) => void;
   updateTableGuests: (tableId: number | string, guests: number) => void;
@@ -100,6 +100,10 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
             image: '',
           },
           quantity: dbOrder.quantity,
+          spiceLevel: dbOrder.spiceLevel || undefined,
+          notes: dbOrder.notes || undefined,
+          isDelivered: dbOrder.isDelivered,
+          createdAt: dbOrder.createdAt,
         };
       });
 
@@ -114,7 +118,11 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
     setTables(syncedTables);
   }, [dbTables, dbOrders]);
 
-  const addOrderToTable = async (tableId: number | string, menuItem: MenuItem, quantity: number = 1) => {
+  const addOrderToTable = async (tableId: number | string, menuItem: MenuItem, customization?: { quantity?: number; spiceLevel?: string; notes?: string }) => {
+    const quantity = customization?.quantity || 1;
+    const spiceLevel = customization?.spiceLevel;
+    const notes = customization?.notes;
+    
     try {
       // Backend now handles the logic of updating existing pending orders vs creating new ones
       await addOrderMutation.mutateAsync({
@@ -123,6 +131,8 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
         itemName: menuItem.name,
         itemPrice: menuItem.price.toFixed(2),
         quantity,
+        spiceLevel,
+        notes,
       });
       
       toast.success(`${quantity}x ${menuItem.name} añadido a la Mesa ${tableId}`);

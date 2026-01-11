@@ -15,6 +15,8 @@ import { cn } from "@/lib/utils";
 import { Menu, Search, ShoppingBag, ChefHat } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import KitchenView from "./KitchenView";
+import { CustomizationModal } from "@/components/CustomizationModal";
+import type { MenuItem } from "@/lib/types";
 
 export default function Home() {
   const { t, language } = useLanguage();
@@ -32,7 +34,50 @@ export default function Home() {
   const [isTablesOpen, setIsTablesOpen] = useState(false);
   const [showHero, setShowHero] = useState(true); // Siempre true en móvil
   const [isKitchenMode, setIsKitchenMode] = useState(false);
+  const [customizationItem, setCustomizationItem] = useState<MenuItem | null>(null);
+  const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Función para determinar si un item necesita personalización
+  const needsCustomization = (item: MenuItem) => {
+    return item.category === 'veg_curry' || 
+           item.category === 'chicken_curry' || 
+           item.category === 'fish_prawn_curry' || 
+           item.category === 'lamb_curry' || 
+           item.category === 'biryani';
+  };
+
+  // Función para manejar la adición de un item
+  const handleAddItem = (item: MenuItem) => {
+    if (activeTableId === null) {
+      // Mobile: Open tables drawer
+      if (window.innerWidth < 768) {
+        setIsTablesOpen(true);
+      } else {
+        // Desktop: Shake animation
+        const sidebar = document.querySelector('.bg-sidebar');
+        sidebar?.classList.add('animate-pulse');
+        setTimeout(() => sidebar?.classList.remove('animate-pulse'), 500);
+      }
+      return;
+    }
+
+    if (needsCustomization(item)) {
+      setCustomizationItem(item);
+      setIsCustomizationOpen(true);
+    } else {
+      addOrderToTable(activeTableId, item);
+    }
+  };
+
+  // Función para confirmar la personalización
+  const handleConfirmCustomization = (spiceLevel: string, notes: string) => {
+    if (customizationItem && activeTableId !== null) {
+      addOrderToTable(activeTableId, customizationItem, { spiceLevel, notes });
+    }
+    setIsCustomizationOpen(false);
+    setCustomizationItem(null);
+  };
 
   const filteredItems = MENU_ITEMS.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -284,21 +329,7 @@ export default function Home() {
                       <MenuCard 
                         key={item.id} 
                         item={item} 
-                        onAdd={() => {
-                          if (activeTableId !== null) {
-                            addOrderToTable(activeTableId, item);
-                          } else {
-                            // Mobile: Open tables drawer
-                            if (window.innerWidth < 768) {
-                              setIsTablesOpen(true);
-                            } else {
-                              // Desktop: Shake animation
-                              const sidebar = document.querySelector('.bg-sidebar');
-                              sidebar?.classList.add('animate-pulse');
-                              setTimeout(() => sidebar?.classList.remove('animate-pulse'), 500);
-                            }
-                          }
-                        }} 
+                        onAdd={() => handleAddItem(item)} 
                       />
                     ))}
                     
@@ -356,6 +387,18 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Customization Modal */}
+      {customizationItem && (
+        <CustomizationModal
+          isOpen={isCustomizationOpen}
+          onClose={() => {
+            setIsCustomizationOpen(false);
+            setCustomizationItem(null);
+          }}
+          onConfirm={handleConfirmCustomization}
+          itemName={customizationItem.name}
+        />
+      )}
     </div>
   );
 }

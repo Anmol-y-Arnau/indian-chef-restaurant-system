@@ -45,6 +45,8 @@ export const appRouter = router({
         itemName: z.string(),
         itemPrice: z.string(), // decimal as string
         quantity: z.number().default(1),
+        spiceLevel: z.string().optional(),
+        notes: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
         await restaurantDb.addOrder(input);
