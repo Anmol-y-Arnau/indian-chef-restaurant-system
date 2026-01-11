@@ -8,15 +8,66 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRestaurant } from "@/contexts/RestaurantContext";
-import { format } from "date-fns";
+import { format, startOfDay, endOfDay, isWithinInterval } from "date-fns";
 import { es } from "date-fns/locale";
-import { History, RotateCcw } from "lucide-react";
-import { useState } from "react";
+import { History, RotateCcw, Calendar, TrendingUp } from "lucide-react";
+import { useState, useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 export function HistoryDialog() {
   const { orderHistory, restoreOrderToTable, tables } = useRestaurant();
   const [selectedTableForRestore, setSelectedTableForRestore] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [showStats, setShowStats] = useState(false);
+
+  // Filter orders by selected date
+  const filteredHistory = useMemo(() => {
+    if (!selectedDate) return orderHistory;
+    
+    const dayStart = startOfDay(selectedDate);
+    const dayEnd = endOfDay(selectedDate);
+    
+    return orderHistory.filter(item => {
+      const itemDate = new Date(item.date);
+      return isWithinInterval(itemDate, { start: dayStart, end: dayEnd });
+    });
+  }, [orderHistory, selectedDate]);
+
+  // Calculate statistics
+  const stats = useMemo(() => {
+    const totalSales = filteredHistory.reduce((sum, item) => sum + item.total, 0);
+    const cashSales = filteredHistory
+      .filter(item => item.paymentMethod === 'cash' || item.paymentMethod === 'mixed')
+      .reduce((sum, item) => {
+        if (item.paymentMethod === 'mixed' && item.cashPayers && item.totalPayers) {
+          return sum + (item.total * item.cashPayers / item.totalPayers);
+        }
+        return sum + item.total;
+      }, 0);
+    
+    const cardSales = filteredHistory
+      .filter(item => item.paymentMethod === 'card' || item.paymentMethod === 'mixed')
+      .reduce((sum, item) => {
+        if (item.paymentMethod === 'mixed' && item.cardPayers && item.totalPayers) {
+          return sum + (item.total * item.cardPayers / item.totalPayers);
+        }
+        return sum + item.total;
+      }, 0);
+
+    const ticketCount = filteredHistory.length;
+    const averageTicket = ticketCount > 0 ? totalSales / ticketCount : 0;
+
+    return {
+      totalSales,
+      cashSales,
+      cardSales,
+      ticketCount,
+      averageTicket
+    };
+  }, [filteredHistory]);
 
   return (
     <Dialog>
@@ -25,22 +76,105 @@ export function HistoryDialog() {
           <History className="w-5 h-5" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md h-[80vh] flex flex-col">
+      <DialogContent className="max-w-2xl h-[85vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="font-heading text-2xl text-primary">Historial de Ventas</DialogTitle>
         </DialogHeader>
         
+        {/* Toolbar */}
+        <div className="flex gap-2 items-center border-b border-border pb-3">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2">
+                <Calendar className="w-4 h-4" />
+                {selectedDate ? format(selectedDate, "dd/MM/yyyy", { locale: es }) : "Seleccionar fecha"}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <CalendarComponent
+                mode="single"
+                selected={selectedDate}
+                onSelect={setSelectedDate}
+                initialFocus
+                locale={es}
+              />
+            </PopoverContent>
+          </Popover>
+
+          <Button 
+            variant={showStats ? "default" : "outline"} 
+            size="sm" 
+            className="gap-2"
+            onClick={() => setShowStats(!showStats)}
+          >
+            <TrendingUp className="w-4 h-4" />
+            Contabilidad
+          </Button>
+
+          {selectedDate && (
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => setSelectedDate(new Date())}
+            >
+              Hoy
+            </Button>
+          )}
+        </div>
+
+        {/* Statistics Panel */}
+        {showStats && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-4 bg-card border border-border rounded-lg">
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground">Total</p>
+              <p className="text-xl font-bold text-primary">{stats.totalSales.toFixed(2)}€</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground">Efectivo</p>
+              <p className="text-xl font-bold text-green-500">{stats.cashSales.toFixed(2)}€</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground">Tarjeta</p>
+              <p className="text-xl font-bold text-blue-500">{stats.cardSales.toFixed(2)}€</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground">Tickets</p>
+              <p className="text-xl font-bold">{stats.ticketCount}</p>
+            </div>
+            <div className="col-span-2 md:col-span-4 space-y-1 pt-2 border-t border-border">
+              <p className="text-xs text-muted-foreground">Ticket Promedio</p>
+              <p className="text-lg font-bold text-primary">{stats.averageTicket.toFixed(2)}€</p>
+            </div>
+          </div>
+        )}
+        
         <ScrollArea className="flex-1 min-h-0 pr-4">
           <div className="space-y-4">
-            {orderHistory.length === 0 ? (
+            {filteredHistory.length === 0 ? (
               <div className="text-center text-muted-foreground py-8">
-                No hay ventas registradas hoy.
+                {selectedDate && format(selectedDate, "dd/MM/yyyy") !== format(new Date(), "dd/MM/yyyy")
+                  ? `No hay ventas registradas el ${format(selectedDate, "dd/MM/yyyy", { locale: es })}.`
+                  : "No hay ventas registradas hoy."}
               </div>
             ) : (
-              orderHistory.map((item) => (
+              filteredHistory.map((item) => (
                 <div key={item.id} className="bg-card border border-border rounded-lg p-4 space-y-2">
                   <div className="flex justify-between items-center border-b border-border pb-2">
-                    <span className="font-bold text-lg">Mesa {item.tableId}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-lg">Mesa {item.tableId}</span>
+                      {item.paymentMethod && (
+                        <span className={cn(
+                          "text-xs px-2 py-0.5 rounded-full",
+                          item.paymentMethod === 'cash' && "bg-green-500/20 text-green-500",
+                          item.paymentMethod === 'card' && "bg-blue-500/20 text-blue-500",
+                          item.paymentMethod === 'mixed' && "bg-purple-500/20 text-purple-500"
+                        )}>
+                          {item.paymentMethod === 'cash' && '💵 Efectivo'}
+                          {item.paymentMethod === 'card' && '💳 Tarjeta'}
+                          {item.paymentMethod === 'mixed' && `💵${item.cashPayers} 💳${item.cardPayers}`}
+                        </span>
+                      )}
+                    </div>
                     <span className="text-sm text-muted-foreground">
                       {format(new Date(item.date), "HH:mm", { locale: es })}
                     </span>
@@ -78,10 +212,8 @@ export function HistoryDialog() {
                       disabled={!selectedTableForRestore}
                       onClick={() => {
                         if (selectedTableForRestore) {
-                          // Check if ID is numeric or string (like '0+')
                           const tableId = isNaN(Number(selectedTableForRestore)) ? selectedTableForRestore : Number(selectedTableForRestore);
                           restoreOrderToTable(tableId, item.items);
-                          // Close dialog? Maybe not needed, user might want to see confirmation
                         }
                       }}
                     >

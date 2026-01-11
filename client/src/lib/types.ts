@@ -44,4 +44,8 @@ export interface OrderHistoryItem {
   date: string; // ISO string
   total: number;
   items: OrderItem[];
+  paymentMethod?: 'cash' | 'card' | 'mixed';
+  totalPayers?: number;
+  cashPayers?: number;
+  cardPayers?: number;
 }

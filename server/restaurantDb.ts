@@ -1,4 +1,4 @@
-import { eq, and } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { restaurantTables, orders, sales, type InsertOrder, type InsertSale, type InsertRestaurantTable } from "../drizzle/schema";
 import { getDb } from "./db";
 
@@ -90,7 +90,7 @@ export async function addSale(sale: InsertSale) {
 export async function getAllSales() {
   const db = await getDb();
   if (!db) return [];
-  return await db.select().from(sales).orderBy(sales.createdAt);
+  return await db.select().from(sales).orderBy(desc(sales.createdAt));
 }
 
 export async function getSalesByDateRange(startDate: Date, endDate: Date) {

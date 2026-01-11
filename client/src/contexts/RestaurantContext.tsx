@@ -259,6 +259,10 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
     date: sale.createdAt.toISOString(),
     total: parseFloat(sale.total),
     items: sale.items as any, // JSON field from database
+    paymentMethod: sale.paymentMethod as 'cash' | 'card' | 'mixed' | undefined,
+    totalPayers: sale.splitBetween || undefined,
+    cashPayers: sale.cashPayers || undefined,
+    cardPayers: sale.cardPayers || undefined,
   }));
 
   return (

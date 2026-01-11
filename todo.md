@@ -160,3 +160,15 @@
 - [x] NINGÚN botón de delivered funciona en modo cocina - Backend funciona correctamente (tests pasan)
 
 - [x] Corregir error de accesibilidad: DialogContent requiere DialogTitle para lectores de pantalla
+
+## Mejoras Historial de Ventas
+
+- [x] Ordenar tickets de más reciente a más antiguo (invertir orden actual)
+- [x] Añadir botón de calendario al lado del historial
+- [x] Implementar filtro por fecha/rango de fechas
+- [x] Vista de contabilidad con estadísticas:
+  - Total del período seleccionado
+  - Desglose: efectivo vs tarjeta
+  - Número de tickets
+  - Ticket promedio
+  - Útil para cierre de caja
