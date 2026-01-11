@@ -183,11 +183,10 @@
 
 ## Bug Reportado - Pedidos Duplicados Heredan Estado Delivered
 
-- [x] Cuando se añade un nuevo pedido del mismo plato después de marcarlo como entregado, el nuevo pedido aparece también como entregado
-- [x] Ejemplo: Mesa pide 1 agua → se entrega → mesa pide otra agua → en cocina aparecen 2 aguas entregadas en lugar de 1 entregada + 1 pendiente
-- [x] Solución: Modificar RestaurantContext para buscar solo pedidos pendientes al actualizar cantidad
-- [x] Si todos los pedidos del item están entregados, crear nuevo pedido independiente
-- [x] Verificado: funciona correctamente en modo cocina
+- [ ] REABIERTO: El problema persiste en producción
+- [ ] Ejemplo real: Mesa pide 4 plain naan → se entregan → mesa pide 1 más → en cocina aparecen 5 naan todos entregados
+- [ ] La solución anterior no funcionó correctamente
+- [ ] Necesita revisión profunda del flujo de addOrderToTable
 
 
 ## Nueva Funcionalidad - Botón Modo Cocina Visible
@@ -197,3 +196,13 @@
 - [x] Diseño coherente con el resto de la interfaz (naranja con icono ChefHat)
 - [x] Añadidas traducciones en español, inglés y francés
 - [x] Verificar que funciona correctamente en desktop
+
+
+## Bug REABIERTO - Pedidos Duplicados Siguen Heredando Estado Delivered
+
+- [x] El problema persiste: 4 plain naan entregados → se añade 1 más → aparecen 5 naan todos entregados
+- [x] Causa: La lógica en el frontend usaba datos desactualizados del polling (3 segundos)
+- [x] Solución: Mover la lógica al backend (restaurantDb.addOrder) para usar datos frescos de la DB
+- [x] Backend ahora verifica si existe pedido pendiente antes de crear/actualizar
+- [x] Tests creados y pasando: duplicate-orders-backend.test.ts (4/4 tests)
+- [x] Verificado manualmente: 4 naan entregados + 1 nuevo = 2 pedidos separados en cocina

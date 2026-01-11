@@ -47,7 +47,29 @@ export async function getAllOrders() {
 export async function addOrder(order: InsertOrder) {
   const db = await getDb();
   if (!db) return;
-  await db.insert(orders).values(order);
+  
+  // Check if there's an existing order for the same item on the same table
+  const existingOrders = await db.select().from(orders)
+    .where(eq(orders.tableId, order.tableId));
+  
+  // Filter by itemId and find a pending (not delivered) order
+  const sameItemOrders = existingOrders.filter(o => o.itemId === order.itemId);
+  const pendingOrder = sameItemOrders.find((o: any) => o.isDelivered === 0);
+  
+  if (pendingOrder) {
+    // Update the quantity of the existing pending order
+    await db.update(orders)
+      .set({ 
+        quantity: pendingOrder.quantity + (order.quantity || 1),
+        updatedAt: new Date() 
+      })
+      .where(eq(orders.id, pendingOrder.id));
+    console.log(`[addOrder] Updated pending order ${pendingOrder.id} with new quantity: ${pendingOrder.quantity + (order.quantity || 1)}`);
+  } else {
+    // No pending order found, create a new one
+    await db.insert(orders).values(order);
+    console.log(`[addOrder] Created new order for item ${order.itemId} on table ${order.tableId}`);
+  }
 }
 
 export async function updateOrderQuantity(orderId: number, quantity: number) {

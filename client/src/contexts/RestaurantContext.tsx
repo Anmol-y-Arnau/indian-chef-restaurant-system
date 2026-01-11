@@ -116,28 +116,14 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
 
   const addOrderToTable = async (tableId: number | string, menuItem: MenuItem, quantity: number = 1) => {
     try {
-      // Check if order already exists in database
-      const existingOrders = dbOrders?.filter(o => o.tableId === String(tableId) && o.itemId === menuItem.id) || [];
-      
-      // Find a pending (not delivered) order to update
-      const pendingOrder = existingOrders.find(o => !o.isDelivered);
-      
-      if (pendingOrder) {
-        // Update quantity of existing pending order
-        await updateOrderMutation.mutateAsync({
-          orderId: pendingOrder.id,
-          quantity: pendingOrder.quantity + quantity,
-        });
-      } else {
-        // Add new order (either no existing order, or all existing orders are delivered)
-        await addOrderMutation.mutateAsync({
-          tableId: String(tableId),
-          itemId: menuItem.id,
-          itemName: menuItem.name,
-          itemPrice: menuItem.price.toFixed(2),
-          quantity,
-        });
-      }
+      // Backend now handles the logic of updating existing pending orders vs creating new ones
+      await addOrderMutation.mutateAsync({
+        tableId: String(tableId),
+        itemId: menuItem.id,
+        itemName: menuItem.name,
+        itemPrice: menuItem.price.toFixed(2),
+        quantity,
+      });
       
       toast.success(`${quantity}x ${menuItem.name} añadido a la Mesa ${tableId}`);
     } catch (error) {
