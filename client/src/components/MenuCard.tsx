@@ -1,14 +1,16 @@
 import { MenuItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Flame, Leaf } from "lucide-react";
+import { Flame, Leaf, Edit3 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface MenuCardProps {
   item: MenuItem;
   onAdd: () => void;
+  onCustomize?: () => void;
+  showCustomizeButton?: boolean;
 }
 
-export function MenuCard({ item, onAdd }: MenuCardProps) {
+export function MenuCard({ item, onAdd, onCustomize, showCustomizeButton = false }: MenuCardProps) {
   const { language } = useLanguage();
 
   const displayName = language === 'en' && item.name_en ? item.name_en : 
@@ -18,6 +20,13 @@ export function MenuCard({ item, onAdd }: MenuCardProps) {
   const displayDescription = language === 'en' && item.description_en ? item.description_en : 
                              language === 'fr' && item.description_fr ? item.description_fr : 
                              item.description;
+
+  const handleCustomizeClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onCustomize) {
+      onCustomize();
+    }
+  };
 
   return (
     <button
@@ -32,6 +41,17 @@ export function MenuCard({ item, onAdd }: MenuCardProps) {
           <div className="absolute top-2 left-2 z-10 bg-black/60 backdrop-blur-sm border border-white/20 text-white text-xs font-bold px-2 py-1 rounded-md shadow-sm">
             {item.number}
           </div>
+        )}
+
+        {/* Customize Button (Pencil Icon) */}
+        {showCustomizeButton && onCustomize && (
+          <button
+            onClick={handleCustomizeClick}
+            className="absolute top-2 right-2 z-20 bg-orange-600/90 hover:bg-orange-500 backdrop-blur-sm p-1.5 rounded-md shadow-md transition-all hover:scale-110"
+            title="Personalizar"
+          >
+            <Edit3 className="w-3.5 h-3.5 text-white" />
+          </button>
         )}
 
         <img 

@@ -288,3 +288,24 @@
 - [x] Cambiado de lista negativa a lista positiva de categorías
 - [x] Añadidos logs detallados para debugging en consola
 - [x] Lista explícita: starters, salads, tandoor, veg_curry, chicken_curry, fish_prawn_curry, lamb_curry, biryani, sides, desserts
+
+
+## Ampliar Modal de Personalización
+
+- [x] Modal debe aparecer para entrantes (starters)
+- [x] Modal debe aparecer para todos los currys (ya implementado)
+- [x] Modal debe aparecer para biryani (ya implementado)
+- [x] Modal debe aparecer para refrescos (drinks)
+- [x] Modal debe aparecer para lassi
+- [x] Modal debe aparecer para chai (coffees)
+- [x] Verificar que el nivel de picante y notas se guarden correctamente
+- [x] Verificar que aparezcan en panel lateral, modo cocina y tickets
+
+## Mejorar UX del Modal de Personalización
+
+- [x] Añadir icono de lápiz en cada tarjeta de producto (esquina superior derecha)
+- [x] Clic normal en la tarjeta: añadir producto directamente SIN modal (rápido)
+- [x] Clic en el icono de lápiz: abrir modal de personalización
+- [x] Aplicar a todas las categorías: entrantes, currys, biryani, bebidas
+- [x] Prevenir propagación del evento del lápiz al click de la tarjeta
+- [x] Probar que funciona correctamente en móvil y desktop

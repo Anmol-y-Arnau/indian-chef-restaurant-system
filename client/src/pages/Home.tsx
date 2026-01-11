@@ -38,16 +38,12 @@ export default function Home() {
   const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // Función para determinar si un item necesita personalización
-  const needsCustomization = (item: MenuItem) => {
-    return item.category === 'veg_curry' || 
-           item.category === 'chicken_curry' || 
-           item.category === 'fish_prawn_curry' || 
-           item.category === 'lamb_curry' || 
-           item.category === 'biryani';
+  // Todos los productos pueden ser personalizados
+  const canBeCustomized = (item: MenuItem) => {
+    return true; // Todos los productos tienen botón de lápiz
   };
 
-  // Función para manejar la adición de un item
+  // Función para manejar la adición directa de un item (sin personalización)
   const handleAddItem = (item: MenuItem) => {
     if (activeTableId === null) {
       // Mobile: Open tables drawer
@@ -62,12 +58,28 @@ export default function Home() {
       return;
     }
 
-    if (needsCustomization(item)) {
-      setCustomizationItem(item);
-      setIsCustomizationOpen(true);
-    } else {
-      addOrderToTable(activeTableId, item);
+    // Añadir directamente sin modal
+    addOrderToTable(activeTableId, item);
+  };
+
+  // Función para manejar la personalización de un item (abrir modal)
+  const handleCustomizeItem = (item: MenuItem) => {
+    if (activeTableId === null) {
+      // Mobile: Open tables drawer
+      if (window.innerWidth < 768) {
+        setIsTablesOpen(true);
+      } else {
+        // Desktop: Shake animation
+        const sidebar = document.querySelector('.bg-sidebar');
+        sidebar?.classList.add('animate-pulse');
+        setTimeout(() => sidebar?.classList.remove('animate-pulse'), 500);
+      }
+      return;
     }
+
+    // Abrir modal de personalización
+    setCustomizationItem(item);
+    setIsCustomizationOpen(true);
   };
 
   // Función para confirmar la personalización
@@ -329,7 +341,9 @@ export default function Home() {
                       <MenuCard 
                         key={item.id} 
                         item={item} 
-                        onAdd={() => handleAddItem(item)} 
+                        onAdd={() => handleAddItem(item)}
+                        onCustomize={() => handleCustomizeItem(item)}
+                        showCustomizeButton={canBeCustomized(item)}
                       />
                     ))}
                     
