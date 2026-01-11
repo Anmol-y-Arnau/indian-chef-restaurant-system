@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRestaurant } from "@/contexts/RestaurantContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
+import { sortOrdersByCategory } from "@/lib/orderUtils";
 import { Copy, MessageCircle, Minus, Printer, Trash2, X } from "lucide-react";
 import PaymentModal, { type PaymentData } from "./PaymentModal";
 import { Button } from "./ui/button";
@@ -56,13 +57,14 @@ export function OrderPanel() {
     // In a real app, this would trigger a thermal printer
     // Here we'll simulate it with a modal or just a toast for now
     // Or actually open a print window
+    const sortedOrders = sortOrdersByCategory(table.orders);
     const printContent = `
       INDIAN CHEF RESTAURANT
       ----------------------
       Mesa: ${table.name}
       Fecha: ${new Date().toLocaleString()}
       ----------------------
-      ${table.orders.map(o => `${o.quantity}x ${o.menuItem.name.padEnd(20)} ${(o.menuItem.price * o.quantity).toFixed(2)}€`).join('\n')}
+      ${sortedOrders.map(o => `${o.quantity}x ${o.menuItem.name.padEnd(20)} ${(o.menuItem.price * o.quantity).toFixed(2)}€`).join('\n')}
       ----------------------
       TOTAL: ${total.toFixed(2)}€
       ----------------------
@@ -91,7 +93,8 @@ export function OrderPanel() {
 
   const getTicketText = () => {
     const date = new Date().toLocaleString();
-    const items = table.orders.map(o => `${o.quantity}x ${o.menuItem.name} (${(o.menuItem.price * o.quantity).toFixed(2)}€)`).join('\n');
+    const sortedOrders = sortOrdersByCategory(table.orders);
+    const items = sortedOrders.map(o => `${o.quantity}x ${o.menuItem.name} (${(o.menuItem.price * o.quantity).toFixed(2)}€)`).join('\n');
     return `*INDIAN CHEF RESTAURANT*\n----------------------\nMesa: ${table.name}\nFecha: ${date}\n----------------------\n${items}\n----------------------\n*TOTAL: ${total.toFixed(2)}€*\n----------------------\n¡Gracias por su visita!`;
   };
 
@@ -136,7 +139,7 @@ export function OrderPanel() {
           </div>
         ) : (
           <div className="space-y-3">
-            {table.orders.map((order) => (
+            {sortOrdersByCategory(table.orders).map((order) => (
               <div key={order.id} className="flex items-start justify-between group animate-in slide-in-from-right-5 duration-300">
                 <div className="flex-1">
                   <div className="flex items-baseline justify-between">

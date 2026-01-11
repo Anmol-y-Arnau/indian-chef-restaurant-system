@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { trpc } from '@/lib/trpc';
 import { MENU_ITEMS, INITIAL_TABLES } from '@/lib/data';
 import { OrderItem } from '@/lib/types';
+import { sortOrdersByCategory, getCategoryOrder } from '@/lib/orderUtils';
 
 export default function KitchenView() {
   const { t } = useLanguage();
@@ -201,9 +202,16 @@ export default function KitchenView() {
       o.menuItem.category !== 'tea'
     );
     
-    // Separar entregados y pendientes, ordenar por antigüedad
+    // Separar entregados y pendientes, ordenar por categoría y antigüedad
     const categorize = (items: any[]) => {
       const sorted = items.sort((a, b) => {
+        // Primero ordenar por categoría del menú
+        const catA = getCategoryOrder(a.menuItem.category);
+        const catB = getCategoryOrder(b.menuItem.category);
+        if (catA !== catB) {
+          return catA - catB;
+        }
+        // Luego por antigüedad dentro de la misma categoría
         const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
         const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
         return aTime - bTime; // Más antiguo primero

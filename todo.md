@@ -216,3 +216,15 @@
 - [x] Los pedidos entregados del mismo item se agrupan sumando cantidades
 - [x] Los pedidos pendientes se mantienen separados para que cada uno tenga su propio botón de entrega
 - [x] Verificado: 2 Plain Rice entregados se muestran como "Plain Rice x2"
+
+
+## Nueva Funcionalidad - Ordenar Pedidos por Categoría del Menú
+
+- [x] Los pedidos actualmente se muestran en el orden en que fueron añadidos
+- [x] Implementar ordenación según el orden de las categorías del menú
+- [x] Orden deseado: Entrantes → Ensaladas → Tandoor → Currys (veg, pollo, pescado, cordero) → Biryani → Guarniciones → Vinos → Bebidas → Cafés → Postres
+- [x] Creada función de utilidad sortOrdersByCategory en lib/orderUtils.ts
+- [x] Aplicada ordenación en el panel lateral de la mesa (OrderPanel.tsx)
+- [x] Aplicada ordenación en el modo cocina (KitchenView.tsx)
+- [x] Aplicada ordenación en el ticket de impresión (handlePrint y getTicketText)
+- [x] Tests creados y pasando: order-sorting.test.ts (5/5 tests)
