@@ -270,3 +270,11 @@
 - [x] Modificada la lógica para contar solo pedidos pendientes de comida
 - [x] Mantener el throttling de 10 segundos
 - [x] Añadido log de consola para debugging
+
+
+## Mejora - Sonido Más Alto y Audible
+
+- [x] Aumentar el volumen del sonido de notificación (de 0.3 a 0.8)
+- [x] Cambiar a un "bip" más claro y penetrante (onda cuadrada)
+- [x] Ajustar frecuencias para mejor audibilidad (1200Hz y 1400Hz)
+- [x] Duración aumentada a 0.2s por bip para mayor claridad

@@ -104,26 +104,30 @@ export default function KitchenView() {
       return a.oldestTimestamp - b.oldestTimestamp;
     });
 
-  // Función para reproducir sonido de notificación
+  // Función para reproducir sonido de notificación (BIP fuerte y claro)
   const playNotificationSound = () => {
     try {
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       
+      // Primer BIP - más fuerte y más largo
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
       
       oscillator.connect(gainNode);
       gainNode.connect(audioContext.destination);
       
-      oscillator.frequency.value = 800;
-      oscillator.type = 'sine';
+      // Frecuencia más alta para mejor audibilidad (1200Hz)
+      oscillator.frequency.value = 1200;
+      oscillator.type = 'square'; // Onda cuadrada para sonido más penetrante
       
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+      // Volumen mucho más alto (0.8 en lugar de 0.3)
+      gainNode.gain.setValueAtTime(0.8, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
       
       oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.1);
+      oscillator.stop(audioContext.currentTime + 0.2);
       
+      // Segundo BIP - aún más fuerte
       setTimeout(() => {
         const oscillator2 = audioContext.createOscillator();
         const gainNode2 = audioContext.createGain();
@@ -131,15 +135,15 @@ export default function KitchenView() {
         oscillator2.connect(gainNode2);
         gainNode2.connect(audioContext.destination);
         
-        oscillator2.frequency.value = 1000;
-        oscillator2.type = 'sine';
+        oscillator2.frequency.value = 1400;
+        oscillator2.type = 'square';
         
-        gainNode2.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+        gainNode2.gain.setValueAtTime(0.8, audioContext.currentTime);
+        gainNode2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
         
         oscillator2.start(audioContext.currentTime);
-        oscillator2.stop(audioContext.currentTime + 0.1);
-      }, 150);
+        oscillator2.stop(audioContext.currentTime + 0.2);
+      }, 200);
     } catch (error) {
       console.error('Error reproduciendo sonido:', error);
     }
