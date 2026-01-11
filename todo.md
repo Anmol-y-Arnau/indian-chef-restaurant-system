@@ -278,3 +278,13 @@
 - [x] Cambiar a un "bip" más claro y penetrante (onda cuadrada)
 - [x] Ajustar frecuencias para mejor audibilidad (1200Hz y 1400Hz)
 - [x] Duración aumentada a 0.2s por bip para mayor claridad
+
+
+## Bug Reportado - Sonido Solo Funciona en Guarniciones
+
+- [x] El sonido solo se activa con guarniciones, no con otras categorías de comida
+- [x] Debe funcionar para: entrantes, ensaladas, tandoor, todos los currys, biryani, postres, guarniciones
+- [x] NO debe sonar para: bebidas, vinos, cafés
+- [x] Cambiado de lista negativa a lista positiva de categorías
+- [x] Añadidos logs detallados para debugging en consola
+- [x] Lista explícita: starters, salads, tandoor, veg_curry, chicken_curry, fish_prawn_curry, lamb_curry, biryani, sides, desserts

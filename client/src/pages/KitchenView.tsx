@@ -154,13 +154,30 @@ export default function KitchenView() {
     // Categorías que NO son comida (no deben sonar)
     const nonFoodCategories = ['drinks', 'wines', 'coffees'];
     
+    // Categorías que SÍ son comida (deben sonar)
+    const foodCategories = ['starters', 'salads', 'tandoor', 'veg_curry', 'chicken_curry', 'fish_prawn_curry', 'lamb_curry', 'biryani', 'sides', 'desserts'];
+    
     // Contar solo pedidos de comida pendientes (no entregados)
     const currentFoodOrderCount = activeTables.reduce((sum, table) => {
-      const foodOrders = table.orders.filter(order => 
-        !nonFoodCategories.includes(order.menuItem.category) && !order.isDelivered
-      );
+      const foodOrders = table.orders.filter(order => {
+        const isFood = foodCategories.includes(order.menuItem.category);
+        const isPending = !order.isDelivered;
+        return isFood && isPending;
+      });
       return sum + foodOrders.length;
     }, 0);
+    
+    // Log para debugging
+    console.log('[SOUND] Check:', { 
+      previousCount: previousOrderCount, 
+      currentCount: currentFoodOrderCount,
+      activeTables: activeTables.length,
+      allOrders: activeTables.flatMap(t => t.orders).map(o => ({ 
+        name: o.menuItem.name, 
+        category: o.menuItem.category,
+        isDelivered: o.isDelivered 
+      }))
+    });
     
     // Si hay más pedidos de comida que antes (nueva mesa O items adicionales en mesa existente)
     if (previousOrderCount > 0 && currentFoodOrderCount > previousOrderCount) {
@@ -169,9 +186,11 @@ export default function KitchenView() {
       
       // Solo sonar si han pasado al menos 10 segundos (10000ms)
       if (timeSinceLastNotification >= 10000 || lastNotificationTime === 0) {
-        console.log('[SOUND] Nueva comida detectada:', { previous: previousOrderCount, current: currentFoodOrderCount });
+        console.log('[SOUND] 🔔 Nueva comida detectada! Reproduciendo sonido...');
         playNotificationSound();
         setLastNotificationTime(now);
+      } else {
+        console.log('[SOUND] 🔇 Throttled - esperando', Math.round((10000 - timeSinceLastNotification) / 1000), 'segundos');
       }
     }
     
