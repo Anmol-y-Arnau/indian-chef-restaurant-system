@@ -206,3 +206,13 @@
 - [x] Backend ahora verifica si existe pedido pendiente antes de crear/actualizar
 - [x] Tests creados y pasando: duplicate-orders-backend.test.ts (4/4 tests)
 - [x] Verificado manualmente: 4 naan entregados + 1 nuevo = 2 pedidos separados en cocina
+
+
+## Mejora UX - Agrupar Pedidos Entregados en Modo Cocina
+
+- [x] Cuando hay múltiples pedidos del mismo item todos entregados, aparecen como líneas separadas
+- [x] Ejemplo: 2 pedidos de "Plain Rice x1" entregados → deberían mostrarse como "Plain Rice x2"
+- [x] Modificado categorizeTableOrders en KitchenView para agrupar pedidos entregados del mismo item
+- [x] Los pedidos entregados del mismo item se agrupan sumando cantidades
+- [x] Los pedidos pendientes se mantienen separados para que cada uno tenga su propio botón de entrega
+- [x] Verificado: 2 Plain Rice entregados se muestran como "Plain Rice x2"

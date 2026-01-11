@@ -209,9 +209,33 @@ export default function KitchenView() {
         return aTime - bTime; // Más antiguo primero
       });
       
+      const pending = sorted.filter(o => !o.isDelivered);
+      const deliveredItems = sorted.filter(o => o.isDelivered);
+      
+      // Agrupar pedidos entregados del mismo item
+      const deliveredGrouped = deliveredItems.reduce((acc: any[], order) => {
+        const existing = acc.find(o => o.menuItem.id === order.menuItem.id);
+        if (existing) {
+          // Sumar la cantidad al pedido existente
+          existing.quantity += order.quantity;
+          // Guardar los IDs originales para el botón de toggle
+          if (!existing.originalIds) {
+            existing.originalIds = [Number(existing.id)];
+          }
+          existing.originalIds.push(Number(order.id));
+        } else {
+          // Primer pedido de este item
+          acc.push({
+            ...order,
+            originalIds: [Number(order.id)] // Guardar el ID original
+          });
+        }
+        return acc;
+      }, []);
+      
       return {
-        pending: sorted.filter(o => !o.isDelivered),
-        delivered: sorted.filter(o => o.isDelivered)
+        pending,
+        delivered: deliveredGrouped
       };
     };
     
