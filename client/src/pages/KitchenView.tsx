@@ -333,14 +333,28 @@ export default function KitchenView() {
             )}
           </div>
           {order.spiceLevel && (
-            <span className="text-orange-400 text-sm font-medium">
-              🌶️ Picante: {order.spiceLevel}
-            </span>
+            <div className="flex items-center gap-2 bg-orange-600/20 px-3 py-1.5 rounded-md border border-orange-500/30">
+              <span className="text-2xl">
+                {order.spiceLevel === '-' && '👌'}
+                {order.spiceLevel === '+-' && '🌶️'}
+                {order.spiceLevel === '+' && '🌶️🌶️'}
+                {order.spiceLevel === '++' && '🔥🔥'}
+              </span>
+              <span className="text-sm font-bold text-orange-300">
+                {order.spiceLevel === '-' && 'NO PICANTE'}
+                {order.spiceLevel === '+-' && 'TOQUE PICANTE'}
+                {order.spiceLevel === '+' && 'PICANTE'}
+                {order.spiceLevel === '++' && 'MUY PICANTE'}
+              </span>
+            </div>
           )}
           {order.notes && (
-            <span className="text-blue-400 text-sm italic">
-              📝 {order.notes}
-            </span>
+            <div className="flex items-start gap-2 bg-blue-600/20 px-3 py-1.5 rounded-md border border-blue-500/30">
+              <span className="text-xl flex-shrink-0">📝</span>
+              <span className="text-sm text-blue-300 italic break-words">
+                {order.notes}
+              </span>
+            </div>
           )}
         </div>
         <div className="flex items-center gap-3">

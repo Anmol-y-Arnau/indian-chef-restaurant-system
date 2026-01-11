@@ -309,3 +309,33 @@
 - [x] Aplicar a todas las categorías: entrantes, currys, biryani, bebidas
 - [x] Prevenir propagación del evento del lápiz al click de la tarjeta
 - [x] Probar que funciona correctamente en móvil y desktop
+
+
+## Mejorar Indicadores de Picante
+
+- [x] Hacer indicadores de picante más grandes y visibles (como iconos)
+- [x] Añadir opción "Sin especificar" o "N/A" para cuando no se quiere indicar nivel de picante
+- [x] Útil para bebidas o cuando solo se quieren añadir notas sin picante
+- [x] Actualizar visualización en panel lateral (OrderPanel)
+- [x] Actualizar visualización en modo cocina (KitchenView)
+- [ ] Actualizar visualización en tickets impresos
+- [x] Probar que se ve claramente para el chef
+
+
+## Arreglar Visualización Móvil de Indicadores
+
+- [x] Verificar que indicadores de picante se vean en móvil en OrderPanel
+- [x] Verificar que notas se vean en móvil en OrderPanel
+- [x] Verificar que indicadores de picante se vean en móvil en KitchenView
+- [x] Verificar que notas se vean en móvil en KitchenView
+- [x] Ajustar CSS responsive si es necesario
+- [ ] Probar en viewport móvil (375px width)
+
+
+## Añadir Selector de Cantidad en Modal de Personalización
+
+- [x] Añadir campo de cantidad en CustomizationModal
+- [x] Permitir seleccionar cantidad (botones +/- o input numérico)
+- [x] Actualizar la función onConfirm para incluir la cantidad
+- [x] Actualizar Home.tsx para manejar la cantidad del modal
+- [x] Probar que funciona correctamente (ej: 2 chais sin leche)

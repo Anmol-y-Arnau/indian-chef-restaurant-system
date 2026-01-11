@@ -83,9 +83,12 @@ export default function Home() {
   };
 
   // Función para confirmar la personalización
-  const handleConfirmCustomization = (spiceLevel: string, notes: string) => {
+  const handleConfirmCustomization = (spiceLevel: string, notes: string, quantity: number) => {
     if (customizationItem && activeTableId !== null) {
-      addOrderToTable(activeTableId, customizationItem, { spiceLevel, notes });
+      // Añadir la cantidad especificada
+      for (let i = 0; i < quantity; i++) {
+        addOrderToTable(activeTableId, customizationItem, { spiceLevel, notes });
+      }
     }
     setIsCustomizationOpen(false);
     setCustomizationItem(null);
