@@ -188,3 +188,12 @@
 - [x] Solución: Modificar RestaurantContext para buscar solo pedidos pendientes al actualizar cantidad
 - [x] Si todos los pedidos del item están entregados, crear nuevo pedido independiente
 - [x] Verificado: funciona correctamente en modo cocina
+
+
+## Nueva Funcionalidad - Botón Modo Cocina Visible
+
+- [x] Añadir botón visible de "Modo Cocina" en la interfaz principal de ordenador
+- [x] Posicionar el botón en un lugar accesible (header o barra superior)
+- [x] Diseño coherente con el resto de la interfaz (naranja con icono ChefHat)
+- [x] Añadidas traducciones en español, inglés y francés
+- [x] Verificar que funciona correctamente en desktop

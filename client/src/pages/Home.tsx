@@ -230,6 +230,15 @@ export default function Home() {
             
             {/* Search Bar - Desktop only */}
             <div className="hidden md:flex absolute bottom-6 right-8 z-20 items-center gap-2">
+              <Button
+                onClick={() => setIsKitchenMode(true)}
+                variant="outline"
+                size="sm"
+                className="bg-orange-600/90 hover:bg-orange-500 text-white border-orange-500 backdrop-blur-md transition-all"
+              >
+                <ChefHat className="w-4 h-4 mr-2" />
+                {t('kitchen_mode') || 'Modo Cocina'}
+              </Button>
               <LanguageSwitcher />
               <HistoryDialog />
               <div className="relative w-80">

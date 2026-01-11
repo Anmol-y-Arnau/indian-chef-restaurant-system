@@ -37,6 +37,7 @@ export const TRANSLATIONS = {
     release_table: 'Liberar Mesa',
     print_ticket: 'Imprimir Ticket',
     kitchen_note: 'Nota Cocina',
+    kitchen_mode: 'Modo Cocina',
     categories: {
       starters: 'Entrantes y Chaats',
       salads: 'Ensaladas',
@@ -89,6 +90,7 @@ export const TRANSLATIONS = {
     release_table: 'Release Table',
     print_ticket: 'Print Ticket',
     kitchen_note: 'Kitchen Note',
+    kitchen_mode: 'Kitchen Mode',
     categories: {
       starters: 'Starters & Chaats',
       salads: 'Salads',
@@ -141,6 +143,7 @@ export const TRANSLATIONS = {
     release_table: 'Libérer Table',
     print_ticket: 'Imprimer Ticket',
     kitchen_note: 'Note Cuisine',
+    kitchen_mode: 'Mode Cuisine',
     categories: {
       starters: 'Entrées & Chaats',
       salads: 'Salades',
