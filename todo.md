@@ -339,3 +339,13 @@
 - [x] Actualizar la función onConfirm para incluir la cantidad
 - [x] Actualizar Home.tsx para manejar la cantidad del modal
 - [x] Probar que funciona correctamente (ej: 2 chais sin leche)
+
+
+## Cambiar Iconos de Picante a Símbolos de Texto
+
+- [x] Cambiar emojis (👌🌶️🔥) por símbolos de texto (-, +-, +, ++)
+- [x] Hacer los símbolos grandes y visibles
+- [x] Actualizar CustomizationModal
+- [x] Actualizar OrderPanel
+- [x] Actualizar KitchenView
+- [x] Probar que se vean claramente

@@ -165,12 +165,9 @@ export function OrderPanel() {
                   </div>
                   <div className="flex flex-col gap-1 mt-1">
                     {order.spiceLevel && (
-                      <div className="flex items-center gap-1.5 bg-orange-50 dark:bg-orange-950/30 px-2 py-1 rounded">
-                        <span className="text-lg">
-                          {order.spiceLevel === '-' && '👌'}
-                          {order.spiceLevel === '+-' && '🌶️'}
-                          {order.spiceLevel === '+' && '🌶️🌶️'}
-                          {order.spiceLevel === '++' && '🔥🔥'}
+                      <div className="flex items-center gap-2 bg-orange-50 dark:bg-orange-950/30 px-2 py-1.5 rounded">
+                        <span className="text-2xl font-black text-orange-600 dark:text-orange-400">
+                          {order.spiceLevel}
                         </span>
                         <span className="text-xs font-bold text-orange-600 dark:text-orange-400">
                           {order.spiceLevel === '-' && 'NO PICANTE'}

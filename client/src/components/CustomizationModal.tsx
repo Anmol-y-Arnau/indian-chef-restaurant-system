@@ -12,11 +12,11 @@ interface CustomizationModalProps {
 }
 
 const SPICE_LEVELS = [
-  { value: '', label: 'Sin especificar', icon: '', color: 'bg-gray-500 hover:bg-gray-600' },
-  { value: '-', label: 'No Picante', icon: '👌', color: 'bg-green-500 hover:bg-green-600' },
-  { value: '+-', label: 'Toque Picante', icon: '🌶️', color: 'bg-yellow-500 hover:bg-yellow-600' },
-  { value: '+', label: 'Picante', icon: '🌶️🌶️', color: 'bg-orange-500 hover:bg-orange-600' },
-  { value: '++', label: 'Muy Picante', icon: '🔥🔥', color: 'bg-red-500 hover:bg-red-600' },
+  { value: '', label: 'Sin especificar', icon: '—', color: 'bg-gray-500 hover:bg-gray-600' },
+  { value: '-', label: 'No Picante', icon: '-', color: 'bg-green-500 hover:bg-green-600' },
+  { value: '+-', label: 'Toque Picante', icon: '+-', color: 'bg-yellow-500 hover:bg-yellow-600' },
+  { value: '+', label: 'Picante', icon: '+', color: 'bg-orange-500 hover:bg-orange-600' },
+  { value: '++', label: 'Muy Picante', icon: '++', color: 'bg-red-500 hover:bg-red-600' },
 ];
 
 export function CustomizationModal({ isOpen, onClose, onConfirm, itemName }: CustomizationModalProps) {
@@ -98,7 +98,7 @@ export function CustomizationModal({ isOpen, onClose, onConfirm, itemName }: Cus
                   onClick={() => setSpiceLevel(level.value)}
                 >
                   <div className="flex flex-col items-center gap-2">
-                    <span className="text-3xl">{level.icon || '❌'}</span>
+                    <span className="text-5xl font-bold">{level.icon}</span>
                     <span className="text-xs font-semibold">{level.label}</span>
                   </div>
                 </Button>
