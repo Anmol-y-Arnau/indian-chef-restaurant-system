@@ -309,86 +309,131 @@ export default function KitchenView() {
     };
   };
 
-  const OrderItem = ({ order, isPending }: { order: any; isPending: boolean }) => {
-    // Usar el valor real de la base de datos, no el calculado
-    const isDelivered = Boolean(order.isDelivered);
-    
-    return (
-      <div 
-        className={`
-          flex justify-between items-center rounded p-3 transition-all duration-300
-          ${isDelivered 
-            ? 'bg-slate-900/30 opacity-50 scale-95' 
-            : 'bg-slate-900/50 shadow-lg'
-          }
-        `}
-      >
-        <div className="flex flex-col gap-1 flex-1">
-          <div className="flex items-center gap-3">
-            <span className={`text-white font-semibold ${isDelivered ? 'text-lg line-through' : 'text-2xl'}`}>
-              {order.menuItem.name}
-            </span>
-            {isDelivered && (
-              <CheckCircle2 className="w-5 h-5 text-green-500" />
-            )}
-          </div>
-          {order.spiceLevel && (
-            <div className="flex items-center gap-3 bg-orange-600/20 px-4 py-2 rounded-md border border-orange-500/30">
-              <span className="text-4xl font-black text-orange-300">
-                {order.spiceLevel}
-              </span>
-              <span className="text-base font-bold text-orange-300">
-                {order.spiceLevel === '-' && 'NO PICANTE'}
-                {order.spiceLevel === '+-' && 'TOQUE PICANTE'}
-                {order.spiceLevel === '+' && 'PICANTE'}
-                {order.spiceLevel === '++' && 'MUY PICANTE'}
-              </span>
-            </div>
-          )}
-          {order.notes && (
-            <div className="flex items-start gap-2 bg-blue-600/20 px-3 py-1.5 rounded-md border border-blue-500/30">
-              <span className="text-xl flex-shrink-0">📝</span>
-              <span className="text-sm text-blue-300 italic break-words">
-                {order.notes}
-              </span>
-            </div>
-          )}
-        </div>
-        <div className="flex items-center gap-3">
-          <span className={`font-bold ${isDelivered ? 'text-xl text-slate-500' : 'text-3xl text-white'}`}>
-            x{order.quantity}
-          </span>
-          <button
-            onClick={() => handleToggleItemDelivery(order.id, isDelivered)}
-            className={`p-2 rounded-lg transition-all ${
-              isDelivered 
-                ? 'bg-orange-600 hover:bg-orange-700' 
-                : 'bg-green-600 hover:bg-green-700'
-            } active:scale-90 text-white`}
-            title={isDelivered ? "Marcar como pendiente" : "Marcar como entregado"}
-          >
-            {isDelivered ? <RotateCcw className="w-5 h-5" /> : <Check className="w-5 h-5" />}
-          </button>
-        </div>
-      </div>
-    );
-  };
 
-  const TableCard = ({ table }: { table: any }) => {
+
+  const TableCard = ({ table, tableCount }: { table: any; tableCount: number }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
     const categorized = categorizeTableOrders(table.orders);
     const hasPendingStarters = categorized.starters.pending.length > 0;
     const isFullyDelivered = table.isFullyDelivered;
 
+    // Tamaños dinámicos según cantidad de mesas
+    const sizes = {
+      headerText: tableCount <= 2 ? 'text-4xl' : tableCount <= 4 ? 'text-3xl' : tableCount <= 6 ? 'text-2xl' : 'text-xl',
+      headerTextDelivered: tableCount <= 2 ? 'text-2xl' : tableCount <= 4 ? 'text-xl' : 'text-lg',
+      pendingCount: tableCount <= 2 ? 'text-3xl' : tableCount <= 4 ? 'text-2xl' : tableCount <= 6 ? 'text-xl' : 'text-lg',
+      pendingCountDelivered: tableCount <= 2 ? 'text-xl' : tableCount <= 4 ? 'text-lg' : 'text-base',
+      itemName: tableCount <= 2 ? 'text-xl' : tableCount <= 4 ? 'text-lg' : tableCount <= 6 ? 'text-base' : 'text-sm',
+      itemNameDelivered: tableCount <= 2 ? 'text-base' : tableCount <= 4 ? 'text-sm' : 'text-xs',
+      quantity: tableCount <= 2 ? 'text-2xl' : tableCount <= 4 ? 'text-xl' : tableCount <= 6 ? 'text-lg' : 'text-base',
+      quantityDelivered: tableCount <= 2 ? 'text-lg' : tableCount <= 4 ? 'text-base' : 'text-sm',
+      spiceIcon: tableCount <= 2 ? 'text-3xl' : tableCount <= 4 ? 'text-2xl' : tableCount <= 6 ? 'text-xl' : 'text-lg',
+      spiceText: tableCount <= 2 ? 'text-sm' : tableCount <= 4 ? 'text-xs' : 'text-[10px]',
+      categoryTitle: tableCount <= 2 ? 'text-base' : tableCount <= 4 ? 'text-sm' : 'text-xs',
+      padding: tableCount <= 2 ? 'p-6' : tableCount <= 4 ? 'p-4' : tableCount <= 6 ? 'p-3' : 'p-2',
+    };
+
+    // Componente OrderItem interno con acceso a sizes
+    const OrderItem = ({ order, isPending }: { order: any; isPending: boolean }) => {
+      const isDelivered = Boolean(order.isDelivered);
+      
+      return (
+        <div 
+          className={`
+            flex justify-between items-center rounded p-3 transition-all duration-300
+            ${isDelivered 
+              ? 'bg-slate-900/30 opacity-50 scale-95' 
+              : 'bg-slate-900/50 shadow-lg'
+            }
+          `}
+        >
+          <div className="flex flex-col gap-1 flex-1">
+            <div className="flex items-center gap-3">
+              <span className={`text-white font-semibold ${isDelivered ? sizes.itemNameDelivered + ' line-through' : sizes.itemName}`}>
+                {order.menuItem.name}
+              </span>
+              {isDelivered && (
+                <CheckCircle2 className="w-5 h-5 text-green-500" />
+              )}
+            </div>
+            {order.spiceLevel && (
+              <div className="flex items-center gap-2 bg-orange-600/20 px-2 py-1 rounded-md border border-orange-500/30">
+                <span className={`${sizes.spiceIcon} font-black text-orange-300`}>
+                  {order.spiceLevel}
+                </span>
+                <span className={`${sizes.spiceText} font-bold text-orange-300`}>
+                  {order.spiceLevel === '-' && 'NO PICANTE'}
+                  {order.spiceLevel === '+-' && 'TOQUE PICANTE'}
+                  {order.spiceLevel === '+' && 'PICANTE'}
+                  {order.spiceLevel === '++' && 'MUY PICANTE'}
+                </span>
+              </div>
+            )}
+            {order.notes && (
+              <div className="flex items-start gap-2 bg-blue-600/20 px-3 py-1.5 rounded-md border border-blue-500/30">
+                <span className="text-xl flex-shrink-0">📝</span>
+                <span className="text-sm text-blue-300 italic break-words">
+                  {order.notes}
+                </span>
+              </div>
+            )}
+          </div>
+          <div className="flex items-center gap-3">
+            <span className={`font-bold ${isDelivered ? `${sizes.quantityDelivered} text-slate-500` : `${sizes.quantity} text-white`}`}>
+              x{order.quantity}
+            </span>
+            <button
+              onClick={() => handleToggleItemDelivery(order.id, isDelivered)}
+              className={`p-2 rounded-lg transition-all ${
+                isDelivered 
+                  ? 'bg-orange-600 hover:bg-orange-700' 
+                  : 'bg-green-600 hover:bg-green-700'
+              } active:scale-90 text-white`}
+              title={isDelivered ? "Marcar como pendiente" : "Marcar como entregado"}
+            >
+              {isDelivered ? <RotateCcw className="w-5 h-5" /> : <Check className="w-5 h-5" />}
+            </button>
+          </div>
+        </div>
+      );
+    };
+
+    // Si está completamente entregado y NO expandido, mostrar versión comprimida
+    if (isFullyDelivered && !isExpanded) {
+      return (
+        <div 
+          onClick={() => setIsExpanded(true)}
+          className="bg-slate-800/30 rounded-lg p-2 border border-slate-700/50 cursor-pointer hover:bg-slate-800/50 transition-all flex items-center justify-between opacity-40 hover:opacity-60"
+        >
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-green-600" />
+            <span className="text-slate-500 text-xs font-semibold">Mesa {table.name}</span>
+          </div>
+          <span className="text-slate-600 text-[10px] uppercase">Todo Entregado</span>
+        </div>
+      );
+    }
+
     return (
       <div 
         className={`
-          bg-slate-800 rounded-xl p-6 border-4 transition-all duration-500 shadow-2xl
+          bg-slate-800 rounded-xl ${sizes.padding} border-4 transition-all duration-500 shadow-2xl overflow-y-auto relative
           ${isFullyDelivered 
-            ? 'border-slate-700 opacity-60 scale-95' 
+            ? 'border-slate-700 opacity-70' 
             : 'border-slate-600'
           }
         `}
       >
+        {/* Botón para comprimir si está entregado y expandido */}
+        {isFullyDelivered && isExpanded && (
+          <button
+            onClick={() => setIsExpanded(false)}
+            className="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-slate-400 p-1 rounded text-xs z-10"
+            title="Comprimir"
+          >
+            −
+          </button>
+        )}
         {/* HEADER - MESA */}
         <div className="flex justify-between items-center mb-6 pb-4 border-b-2 border-slate-700">
           <div className="flex items-center gap-4">
@@ -402,13 +447,13 @@ export default function KitchenView() {
                 ✓ ENTREGADO
               </div>
             )}
-            <h2 className={`font-bold text-orange-400 ${isFullyDelivered ? 'text-3xl' : 'text-5xl'}`}>
+            <h2 className={`font-bold text-orange-400 ${isFullyDelivered ? sizes.headerTextDelivered : sizes.headerText}`}>
               TABLE {table.name}
             </h2>
           </div>
           <div className="text-right">
-            <div className="text-slate-400 text-sm">Pendientes</div>
-            <div className={`font-bold ${isFullyDelivered ? 'text-2xl text-green-500' : 'text-4xl text-white'}`}>
+            <div className="text-slate-400 text-xs">Pendientes</div>
+            <div className={`font-bold ${isFullyDelivered ? `${sizes.pendingCountDelivered} text-green-500` : `${sizes.pendingCount} text-white`}`}>
               {table.pendingCount}/{table.orders.length}
             </div>
           </div>
@@ -422,7 +467,7 @@ export default function KitchenView() {
                 ? 'bg-orange-500/20 border-orange-500' 
                 : 'bg-slate-700/20 border-slate-600'
             }`}>
-              <div className="text-orange-400 font-bold text-lg mb-3 flex items-center gap-2">
+              <div className={`text-orange-400 font-bold ${sizes.categoryTitle} mb-2 flex items-center gap-2`}>
                 <span>🔥</span>
                 <span>ENTRANTES</span>
               </div>
@@ -545,11 +590,28 @@ export default function KitchenView() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 py-6 h-[calc(100vh-120px)] overflow-hidden">
         {activeTables.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className={`
+            grid gap-4 h-full
+            ${
+              activeTables.length === 1 ? 'grid-cols-1' :
+              activeTables.length === 2 ? 'grid-cols-2' :
+              activeTables.length <= 4 ? 'grid-cols-2' :
+              activeTables.length <= 6 ? 'grid-cols-3' :
+              activeTables.length <= 9 ? 'grid-cols-3' :
+              'grid-cols-4'
+            }
+            ${
+              activeTables.length <= 2 ? 'grid-rows-1' :
+              activeTables.length <= 4 ? 'grid-rows-2' :
+              activeTables.length <= 6 ? 'grid-rows-2' :
+              activeTables.length <= 9 ? 'grid-rows-3' :
+              'grid-rows-3'
+            }
+          `}>
             {activeTables.map(table => (
-              <TableCard key={table.id} table={table} />
+              <TableCard key={table.id} table={table} tableCount={activeTables.length} />
             ))}
           </div>
         ) : (

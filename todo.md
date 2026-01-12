@@ -349,3 +349,18 @@
 - [x] Actualizar OrderPanel
 - [x] Actualizar KitchenView
 - [x] Probar que se vean claramente
+
+
+#### Rediseñar Modo Cocina con Layout Adaptativo (Dashboard)
+- [x] Eliminar scroll vertical en KitchenView
+- [x] Implementar grid adaptativo tipo Kanban/Tetris
+- [x] Tarjetas de mesas se organizan automáticamente (lado a lado, arriba/abajo)
+- [x] Tamaño dinámico: 2 mesas = tarjetas grandes, 10 mesas = tarjetas pequeñas
+- [x] Texto escalable según número de mesas activas
+- [x] Todo visible en pantalla de 12.9" sin scroll
+- [x] Probar con 1, 2, 5, 10 mesas activas
+- [x] Optimizar para tablet (no se toca, solo visualización)
+- [x] Mesas completamente entregadas se comprimen al mínimo
+- [x] Solo mostrar "Mesa X - TODO ENTREGADO" en gris y pequeño
+- [x] Expandible al hacer clic para ver detalles
+- [x] Cocineros se enfocan en mesas con pedidos pendientes
