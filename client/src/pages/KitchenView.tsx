@@ -317,21 +317,25 @@ export default function KitchenView() {
     const hasPendingStarters = categorized.starters.pending.length > 0;
     const isFullyDelivered = table.isFullyDelivered;
 
-    // Tamaños dinámicos según cantidad de mesas (optimizado para tablet 12.9" desktop)
+    // Contar items totales en esta mesa
+    const totalItems = table.orders.length;
+    
+    // Tamaños dinámicos según cantidad de items en ESTA mesa (no total de mesas)
     const sizes = {
-      headerText: tableCount <= 2 ? 'text-3xl' : tableCount <= 4 ? 'text-2xl' : tableCount <= 6 ? 'text-xl' : tableCount <= 9 ? 'text-lg' : 'text-base',
-      headerTextDelivered: tableCount <= 2 ? 'text-xl' : tableCount <= 4 ? 'text-lg' : 'text-base',
-      pendingCount: tableCount <= 2 ? 'text-2xl' : tableCount <= 4 ? 'text-xl' : tableCount <= 6 ? 'text-lg' : tableCount <= 9 ? 'text-base' : 'text-sm',
-      pendingCountDelivered: tableCount <= 2 ? 'text-lg' : tableCount <= 4 ? 'text-base' : 'text-sm',
-      itemName: tableCount <= 2 ? 'text-lg' : tableCount <= 4 ? 'text-base' : tableCount <= 6 ? 'text-sm' : tableCount <= 9 ? 'text-xs' : 'text-[11px]',
-      itemNameDelivered: tableCount <= 2 ? 'text-sm' : tableCount <= 4 ? 'text-xs' : 'text-[10px]',
-      quantity: tableCount <= 2 ? 'text-xl' : tableCount <= 4 ? 'text-lg' : tableCount <= 6 ? 'text-base' : tableCount <= 9 ? 'text-sm' : 'text-xs',
-      quantityDelivered: tableCount <= 2 ? 'text-base' : tableCount <= 4 ? 'text-sm' : 'text-xs',
-      spiceIcon: tableCount <= 2 ? 'text-2xl' : tableCount <= 4 ? 'text-xl' : tableCount <= 6 ? 'text-lg' : tableCount <= 9 ? 'text-base' : 'text-sm',
-      spiceText: tableCount <= 2 ? 'text-xs' : tableCount <= 4 ? 'text-[10px]' : 'text-[9px]',
-      categoryTitle: tableCount <= 2 ? 'text-sm' : tableCount <= 4 ? 'text-xs' : 'text-[10px]',
-      padding: tableCount <= 2 ? 'p-4' : tableCount <= 4 ? 'p-3' : tableCount <= 6 ? 'p-2' : 'p-1.5',
-      itemPadding: tableCount <= 2 ? 'p-3' : tableCount <= 4 ? 'p-2' : tableCount <= 6 ? 'p-1.5' : 'p-1',
+      headerText: totalItems <= 3 ? 'text-2xl' : totalItems <= 6 ? 'text-xl' : totalItems <= 10 ? 'text-lg' : 'text-base',
+      headerTextDelivered: totalItems <= 3 ? 'text-lg' : totalItems <= 6 ? 'text-base' : 'text-sm',
+      pendingCount: totalItems <= 3 ? 'text-xl' : totalItems <= 6 ? 'text-lg' : totalItems <= 10 ? 'text-base' : 'text-sm',
+      pendingCountDelivered: totalItems <= 3 ? 'text-base' : totalItems <= 6 ? 'text-sm' : 'text-xs',
+      itemName: totalItems <= 3 ? 'text-base' : totalItems <= 6 ? 'text-sm' : totalItems <= 10 ? 'text-xs' : 'text-[10px]',
+      itemNameDelivered: totalItems <= 3 ? 'text-sm' : totalItems <= 6 ? 'text-xs' : 'text-[9px]',
+      quantity: totalItems <= 3 ? 'text-lg' : totalItems <= 6 ? 'text-base' : totalItems <= 10 ? 'text-sm' : 'text-xs',
+      quantityDelivered: totalItems <= 3 ? 'text-base' : totalItems <= 6 ? 'text-sm' : 'text-xs',
+      spiceIcon: totalItems <= 3 ? 'text-xl' : totalItems <= 6 ? 'text-lg' : totalItems <= 10 ? 'text-base' : 'text-sm',
+      spiceText: totalItems <= 3 ? 'text-xs' : totalItems <= 6 ? 'text-[10px]' : 'text-[9px]',
+      categoryTitle: totalItems <= 3 ? 'text-sm' : totalItems <= 6 ? 'text-xs' : 'text-[10px]',
+      padding: totalItems <= 3 ? 'p-3' : totalItems <= 6 ? 'p-2' : totalItems <= 10 ? 'p-1.5' : 'p-1',
+      itemPadding: totalItems <= 3 ? 'p-2' : totalItems <= 6 ? 'p-1.5' : totalItems <= 10 ? 'p-1' : 'p-0.5',
+      gap: totalItems <= 3 ? 'gap-2' : totalItems <= 6 ? 'gap-1.5' : totalItems <= 10 ? 'gap-1' : 'gap-0.5',
     };
 
     // Componente OrderItem interno con acceso a sizes
@@ -418,7 +422,7 @@ export default function KitchenView() {
     return (
       <div 
         className={`
-          bg-slate-800 rounded-xl ${sizes.padding} border-4 transition-all duration-500 shadow-2xl relative flex flex-col
+          bg-slate-800 rounded-xl ${sizes.padding} border-4 transition-all duration-500 shadow-2xl relative flex flex-col h-full overflow-hidden
           ${isFullyDelivered 
             ? 'border-slate-700 opacity-70' 
             : 'border-slate-600'
@@ -460,8 +464,10 @@ export default function KitchenView() {
           </div>
         </div>
 
-        {/* ENTRANTES - PRIORIDAD */}
-        {(categorized.starters.pending.length > 0 || categorized.starters.delivered.length > 0) && (
+        {/* Contenedor scrollable para todas las categorías */}
+        <div className="flex-1 overflow-y-auto">
+          {/* ENTRANTES - PRIORIDAD */}
+          {(categorized.starters.pending.length > 0 || categorized.starters.delivered.length > 0) && (
           <div className="mb-6">
             <div className={`border-2 rounded-lg ${sizes.itemPadding} transition-all ${
               categorized.starters.pending.length > 0 
@@ -559,6 +565,7 @@ export default function KitchenView() {
             DELIVERED TODO
           </button>
         )}
+        </div>
       </div>
     );
   };
@@ -591,20 +598,8 @@ export default function KitchenView() {
         </div>
       </div>
 
-      <div className="container mx-auto px-3 py-3 h-[calc(100vh-100px)] overflow-y-auto">
-        {activeTables.length > 0 ? (
-          <div className={`
-            grid gap-3 auto-rows-min
-            ${
-              activeTables.length === 1 ? 'grid-cols-1' :
-              activeTables.length === 2 ? 'grid-cols-2' :
-              activeTables.length <= 4 ? 'grid-cols-2' :
-              activeTables.length <= 6 ? 'grid-cols-3' :
-              activeTables.length <= 9 ? 'grid-cols-3' :
-              activeTables.length <= 12 ? 'grid-cols-4' :
-              'grid-cols-4'
-            }
-          `}>
+      <div className="container mx-auto px-3 py-3 h-[calc(100vh-100px)] overflow-hidden">      {activeTables.length > 0 ? (
+          <div className="grid grid-cols-4 gap-3 h-full" style={{ gridAutoRows: '1fr' }}>
             {activeTables.map(table => (
               <TableCard key={table.id} table={table} tableCount={activeTables.length} />
             ))}

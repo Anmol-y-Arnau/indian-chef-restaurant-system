@@ -387,3 +387,24 @@
 - [x] Grid responsive: 1 columna (móvil), 2-4 columnas (tablet/desktop)
 - [x] Probar con pedidos de diferentes tamaños (1 item, 5 items, 10 items)
 - [x] Mantener colores, botones y diseño visual actual
+
+
+## Rediseñar Modo Cocina con Grid Fijo y Texto Escalable
+
+- [x] Grid fijo de 4 columnas (cada tarjeta = 1/4 del ancho)
+- [x] Altura fija para todas las tarjetas (misma altura con h-full)
+- [x] Texto escalable dinámicamente según cantidad de items por mesa
+- [x] 2-3 items = texto grande, 10+ items = texto pequeño
+- [x] Contenido con scroll interno en cada tarjeta (overflow-y-auto)
+- [x] Dashboard de cocina profesional optimizado para tablet 12.9"
+- [x] Grid siempre 4 columnas independiente del número de mesas
+- [x] Si hay más de 4 mesas, se muestran en filas adicionales
+- [x] Probar con diferentes cantidades de items (2, 5, 10, 15)
+
+
+## Añadir Número de Versión en Página Principal
+
+- [x] Mostrar número de versión al lado del título "Indian Chef"
+- [x] Formato: "Indian Chef v1.0" 
+- [x] Ubicación: Header de la página principal (Home) y panel de mesas
+- [x] Estilo discreto pero visible (gris, font-mono)

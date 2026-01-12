@@ -162,7 +162,10 @@ export default function Home() {
                   <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center border border-primary p-1">
                     <img src="/images/chef-icon.png" alt="Logo" className="w-full h-full object-contain" />
                   </div>
-                  <h2 className="font-heading text-xl text-primary">Indian Chef</h2>
+                  <div className="flex items-center gap-2">
+                    <h2 className="font-heading text-xl text-primary">Indian Chef</h2>
+                    <span className="text-xs text-slate-500 font-mono">v1.0</span>
+                  </div>
                 </div>
                 <ScrollArea className="flex-1 -mx-2 px-2">
                   <div className="grid grid-cols-3 gap-3">
@@ -280,9 +283,12 @@ export default function Home() {
               className="w-full h-full object-cover"
             />
             <div className="absolute bottom-4 left-4 md:bottom-6 md:left-8 z-20">
-              <h1 className="text-2xl md:text-5xl font-heading text-primary mb-1 md:mb-2 drop-shadow-lg">
-                {t('app_title')}
-              </h1>
+              <div className="flex items-center gap-2 md:gap-3">
+                <h1 className="text-2xl md:text-5xl font-heading text-primary drop-shadow-lg">
+                  {t('app_title')}
+                </h1>
+                <span className="text-xs md:text-sm text-slate-400 font-mono mt-1 md:mt-2">v1.0</span>
+              </div>
               <p className="text-muted-foreground text-xs md:text-lg max-w-md hidden md:block">
                 {t('subtitle')}
               </p>
