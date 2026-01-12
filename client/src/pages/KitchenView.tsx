@@ -317,20 +317,21 @@ export default function KitchenView() {
     const hasPendingStarters = categorized.starters.pending.length > 0;
     const isFullyDelivered = table.isFullyDelivered;
 
-    // Tamaños dinámicos según cantidad de mesas
+    // Tamaños dinámicos según cantidad de mesas (optimizado para tablet 12.9" desktop)
     const sizes = {
-      headerText: tableCount <= 2 ? 'text-4xl' : tableCount <= 4 ? 'text-3xl' : tableCount <= 6 ? 'text-2xl' : 'text-xl',
-      headerTextDelivered: tableCount <= 2 ? 'text-2xl' : tableCount <= 4 ? 'text-xl' : 'text-lg',
-      pendingCount: tableCount <= 2 ? 'text-3xl' : tableCount <= 4 ? 'text-2xl' : tableCount <= 6 ? 'text-xl' : 'text-lg',
-      pendingCountDelivered: tableCount <= 2 ? 'text-xl' : tableCount <= 4 ? 'text-lg' : 'text-base',
-      itemName: tableCount <= 2 ? 'text-xl' : tableCount <= 4 ? 'text-lg' : tableCount <= 6 ? 'text-base' : 'text-sm',
-      itemNameDelivered: tableCount <= 2 ? 'text-base' : tableCount <= 4 ? 'text-sm' : 'text-xs',
-      quantity: tableCount <= 2 ? 'text-2xl' : tableCount <= 4 ? 'text-xl' : tableCount <= 6 ? 'text-lg' : 'text-base',
-      quantityDelivered: tableCount <= 2 ? 'text-lg' : tableCount <= 4 ? 'text-base' : 'text-sm',
-      spiceIcon: tableCount <= 2 ? 'text-3xl' : tableCount <= 4 ? 'text-2xl' : tableCount <= 6 ? 'text-xl' : 'text-lg',
-      spiceText: tableCount <= 2 ? 'text-sm' : tableCount <= 4 ? 'text-xs' : 'text-[10px]',
-      categoryTitle: tableCount <= 2 ? 'text-base' : tableCount <= 4 ? 'text-sm' : 'text-xs',
-      padding: tableCount <= 2 ? 'p-6' : tableCount <= 4 ? 'p-4' : tableCount <= 6 ? 'p-3' : 'p-2',
+      headerText: tableCount <= 2 ? 'text-3xl' : tableCount <= 4 ? 'text-2xl' : tableCount <= 6 ? 'text-xl' : tableCount <= 9 ? 'text-lg' : 'text-base',
+      headerTextDelivered: tableCount <= 2 ? 'text-xl' : tableCount <= 4 ? 'text-lg' : 'text-base',
+      pendingCount: tableCount <= 2 ? 'text-2xl' : tableCount <= 4 ? 'text-xl' : tableCount <= 6 ? 'text-lg' : tableCount <= 9 ? 'text-base' : 'text-sm',
+      pendingCountDelivered: tableCount <= 2 ? 'text-lg' : tableCount <= 4 ? 'text-base' : 'text-sm',
+      itemName: tableCount <= 2 ? 'text-lg' : tableCount <= 4 ? 'text-base' : tableCount <= 6 ? 'text-sm' : tableCount <= 9 ? 'text-xs' : 'text-[11px]',
+      itemNameDelivered: tableCount <= 2 ? 'text-sm' : tableCount <= 4 ? 'text-xs' : 'text-[10px]',
+      quantity: tableCount <= 2 ? 'text-xl' : tableCount <= 4 ? 'text-lg' : tableCount <= 6 ? 'text-base' : tableCount <= 9 ? 'text-sm' : 'text-xs',
+      quantityDelivered: tableCount <= 2 ? 'text-base' : tableCount <= 4 ? 'text-sm' : 'text-xs',
+      spiceIcon: tableCount <= 2 ? 'text-2xl' : tableCount <= 4 ? 'text-xl' : tableCount <= 6 ? 'text-lg' : tableCount <= 9 ? 'text-base' : 'text-sm',
+      spiceText: tableCount <= 2 ? 'text-xs' : tableCount <= 4 ? 'text-[10px]' : 'text-[9px]',
+      categoryTitle: tableCount <= 2 ? 'text-sm' : tableCount <= 4 ? 'text-xs' : 'text-[10px]',
+      padding: tableCount <= 2 ? 'p-4' : tableCount <= 4 ? 'p-3' : tableCount <= 6 ? 'p-2' : 'p-1.5',
+      itemPadding: tableCount <= 2 ? 'p-3' : tableCount <= 4 ? 'p-2' : tableCount <= 6 ? 'p-1.5' : 'p-1',
     };
 
     // Componente OrderItem interno con acceso a sizes
@@ -340,7 +341,7 @@ export default function KitchenView() {
       return (
         <div 
           className={`
-            flex justify-between items-center rounded p-3 transition-all duration-300
+            flex justify-between items-center rounded ${sizes.itemPadding} transition-all duration-300
             ${isDelivered 
               ? 'bg-slate-900/30 opacity-50 scale-95' 
               : 'bg-slate-900/50 shadow-lg'
@@ -590,16 +591,17 @@ export default function KitchenView() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-6 h-[calc(100vh-120px)] overflow-hidden">
+      <div className="container mx-auto px-3 py-3 h-[calc(100vh-100px)] overflow-hidden">
         {activeTables.length > 0 ? (
           <div className={`
-            grid gap-4 h-full
+            grid gap-3 h-full
             ${
               activeTables.length === 1 ? 'grid-cols-1' :
               activeTables.length === 2 ? 'grid-cols-2' :
               activeTables.length <= 4 ? 'grid-cols-2' :
               activeTables.length <= 6 ? 'grid-cols-3' :
               activeTables.length <= 9 ? 'grid-cols-3' :
+              activeTables.length <= 12 ? 'grid-cols-4' :
               'grid-cols-4'
             }
             ${
@@ -607,7 +609,8 @@ export default function KitchenView() {
               activeTables.length <= 4 ? 'grid-rows-2' :
               activeTables.length <= 6 ? 'grid-rows-2' :
               activeTables.length <= 9 ? 'grid-rows-3' :
-              'grid-rows-3'
+              activeTables.length <= 12 ? 'grid-rows-3' :
+              'grid-rows-4'
             }
           `}>
             {activeTables.map(table => (

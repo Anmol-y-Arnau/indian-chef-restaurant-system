@@ -364,3 +364,13 @@
 - [x] Solo mostrar "Mesa X - TODO ENTREGADO" en gris y pequeño
 - [x] Expandible al hacer clic para ver detalles
 - [x] Cocineros se enfocan en mesas con pedidos pendientes
+
+
+## Optimizar Modo Cocina para Tablet 12.9" en Modo Desktop
+
+- [x] Revisar viewport actual de tablet 12.9" en modo desktop (aprox. 1366x1024 o 1024x768)
+- [x] Ajustar grid para aprovechar mejor el espacio horizontal
+- [x] Optimizar tamaños de texto para que sean legibles pero no excesivamente grandes
+- [x] Reducir padding y gaps para que quepan más mesas sin scroll
+- [x] Probar con diferentes cantidades de mesas (2, 4, 6, 8, 10)
+- [x] Asegurar que todo sea visible sin scroll en viewport de tablet desktop
