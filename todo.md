@@ -439,3 +439,19 @@
 - [x] v7.8 → v7.81 (fuentes más grandes y gap reducido - cambio pequeño +0.01)
 - [x] v7.81 → v7.91 (ocultar indicadores en móvil - cambio mediano +0.1)
 - [x] Actualizar en Home.tsx
+
+
+## Cambiar Método de Pago de Mesas Cerradas
+
+- [x] Añadir botón "Cambiar pago" en historial de ventas
+- [x] Reabrir modal de pago con datos actuales de la mesa cerrada
+- [x] Permitir modificar método de pago (efectivo, tarjeta, mixto)
+- [x] Actualizar registro en base de datos
+- [x] Mostrar confirmación de cambio exitoso
+- [x] Útil para corregir errores o cambios de último momento
+
+
+## Actualizar Número de Versión a v8.01
+
+- [x] v7.91 → v8.01 (cambiar método de pago de mesas cerradas - cambio mediano +0.1)
+- [x] Actualizar en Home.tsx

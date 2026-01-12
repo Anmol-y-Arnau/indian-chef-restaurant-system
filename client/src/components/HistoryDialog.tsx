@@ -10,18 +10,21 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRestaurant } from "@/contexts/RestaurantContext";
 import { format, startOfDay, endOfDay, isWithinInterval } from "date-fns";
 import { es } from "date-fns/locale";
-import { History, RotateCcw, Calendar, TrendingUp } from "lucide-react";
+import { History, RotateCcw, Calendar, TrendingUp, CreditCard } from "lucide-react";
 import { useState, useMemo } from "react";
+import PaymentModal from "./PaymentModal";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
 export function HistoryDialog() {
-  const { orderHistory, restoreOrderToTable, tables } = useRestaurant();
+  const { orderHistory, restoreOrderToTable, tables, updateSalePaymentMethod } = useRestaurant();
   const [selectedTableForRestore, setSelectedTableForRestore] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [showStats, setShowStats] = useState(false);
+  const [editingSaleId, setEditingSaleId] = useState<number | null>(null);
+  const [editingSaleTotal, setEditingSaleTotal] = useState<number>(0);
 
   // Filter orders by selected date
   const filteredHistory = useMemo(() => {
@@ -195,9 +198,20 @@ export function HistoryDialog() {
                   </div>
                   
                   <div className="pt-2 flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-8 text-xs"
+                      onClick={() => {
+                        setEditingSaleId(Number(item.id));
+                        setEditingSaleTotal(item.total);
+                      }}
+                    >
+                      <CreditCard className="w-3 h-3 mr-1" /> Cambiar pago
+                    </Button>
                     <Select value={selectedTableForRestore} onValueChange={setSelectedTableForRestore}>
-                      <SelectTrigger className="h-8 text-xs w-[140px]">
-                        <SelectValue placeholder="Elegir mesa..." />
+                      <SelectTrigger className="h-8 text-xs w-[100px]">
+                        <SelectValue placeholder="Mesa..." />
                       </SelectTrigger>
                       <SelectContent>
                         {tables.map(t => (
@@ -226,6 +240,22 @@ export function HistoryDialog() {
           </div>
         </ScrollArea>
       </DialogContent>
+      
+      {editingSaleId !== null && (
+        <PaymentModal
+          isOpen={true}
+          onClose={() => {
+            setEditingSaleId(null);
+            setEditingSaleTotal(0);
+          }}
+          total={editingSaleTotal}
+          onConfirm={async (paymentData) => {
+            await updateSalePaymentMethod(editingSaleId, paymentData);
+            setEditingSaleId(null);
+            setEditingSaleTotal(0);
+          }}
+        />
+      )}
     </Dialog>
   );
 }

@@ -121,3 +121,16 @@ export async function getSalesByDateRange(startDate: Date, endDate: Date) {
   // Note: This is a simplified query. Adjust based on your needs.
   return await db.select().from(sales);
 }
+
+export async function updateSalePaymentMethod(saleId: number, paymentData: { paymentMethod: string; splitBetween?: number; cashPayers?: number; cardPayers?: number }) {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(sales)
+    .set({ 
+      paymentMethod: paymentData.paymentMethod,
+      splitBetween: paymentData.splitBetween,
+      cashPayers: paymentData.cashPayers,
+      cardPayers: paymentData.cardPayers
+    })
+    .where(eq(sales.id, saleId));
+}

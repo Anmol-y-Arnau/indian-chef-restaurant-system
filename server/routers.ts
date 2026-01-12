@@ -122,6 +122,25 @@ export const appRouter = router({
       return await restaurantDb.getAllSales();
     }),
 
+    // Update payment method of a closed sale
+    updateSalePaymentMethod: publicProcedure
+      .input(z.object({
+        saleId: z.number(),
+        paymentMethod: z.string(),
+        splitBetween: z.number().optional(),
+        cashPayers: z.number().optional(),
+        cardPayers: z.number().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        await restaurantDb.updateSalePaymentMethod(input.saleId, {
+          paymentMethod: input.paymentMethod,
+          splitBetween: input.splitBetween,
+          cashPayers: input.cashPayers,
+          cardPayers: input.cardPayers,
+        });
+        return { success: true };
+      }),
+
     // Initialize tables (run once on startup)
     initializeTables: publicProcedure
       .input(z.object({ tableIds: z.array(z.string()) }))

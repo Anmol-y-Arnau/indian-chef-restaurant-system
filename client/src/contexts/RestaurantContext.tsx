@@ -17,6 +17,7 @@ interface RestaurantContextType {
   orderHistory: OrderHistoryItem[];
   closeTable: (tableId: number | string, paymentData?: { method: string; splitBetween: number; cashPayers: number; cardPayers: number }) => void;
   restoreOrderToTable: (tableId: number | string, items: OrderItem[]) => void;
+  updateSalePaymentMethod: (saleId: number, paymentData: { method: string; splitBetween: number; cashPayers: number; cardPayers: number }) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -250,6 +251,24 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
     }
   };
 
+  const updateSalePaymentMutation = trpc.restaurant.updateSalePaymentMethod.useMutation();
+
+  const updateSalePaymentMethod = async (saleId: number, paymentData: { method: string; splitBetween: number; cashPayers: number; cardPayers: number }) => {
+    try {
+      await updateSalePaymentMutation.mutateAsync({
+        saleId,
+        paymentMethod: paymentData.method,
+        splitBetween: paymentData.splitBetween,
+        cashPayers: paymentData.cashPayers,
+        cardPayers: paymentData.cardPayers,
+      });
+      toast.success('Método de pago actualizado');
+    } catch (error) {
+      toast.error('Error al actualizar el método de pago');
+      console.error(error);
+    }
+  };
+
   // Convert database sales to order history format
   const orderHistory: OrderHistoryItem[] = (dbSales || []).map(sale => ({
     id: String(sale.id),
@@ -277,6 +296,7 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
       orderHistory,
       closeTable,
       restoreOrderToTable,
+      updateSalePaymentMethod,
       isLoading,
     }}>
       {children}
