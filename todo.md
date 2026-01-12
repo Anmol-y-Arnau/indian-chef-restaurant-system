@@ -423,3 +423,11 @@
 - [x] Reducir gap entre tarjetas de mesas (de gap-3 a gap-2)
 - [x] Mantener dimensiones de tarjetas iguales
 - [x] Aprovechar mejor el espacio disponible
+
+
+## Ocultar Indicadores de Picante y Notas en Panel de Pedidos Móvil
+
+- [x] Ocultar indicadores de picante en OrderPanel
+- [x] Ocultar notas/observaciones en OrderPanel
+- [x] Mantener visibles en KitchenView para el chef
+- [x] Solo el chef necesita ver esta información, no el camarero

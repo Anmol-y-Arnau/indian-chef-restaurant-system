@@ -163,29 +163,7 @@ export function OrderPanel() {
                       {(order.menuItem.price * order.quantity).toFixed(2)}€
                     </span>
                   </div>
-                  <div className="flex flex-col gap-1 mt-1">
-                    {order.spiceLevel && (
-                      <div className="flex items-center gap-2 bg-orange-50 dark:bg-orange-950/30 px-2 py-1.5 rounded">
-                        <span className="text-2xl font-black text-orange-600 dark:text-orange-400">
-                          {order.spiceLevel}
-                        </span>
-                        <span className="text-xs font-bold text-orange-600 dark:text-orange-400">
-                          {order.spiceLevel === '-' && 'NO PICANTE'}
-                          {order.spiceLevel === '+-' && 'TOQUE'}
-                          {order.spiceLevel === '+' && 'PICANTE'}
-                          {order.spiceLevel === '++' && 'MUY PICANTE'}
-                        </span>
-                      </div>
-                    )}
-                    {order.notes && (
-                      <div className="flex items-start gap-1.5 bg-blue-50 dark:bg-blue-950/30 px-2 py-1 rounded">
-                        <span className="text-sm flex-shrink-0">📝</span>
-                        <p className="text-xs text-blue-600 dark:text-blue-400 italic break-words">
-                          {order.notes}
-                        </p>
-                      </div>
-                    )}
-                  </div>
+                  {/* Indicadores de picante y notas ocultos - solo visibles en modo cocina */}
                 </div>
                 <Button
                   variant="ghost"
