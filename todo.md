@@ -431,3 +431,11 @@
 - [x] Ocultar notas/observaciones en OrderPanel
 - [x] Mantener visibles en KitchenView para el chef
 - [x] Solo el chef necesita ver esta información, no el camarero
+
+
+## Actualizar Número de Versión a v7.91
+
+- [x] v6.8 → v7.8 (grid fijo de 4 columnas - cambio grande +1.0)
+- [x] v7.8 → v7.81 (fuentes más grandes y gap reducido - cambio pequeño +0.01)
+- [x] v7.81 → v7.91 (ocultar indicadores en móvil - cambio mediano +0.1)
+- [x] Actualizar en Home.tsx
