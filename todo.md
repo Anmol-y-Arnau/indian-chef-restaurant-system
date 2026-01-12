@@ -374,3 +374,16 @@
 - [x] Reducir padding y gaps para que quepan más mesas sin scroll
 - [x] Probar con diferentes cantidades de mesas (2, 4, 6, 8, 10)
 - [x] Asegurar que todo sea visible sin scroll en viewport de tablet desktop
+
+
+## Rediseñar Tarjetas del Modo Cocina con Altura Adaptativa
+
+- [x] Eliminar altura fija de las tarjetas (h-full)
+- [x] Implementar grid de columnas con auto-rows (altura automática)
+- [x] Eliminar scroll interno de las tarjetas (overflow-y-auto)
+- [x] Tarjetas se adaptan al contenido: 2 items = pequeña, 10 items = grande
+- [x] Layout fluido tipo masonry/columnas
+- [x] Todo el contenido visible sin scroll interno
+- [x] Grid responsive: 1 columna (móvil), 2-4 columnas (tablet/desktop)
+- [x] Probar con pedidos de diferentes tamaños (1 item, 5 items, 10 items)
+- [x] Mantener colores, botones y diseño visual actual

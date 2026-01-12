@@ -418,7 +418,7 @@ export default function KitchenView() {
     return (
       <div 
         className={`
-          bg-slate-800 rounded-xl ${sizes.padding} border-4 transition-all duration-500 shadow-2xl overflow-y-auto relative
+          bg-slate-800 rounded-xl ${sizes.padding} border-4 transition-all duration-500 shadow-2xl relative flex flex-col
           ${isFullyDelivered 
             ? 'border-slate-700 opacity-70' 
             : 'border-slate-600'
@@ -463,7 +463,7 @@ export default function KitchenView() {
         {/* ENTRANTES - PRIORIDAD */}
         {(categorized.starters.pending.length > 0 || categorized.starters.delivered.length > 0) && (
           <div className="mb-6">
-            <div className={`border-2 rounded-lg p-4 transition-all ${
+            <div className={`border-2 rounded-lg ${sizes.itemPadding} transition-all ${
               categorized.starters.pending.length > 0 
                 ? 'bg-orange-500/20 border-orange-500' 
                 : 'bg-slate-700/20 border-slate-600'
@@ -487,12 +487,12 @@ export default function KitchenView() {
         {/* PLATOS PRINCIPALES */}
         {(categorized.mains.pending.length > 0 || categorized.mains.delivered.length > 0) && (
           <div className="mb-6">
-            <div className={`border-2 rounded-lg p-4 transition-all ${
+            <div className={`border-2 rounded-lg ${sizes.itemPadding} transition-all ${
               categorized.mains.pending.length > 0 
                 ? 'bg-slate-700/50 border-slate-600' 
                 : 'bg-slate-700/20 border-slate-700'
             }`}>
-              <div className="text-slate-300 font-bold text-lg mb-3">
+              <div className={`text-slate-300 font-bold ${sizes.categoryTitle} mb-2 flex items-center gap-2`}>
                 🍛 PLATOS PRINCIPALES
               </div>
               <div className="space-y-2">
@@ -510,12 +510,12 @@ export default function KitchenView() {
         {/* POSTRES - PARA CHEF */}
         {(categorized.desserts.pending.length > 0 || categorized.desserts.delivered.length > 0) && (
           <div className="mb-6">
-            <div className={`border-2 rounded-lg p-4 transition-all ${
+            <div className={`border-2 rounded-lg ${sizes.itemPadding} transition-all ${
               categorized.desserts.pending.length > 0 
                 ? 'bg-slate-700/50 border-slate-600' 
                 : 'bg-slate-700/20 border-slate-700'
             }`}>
-              <div className="text-slate-300 font-bold text-lg mb-3">
+              <div className={`text-slate-300 font-bold ${sizes.categoryTitle} mb-2 flex items-center gap-2`}>
                 🍰 POSTRES
               </div>
               <div className="space-y-2">
@@ -533,7 +533,7 @@ export default function KitchenView() {
         {/* BEBIDAS, CAFÉ & TÉ - MENOS VISIBLE (CAMARERO) */}
         {(categorized.drinks.pending.length > 0 || categorized.drinks.delivered.length > 0) && (
           <div className="mb-6 opacity-40">
-            <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-3">
+            <div className={`bg-slate-800/50 border border-slate-700 rounded-lg ${sizes.itemPadding}`}>
               <div className="text-slate-500 font-bold text-sm mb-2">
                 🥤 BEBIDAS, CAFÉ & TÉ (Camarero)
               </div>
@@ -591,10 +591,10 @@ export default function KitchenView() {
         </div>
       </div>
 
-      <div className="container mx-auto px-3 py-3 h-[calc(100vh-100px)] overflow-hidden">
+      <div className="container mx-auto px-3 py-3 h-[calc(100vh-100px)] overflow-y-auto">
         {activeTables.length > 0 ? (
           <div className={`
-            grid gap-3 h-full
+            grid gap-3 auto-rows-min
             ${
               activeTables.length === 1 ? 'grid-cols-1' :
               activeTables.length === 2 ? 'grid-cols-2' :
@@ -603,14 +603,6 @@ export default function KitchenView() {
               activeTables.length <= 9 ? 'grid-cols-3' :
               activeTables.length <= 12 ? 'grid-cols-4' :
               'grid-cols-4'
-            }
-            ${
-              activeTables.length <= 2 ? 'grid-rows-1' :
-              activeTables.length <= 4 ? 'grid-rows-2' :
-              activeTables.length <= 6 ? 'grid-rows-2' :
-              activeTables.length <= 9 ? 'grid-rows-3' :
-              activeTables.length <= 12 ? 'grid-rows-3' :
-              'grid-rows-4'
             }
           `}>
             {activeTables.map(table => (
