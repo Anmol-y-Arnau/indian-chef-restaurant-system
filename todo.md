@@ -415,3 +415,11 @@
 - [x] Cambiar v1.0 a v6.8 en header principal
 - [x] Cambiar v1.0 a v6.8 en panel de mesas
 - [x] Basado en análisis de 64 checkpoints del historial
+
+
+## Ajustar Tamaño de Fuente y Separación en Modo Cocina
+
+- [x] Aumentar tamaño de fuente de nombres de productos (Pulao Rice, Murg Tikka, etc.)
+- [x] Reducir gap entre tarjetas de mesas (de gap-3 a gap-2)
+- [x] Mantener dimensiones de tarjetas iguales
+- [x] Aprovechar mejor el espacio disponible

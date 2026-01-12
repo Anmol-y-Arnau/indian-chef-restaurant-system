@@ -326,8 +326,8 @@ export default function KitchenView() {
       headerTextDelivered: totalItems <= 3 ? 'text-lg' : totalItems <= 6 ? 'text-base' : 'text-sm',
       pendingCount: totalItems <= 3 ? 'text-xl' : totalItems <= 6 ? 'text-lg' : totalItems <= 10 ? 'text-base' : 'text-sm',
       pendingCountDelivered: totalItems <= 3 ? 'text-base' : totalItems <= 6 ? 'text-sm' : 'text-xs',
-      itemName: totalItems <= 3 ? 'text-base' : totalItems <= 6 ? 'text-sm' : totalItems <= 10 ? 'text-xs' : 'text-[10px]',
-      itemNameDelivered: totalItems <= 3 ? 'text-sm' : totalItems <= 6 ? 'text-xs' : 'text-[9px]',
+      itemName: totalItems <= 3 ? 'text-xl' : totalItems <= 6 ? 'text-lg' : totalItems <= 10 ? 'text-base' : 'text-sm',
+      itemNameDelivered: totalItems <= 3 ? 'text-base' : totalItems <= 6 ? 'text-sm' : 'text-xs',
       quantity: totalItems <= 3 ? 'text-lg' : totalItems <= 6 ? 'text-base' : totalItems <= 10 ? 'text-sm' : 'text-xs',
       quantityDelivered: totalItems <= 3 ? 'text-base' : totalItems <= 6 ? 'text-sm' : 'text-xs',
       spiceIcon: totalItems <= 3 ? 'text-xl' : totalItems <= 6 ? 'text-lg' : totalItems <= 10 ? 'text-base' : 'text-sm',
@@ -599,7 +599,7 @@ export default function KitchenView() {
       </div>
 
       <div className="container mx-auto px-3 py-3 h-[calc(100vh-100px)] overflow-hidden">      {activeTables.length > 0 ? (
-          <div className="grid grid-cols-4 gap-3 h-full" style={{ gridAutoRows: '1fr' }}>
+          <div className="grid grid-cols-4 gap-2 h-full" style={{ gridAutoRows: '1fr' }}>
             {activeTables.map(table => (
               <TableCard key={table.id} table={table} tableCount={activeTables.length} />
             ))}
