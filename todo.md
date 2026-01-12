@@ -408,3 +408,10 @@
 - [x] Formato: "Indian Chef v1.0" 
 - [x] Ubicación: Header de la página principal (Home) y panel de mesas
 - [x] Estilo discreto pero visible (gris, font-mono)
+
+
+## Actualizar Número de Versión a v6.8
+
+- [x] Cambiar v1.0 a v6.8 en header principal
+- [x] Cambiar v1.0 a v6.8 en panel de mesas
+- [x] Basado en análisis de 64 checkpoints del historial
