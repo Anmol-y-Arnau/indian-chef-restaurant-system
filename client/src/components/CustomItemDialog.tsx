@@ -10,10 +10,19 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useRestaurant } from "@/contexts/RestaurantContext";
-import { Minus, Plus } from "lucide-react";
+import { Flame, Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+
+const SPICE_LEVELS = [
+  { value: '', label: 'Sin especificar', icon: '—', color: 'bg-gray-500 hover:bg-gray-600' },
+  { value: '-', label: 'No Picante', icon: '-', color: 'bg-green-500 hover:bg-green-600' },
+  { value: '+-', label: 'Toque Picante', icon: '+-', color: 'bg-yellow-500 hover:bg-yellow-600' },
+  { value: '+', label: 'Picante', icon: '+', color: 'bg-orange-500 hover:bg-orange-600' },
+  { value: '++', label: 'Muy Picante', icon: '++', color: 'bg-red-500 hover:bg-red-600' },
+];
 
 export function CustomItemDialog() {
   const { activeTableId, addOrderToTable } = useRestaurant();
@@ -21,6 +30,8 @@ export function CustomItemDialog() {
   const [name, setName] = useState("Varios");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("1");
+  const [spiceLevel, setSpiceLevel] = useState<string>('');
+  const [notes, setNotes] = useState<string>('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,13 +60,15 @@ export function CustomItemDialog() {
       price: priceNum,
       category: 'drinks', // Default category for custom items
       image: 'https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?q=80&w=1974&auto=format&fit=crop'
-    }, { quantity: quantityNum });
+    }, { quantity: quantityNum, spiceLevel, notes });
 
     // toast.success("Producto añadido"); // Removed because context already shows toast
     setOpen(false);
     setName("Varios");
     setPrice("");
     setQuantity("1");
+    setSpiceLevel('');
+    setNotes('');
   };
 
   return (
@@ -71,9 +84,12 @@ export function CustomItemDialog() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Añadir Producto Personalizado</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">
+            <Flame className="w-5 h-5 text-orange-500" />
+            Añadir Producto Personalizado
+          </DialogTitle>
           <DialogDescription>
-            Introduce el nombre y precio del producto que quieres añadir a la mesa.
+            Introduce el nombre, precio y personalización del producto que quieres añadir a la mesa.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="grid gap-4 py-4">
@@ -137,6 +153,47 @@ export function CustomItemDialog() {
               </Button>
             </div>
           </div>
+
+          {/* Spice Level Selector */}
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">Nivel de Picante (opcional)</Label>
+            <div className="grid grid-cols-3 gap-2">
+              {SPICE_LEVELS.map((level) => (
+                <Button
+                  key={level.value}
+                  type="button"
+                  variant={spiceLevel === level.value ? 'default' : 'outline'}
+                  className={`h-auto py-3 ${
+                    spiceLevel === level.value
+                      ? `${level.color} text-white border-2 border-white shadow-lg`
+                      : 'hover:bg-muted'
+                  }`}
+                  onClick={() => setSpiceLevel(level.value)}
+                >
+                  <div className="flex flex-col items-center gap-1">
+                    <span className="text-3xl font-bold">{level.icon}</span>
+                    <span className="text-[10px] font-semibold">{level.label}</span>
+                  </div>
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Notes */}
+          <div className="space-y-2">
+            <Label htmlFor="notes" className="text-sm font-medium">
+              Observaciones (opcional)
+            </Label>
+            <Textarea
+              id="notes"
+              placeholder="Ej: Sin cebolla, extra salsa, etc."
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              rows={2}
+              className="resize-none"
+            />
+          </div>
+
           <DialogFooter>
             <Button type="submit">Añadir a la Mesa</Button>
           </DialogFooter>

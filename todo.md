@@ -455,3 +455,14 @@
 
 - [x] v7.91 → v8.01 (cambiar método de pago de mesas cerradas - cambio mediano +0.1)
 - [x] Actualizar en Home.tsx
+
+
+## Añadir Personalización a "Varios / Personalizado"
+
+- [x] Modificar CustomItemDialog para incluir selector de nivel de picante
+- [x] Añadir campo de observaciones en CustomItemDialog
+- [x] Mantener campo de nombre personalizado
+- [x] Mantener campo de precio personalizado
+- [x] Guardar nivel de picante y observaciones junto con el producto personalizado
+- [x] Mostrar nivel de picante y observaciones en OrderPanel y KitchenView
+- [x] Actualizar versión a v8.02 (cambio pequeño +0.01)
