@@ -16,6 +16,7 @@ import { Menu, Search, ShoppingBag, ChefHat } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import KitchenView from "./KitchenView";
 import { CustomizationModal } from "@/components/CustomizationModal";
+import { MenuDelDiaDialog } from "@/components/MenuDelDiaDialog";
 import type { MenuItem } from "@/lib/types";
 
 export default function Home() {
@@ -36,6 +37,8 @@ export default function Home() {
   const [isKitchenMode, setIsKitchenMode] = useState(false);
   const [customizationItem, setCustomizationItem] = useState<MenuItem | null>(null);
   const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
+  const [menuDelDiaItem, setMenuDelDiaItem] = useState<MenuItem | null>(null);
+  const [isMenuDelDiaOpen, setIsMenuDelDiaOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Todos los productos pueden ser personalizados
@@ -77,9 +80,15 @@ export default function Home() {
       return;
     }
 
-    // Abrir modal de personalización
-    setCustomizationItem(item);
-    setIsCustomizationOpen(true);
+    // Si es menú del día, abrir diálogo especial
+    if (item.category === 'menu_del_dia') {
+      setMenuDelDiaItem(item);
+      setIsMenuDelDiaOpen(true);
+    } else {
+      // Abrir modal de personalización normal
+      setCustomizationItem(item);
+      setIsCustomizationOpen(true);
+    }
   };
 
   // Función para confirmar la personalización
@@ -92,6 +101,20 @@ export default function Home() {
     }
     setIsCustomizationOpen(false);
     setCustomizationItem(null);
+  };
+
+  // Función para confirmar el menú del día
+  const handleConfirmMenuDelDia = (item: MenuItem, customName: string) => {
+    if (activeTableId !== null) {
+      // Crear una copia del item con el nombre personalizado
+      const customizedItem = {
+        ...item,
+        name: customName
+      };
+      addOrderToTable(activeTableId, customizedItem);
+    }
+    setIsMenuDelDiaOpen(false);
+    setMenuDelDiaItem(null);
   };
 
   const filteredItems = MENU_ITEMS.filter(item => {
@@ -164,7 +187,7 @@ export default function Home() {
                   </div>
                   <div className="flex items-center gap-2">
                     <h2 className="font-heading text-xl text-primary">Indian Chef</h2>
-                    <span className="text-xs text-slate-500 font-mono">v8.11</span>
+                    <span className="text-xs text-slate-500 font-mono">v8.2</span>
                   </div>
                 </div>
                 <ScrollArea className="flex-1 -mx-2 px-2">
@@ -287,7 +310,7 @@ export default function Home() {
                 <h1 className="text-2xl md:text-5xl font-heading text-primary drop-shadow-lg">
                   {t('app_title')}
                 </h1>
-                <span className="text-xs md:text-sm text-slate-400 font-mono mt-1 md:mt-2">v8.11</span>
+                <span className="text-xs md:text-sm text-slate-400 font-mono mt-1 md:mt-2">v8.2</span>
               </div>
               <p className="text-muted-foreground text-xs md:text-lg max-w-md hidden md:block">
                 {t('subtitle')}
@@ -420,6 +443,19 @@ export default function Home() {
           }}
           onConfirm={handleConfirmCustomization}
           itemName={customizationItem.name}
+        />
+      )}
+
+      {/* Menu del Dia Dialog */}
+      {menuDelDiaItem && (
+        <MenuDelDiaDialog
+          isOpen={isMenuDelDiaOpen}
+          onClose={() => {
+            setIsMenuDelDiaOpen(false);
+            setMenuDelDiaItem(null);
+          }}
+          onConfirm={handleConfirmMenuDelDia}
+          menuItem={menuDelDiaItem}
         />
       )}
     </div>

@@ -1,6 +1,7 @@
 import { Category, MenuItem, Table } from "./types";
 
 export const CATEGORIES: Category[] = [
+  { id: 'menu_del_dia', label: 'Menú del Día', icon: '🍽️' },
   { id: 'starters', label: 'Entrantes y Chaats', icon: '🥟' },
   { id: 'salads', label: 'Ensaladas', icon: '🥗' },
   { id: 'tandoor', label: 'Especial Tandoor', icon: '🔥' },
@@ -17,6 +18,18 @@ export const CATEGORIES: Category[] = [
 ];
 
 export const MENU_ITEMS: MenuItem[] = [
+  // MENÚ DEL DÍA
+  {
+    id: 'menu1',
+    number: 0,
+    name: 'Menú del Día',
+    description: 'Entrante a elegir + Butter Chicken, Dal Makhni, Jeera Rice, Garlic Naan y ensalada + Bebida a elegir. (Postre o café se añade después)',
+    price: 15.90,
+    category: 'menu_del_dia',
+    isVeg: false,
+    image: '/images/menu/menu_del_dia.jpg'
+  },
+
   // VEGETARIAN STARTERS AND CHAATS
   {
     id: 'st1',

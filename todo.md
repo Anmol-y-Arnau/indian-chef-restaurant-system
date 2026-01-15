@@ -502,3 +502,21 @@
 - [x] Añadir cafés (coffees) al menú de configuración
 - [x] Permitir selección individual de cada producto de bebidas/vinos/cafés
 - [x] Actualizar versión a v8.11 (cambio pequeño +0.01)
+
+
+## Nueva Categoría: Menú del Día
+
+- [x] Crear nueva categoría "menu_del_dia" en CATEGORIES
+- [x] Añadir icono apropiado para menú del día (🍽️)
+- [x] Crear producto "Menú del Día" en MENU_ITEMS
+- [x] Precio: 15.90€
+- [x] Crear componente MenuDelDiaDialog para personalizar el menú
+- [x] Selector de entrante: Samosa, Veg Pakora o Chicken Pakora
+- [x] Selector de bebida: Coca Cola, Fanta, Sprite, Agua
+- [x] Principal incluido automáticamente: Butter Chicken, Dal Makhni, Jeera Rice, Garlic Naan y ensalada
+- [x] Postre/café NO incluido inicialmente (se añade después cuando el cliente decida)
+- [x] Mostrar en pedido: "Menú del Día - Entrante: X, Bebida: Y"
+- [x] Integrar MenuDelDiaDialog en Home.tsx
+- [x] Generar imagen representativa del menú del día
+- [x] Añadir traducciones en español e inglés
+- [x] Actualizar versión a v8.2 (cambio mediano +0.1)
