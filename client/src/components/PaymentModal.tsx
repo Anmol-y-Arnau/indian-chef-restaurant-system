@@ -61,8 +61,8 @@ export default function PaymentModal({ isOpen, onClose, total, onConfirm }: Paym
   const cardAmount = method === 'mixed' && cardPayers > 0 ? amountPerPerson * cardPayers : (method === 'card' ? total : 0);
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-slate-800 rounded-lg max-w-md w-full p-6 space-y-6">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
+      <div className="bg-slate-800 rounded-lg max-w-md w-full p-4 md:p-6 space-y-4 md:space-y-6 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold text-orange-500">Método de Pago</h2>

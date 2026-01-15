@@ -520,3 +520,14 @@
 - [x] Generar imagen representativa del menú del día
 - [x] Añadir traducciones en español e inglés
 - [x] Actualizar versión a v8.2 (cambio mediano +0.1)
+
+
+## Bugs Reportados - Problemas de Z-Index y Posicionamiento en Móvil
+
+- [x] Modal de "Cambiar pago" aparece detrás del modal "Historial de Ventas"
+- [x] Después de cerrar el historial, las categorías del menú aparecen superpuestas sobre el contenido
+- [x] Las categorías flotantes interfieren con el contenido de la página
+- [x] Ajustar z-index del modal de pago para que esté por encima del historial (z-[100])
+- [x] Corregir posicionamiento de las categorías en móvil (reducido z-index de z-30 a z-10)
+- [x] Ajustar dimensiones del modal de pago en móvil (max-h-[90vh] overflow-y-auto, padding reducido)
+- [x] Actualizar versión a v8.21 (cambio pequeño +0.01)

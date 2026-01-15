@@ -187,7 +187,7 @@ export default function Home() {
                   </div>
                   <div className="flex items-center gap-2">
                     <h2 className="font-heading text-xl text-primary">Indian Chef</h2>
-                    <span className="text-xs text-slate-500 font-mono">v8.2</span>
+                    <span className="text-xs text-slate-500 font-mono">v8.21</span>
                   </div>
                 </div>
                 <ScrollArea className="flex-1 -mx-2 px-2">
@@ -310,7 +310,7 @@ export default function Home() {
                 <h1 className="text-2xl md:text-5xl font-heading text-primary drop-shadow-lg">
                   {t('app_title')}
                 </h1>
-                <span className="text-xs md:text-sm text-slate-400 font-mono mt-1 md:mt-2">v8.2</span>
+                <span className="text-xs md:text-sm text-slate-400 font-mono mt-1 md:mt-2">v8.21</span>
               </div>
               <p className="text-muted-foreground text-xs md:text-lg max-w-md hidden md:block">
                 {t('subtitle')}
@@ -347,7 +347,7 @@ export default function Home() {
           <div className="flex flex-col bg-background">
             <Tabs defaultValue={CATEGORIES[0].id} value={activeCategory} onValueChange={setActiveCategory} className="flex flex-col">
               {/* Categories - Sticky on mobile */}
-              <div className="sticky top-0 md:relative px-4 md:px-6 py-3 md:py-4 border-b border-border bg-background/95 backdrop-blur-md z-30">
+              <div className="sticky top-0 md:relative px-4 md:px-6 py-3 md:py-4 border-b border-border bg-background/95 backdrop-blur-md z-10">
                 <div className="w-full overflow-x-auto pb-2 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
                   <TabsList className="bg-transparent h-auto p-0 gap-2 justify-start w-max flex">
                     {CATEGORIES.map(category => (
