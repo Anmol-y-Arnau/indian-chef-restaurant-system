@@ -82,14 +82,16 @@ let printerConnection: PrinterConnection | null = null;
  */
 export async function connectPrinter(): Promise<boolean> {
   try {
-    // Request Bluetooth device
+    // Request ANY Bluetooth device (no filters)
+    // This allows the user to select from ALL available devices
     const device = await (navigator as any).bluetooth.requestDevice({
-      filters: [
-        { services: ['000018f0-0000-1000-8000-00805f9b34fb'] }, // Common ESC/POS service
-      ],
+      acceptAllDevices: true,
       optionalServices: [
-        '000018f0-0000-1000-8000-00805f9b34fb',
-        '49535343-fe7d-4ae5-8fa9-9fafd205e455', // Another common service
+        '000018f0-0000-1000-8000-00805f9b34fb', // Common ESC/POS service
+        '49535343-fe7d-4ae5-8fa9-9fafd205e455', // Microchip Bluetooth Data Service
+        'e7810a71-73ae-499d-8c15-faa9aef0c3f2', // Nordic UART Service
+        '0000fff0-0000-1000-8000-00805f9b34fb', // Generic printer service
+        '00001101-0000-1000-8000-00805f9b34fb', // Serial Port Profile
       ],
     });
 
@@ -100,11 +102,52 @@ export async function connectPrinter(): Promise<boolean> {
     // Connect to GATT server
     const server = await device.gatt.connect();
     
-    // Get service
-    const service = await server.getPrimaryService('000018f0-0000-1000-8000-00805f9b34fb');
+    // Try to find a working service and characteristic
+    // Common service UUIDs for thermal printers
+    const serviceUUIDs = [
+      '000018f0-0000-1000-8000-00805f9b34fb',
+      '49535343-fe7d-4ae5-8fa9-9fafd205e455',
+      'e7810a71-73ae-499d-8c15-faa9aef0c3f2',
+      '0000fff0-0000-1000-8000-00805f9b34fb',
+    ];
     
-    // Get characteristic for writing
-    const characteristic = await service.getCharacteristic('00002af1-0000-1000-8000-00805f9b34fb');
+    // Common characteristic UUIDs for writing
+    const characteristicUUIDs = [
+      '00002af1-0000-1000-8000-00805f9b34fb',
+      '49535343-8841-43f4-a8d4-ecbe34729bb3',
+      '6e400002-b5a3-f393-e0a9-e50e24dcca9e',
+      '0000fff1-0000-1000-8000-00805f9b34fb',
+    ];
+    
+    let service = null;
+    let characteristic = null;
+    
+    // Try each service UUID
+    for (const serviceUUID of serviceUUIDs) {
+      try {
+        service = await server.getPrimaryService(serviceUUID);
+        console.log(`Found service: ${serviceUUID}`);
+        
+        // Try each characteristic UUID
+        for (const charUUID of characteristicUUIDs) {
+          try {
+            characteristic = await service.getCharacteristic(charUUID);
+            console.log(`Found characteristic: ${charUUID}`);
+            break;
+          } catch (e) {
+            // Try next characteristic
+          }
+        }
+        
+        if (characteristic) break;
+      } catch (e) {
+        // Try next service
+      }
+    }
+    
+    if (!service || !characteristic) {
+      throw new Error('No compatible service/characteristic found');
+    }
 
     printerConnection = { device, characteristic };
     

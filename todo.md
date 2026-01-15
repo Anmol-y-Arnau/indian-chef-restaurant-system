@@ -556,3 +556,15 @@
 - [x] Integrar botón de impresión en OrderPanel
 - [x] Manejar errores de conexión Bluetooth con toasts informativos
 - [x] Actualizar versión a v8.3 (cambio mediano +0.1)
+
+
+## Bug Reportado - Impresora Bluetooth No Conecta
+
+- [x] Error "Error al imprimir. Verifica la conexión Bluetooth"
+- [x] Los UUIDs específicos no coinciden con la impresora del usuario
+- [x] Modificar código para aceptar CUALQUIER dispositivo Bluetooth (acceptAllDevices: true)
+- [x] Eliminar filtros de servicios específicos en requestDevice
+- [x] Probar múltiples UUIDs de servicios comunes de impresoras térmicas (4 servicios)
+- [x] Implementar detección automática de servicio y característica correctos (bucle de prueba)
+- [x] Añadir logs en consola para debugging (Found service/characteristic)
+- [x] Actualizar versión a v8.31 (cambio pequeño +0.01)
