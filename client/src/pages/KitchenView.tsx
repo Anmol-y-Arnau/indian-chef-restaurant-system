@@ -1,17 +1,19 @@
 import { useRestaurant } from '@/contexts/RestaurantContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { ChefHat, Check, CheckCircle2, RotateCcw } from 'lucide-react';
+import { ChefHat, Check, CheckCircle2, RotateCcw, Settings } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import { trpc } from '@/lib/trpc';
 import { MENU_ITEMS, INITIAL_TABLES } from '@/lib/data';
 import { OrderItem } from '@/lib/types';
 import { sortOrdersByCategory, getCategoryOrder } from '@/lib/orderUtils';
+import { SoundSettingsDialog } from '@/components/SoundSettingsDialog';
 
 export default function KitchenView() {
   const { t } = useLanguage();
   const [previousOrderCount, setPreviousOrderCount] = useState(0);
   const [lastNotificationTime, setLastNotificationTime] = useState(0);
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
+  const [isSoundSettingsOpen, setIsSoundSettingsOpen] = useState(false);
   
   // Inicializar AudioContext
   useEffect(() => {
@@ -149,22 +151,37 @@ export default function KitchenView() {
     }
   };
 
-  // Detectar nuevos pedidos de comida (no bebidas)
+  // Detectar nuevos pedidos según configuración de sonido
   useEffect(() => {
-    // Categorías que NO son comida (no deben sonar)
-    const nonFoodCategories = ['drinks', 'wines', 'coffees'];
+    // Cargar configuración de sonido desde localStorage
+    const savedConfig = localStorage.getItem('kitchenSoundConfig');
+    let soundEnabled = true;
+    let selectedItems = new Set<string>();
     
-    // Categorías que SÍ son comida (deben sonar)
-    const foodCategories = ['starters', 'salads', 'tandoor', 'veg_curry', 'chicken_curry', 'fish_prawn_curry', 'lamb_curry', 'biryani', 'sides', 'desserts'];
+    if (savedConfig) {
+      try {
+        const config = JSON.parse(savedConfig);
+        soundEnabled = config.soundEnabled ?? true;
+        selectedItems = new Set(config.selectedItems ?? []);
+      } catch (e) {
+        console.error('Error loading sound config:', e);
+      }
+    }
     
-    // Contar solo pedidos de comida pendientes (no entregados)
+    // Si el sonido está desactivado globalmente, no contar nada
+    if (!soundEnabled) {
+      setPreviousOrderCount(0);
+      return;
+    }
+    
+    // Contar solo pedidos configurados para sonar y que estén pendientes
     const currentFoodOrderCount = activeTables.reduce((sum, table) => {
-      const foodOrders = table.orders.filter(order => {
-        const isFood = foodCategories.includes(order.menuItem.category);
+      const configuredOrders = table.orders.filter(order => {
+        const isConfigured = selectedItems.size === 0 || selectedItems.has(order.menuItem.id);
         const isPending = !order.isDelivered;
-        return isFood && isPending;
+        return isConfigured && isPending;
       });
-      return sum + foodOrders.length;
+      return sum + configuredOrders.length;
     }, 0);
     
     // Log para debugging
@@ -613,18 +630,20 @@ export default function KitchenView() {
         )}
       </div>
 
-      {/* Botón de prueba de sonido */}
+      {/* Botón de configuración de sonido */}
       <button
-        onClick={playNotificationSound}
+        onClick={() => setIsSoundSettingsOpen(true)}
         className="fixed bottom-4 left-4 bg-slate-700/80 hover:bg-slate-600 text-slate-300 p-3 rounded-full shadow-lg transition-all active:scale-95 z-50"
-        title="Probar sonido de notificación"
+        title="Configurar notificaciones de sonido"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-        </svg>
+        <Settings className="w-5 h-5" />
       </button>
+
+      {/* Diálogo de configuración de sonido */}
+      <SoundSettingsDialog 
+        isOpen={isSoundSettingsOpen}
+        onClose={() => setIsSoundSettingsOpen(false)}
+      />
     </div>
   );
 }

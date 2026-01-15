@@ -477,3 +477,18 @@
 - [x] Aplicar corrección a CustomizationModal
 - [x] Aplicar corrección a CustomItemDialog
 - [x] Actualizar versión a v8.03 (cambio pequeño +0.01)
+
+
+## Menú de Configuración de Sonido en Modo Cocina
+
+- [x] Convertir botón de prueba de sonido en botón de configuración
+- [x] Crear componente SoundSettingsDialog con modal
+- [x] Toggle global para activar/desactivar sonido completamente
+- [x] Checkboxes por categoría (entrantes, currys, biryani, etc.)
+- [x] Categorías expandibles para ver platos individuales
+- [x] Checkboxes individuales por cada plato del menú
+- [x] Lógica de selección: categoría seleccionada = todos los platos seleccionados
+- [x] Persistencia en localStorage para mantener configuración entre sesiones
+- [x] Actualizar lógica de sonido en KitchenView para respetar configuración
+- [x] Icono de configuración (Settings) en lugar de altavoz
+- [x] Actualizar versión a v8.1 (cambio mediano +0.1)
