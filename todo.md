@@ -466,3 +466,14 @@
 - [x] Guardar nivel de picante y observaciones junto con el producto personalizado
 - [x] Mostrar nivel de picante y observaciones en OrderPanel y KitchenView
 - [x] Actualizar versión a v8.02 (cambio pequeño +0.01)
+
+
+## Bug Reportado - Modal de Personalización Cortado en Móvil
+
+- [x] Los botones de abajo del modal de personalización no se pueden pulsar en móvil
+- [x] El modal es demasiado alto y queda cortado por el teclado del navegador
+- [x] Reducir tamaños de elementos (botones de picante, textarea, padding)
+- [x] Hacer el modal scrollable si es necesario (max-h-[85vh] overflow-y-auto)
+- [x] Aplicar corrección a CustomizationModal
+- [x] Aplicar corrección a CustomItemDialog
+- [x] Actualizar versión a v8.03 (cambio pequeño +0.01)
