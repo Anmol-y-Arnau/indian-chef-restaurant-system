@@ -531,3 +531,28 @@
 - [x] Corregir posicionamiento de las categorías en móvil (reducido z-index de z-30 a z-10)
 - [x] Ajustar dimensiones del modal de pago en móvil (max-h-[90vh] overflow-y-auto, padding reducido)
 - [x] Actualizar versión a v8.21 (cambio pequeño +0.01)
+
+
+## Impresión Bluetooth Directa y Ticket Profesional Mejorado
+
+- [x] Crear servicio de impresión Bluetooth con Web Bluetooth API
+- [x] Detectar y conectar automáticamente con impresora Bluetooth
+- [x] Guardar conexión de impresora en localStorage
+- [x] Implementar comandos ESC/POS para impresoras térmicas (58mm/80mm)
+- [x] Diseñar formato de ticket profesional con:
+  - [x] Logo/nombre "INDIAN CHEF" en fuente grande (doble tamaño, negrita, centrado)
+  - [x] Datos fiscales: AJIT & RANJIT, S.L.
+  - [x] NIF: B24897415
+  - [x] Dirección: C/ Lasauca, 18 Bs - 17600 Figueres (Girona)
+  - [x] Número de ticket único (autoincremental en localStorage)
+  - [x] Mesa y fecha/hora
+  - [x] Items del pedido con precios alineados
+  - [x] Nivel de picante y observaciones por item
+  - [x] Total destacado (fuente grande, negrita)
+  - [x] Mensaje de despedida
+- [x] Convertir símbolo € a "EUR" para compatibilidad
+- [x] Implementar tamaños de fuente variados (grande, normal, pequeña)
+- [x] Añadir líneas separadoras con caracteres ASCII (-, =)
+- [x] Integrar botón de impresión en OrderPanel
+- [x] Manejar errores de conexión Bluetooth con toasts informativos
+- [x] Actualizar versión a v8.3 (cambio mediano +0.1)

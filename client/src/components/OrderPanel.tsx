@@ -3,7 +3,7 @@ import { useRestaurant } from "@/contexts/RestaurantContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import { sortOrdersByCategory } from "@/lib/orderUtils";
-import { Copy, MessageCircle, Minus, Printer, Trash2, X } from "lucide-react";
+import { Copy, MessageCircle, Minus, Printer, Trash2, X, Bluetooth } from "lucide-react";
 import PaymentModal, { type PaymentData } from "./PaymentModal";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
@@ -48,37 +48,51 @@ export function OrderPanel() {
 
   const total = getTableTotal(activeTableId);
 
-  const handlePrint = () => {
+  const handlePrint = async () => {
     if (table.orders.length === 0) {
       toast.error(t('no_orders_print'));
       return;
     }
     
-    // In a real app, this would trigger a thermal printer
-    // Here we'll simulate it with a modal or just a toast for now
-    // Or actually open a print window
-    const sortedOrders = sortOrdersByCategory(table.orders);
-    const printContent = `
-      INDIAN CHEF RESTAURANT
-      ----------------------
-      Mesa: ${table.name}
-      Fecha: ${new Date().toLocaleString()}
-      ----------------------
-      ${sortedOrders.map(o => {
-        let line = `${o.quantity}x ${o.menuItem.name.padEnd(20)} ${(o.menuItem.price * o.quantity).toFixed(2)}€`;
-        if (o.spiceLevel) line += `\n   🌶️ Picante: ${o.spiceLevel}`;
-        if (o.notes) line += `\n   📝 ${o.notes}`;
-        return line;
-      }).join('\n')}
-      ----------------------
-      TOTAL: ${total.toFixed(2)}€
-      ----------------------
-      ¡Gracias por su visita!
-    `;
-    
-    console.log(printContent);
-    toast.success(t('ticket_sent_printer'));
-    updateTableStatus(activeTableId, 'payment_pending');
+    try {
+      // Import Bluetooth printer service
+      const { printTicket, isPrinterConnected } = await import('@/lib/bluetoothPrinter');
+      
+      // Get ticket number from localStorage or start at 1
+      const lastTicketNumber = parseInt(localStorage.getItem('lastTicketNumber') || '0');
+      const ticketNumber = lastTicketNumber + 1;
+      
+      // Prepare ticket data
+      const sortedOrders = sortOrdersByCategory(table.orders);
+      const ticketData = {
+        tableId: table.name,
+        items: sortedOrders.map(o => ({
+          name: o.menuItem.name,
+          quantity: o.quantity,
+          price: o.menuItem.price,
+          spiceLevel: o.spiceLevel,
+          notes: o.notes,
+        })),
+        total,
+        date: new Date(),
+        ticketNumber,
+      };
+      
+      // Print ticket
+      const success = await printTicket(ticketData);
+      
+      if (success) {
+        // Save ticket number
+        localStorage.setItem('lastTicketNumber', ticketNumber.toString());
+        toast.success(t('ticket_sent_printer'));
+        updateTableStatus(activeTableId, 'payment_pending');
+      } else {
+        toast.error('Error al imprimir. Verifica la conexión Bluetooth.');
+      }
+    } catch (error) {
+      console.error('Print error:', error);
+      toast.error('Error al conectar con la impresora. Asegúrate de que Bluetooth esté activado.');
+    }
   };
 
   const handlePayment = () => {
