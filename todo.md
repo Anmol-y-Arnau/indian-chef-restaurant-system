@@ -492,3 +492,13 @@
 - [x] Actualizar lógica de sonido en KitchenView para respetar configuración
 - [x] Icono de configuración (Settings) en lugar de altavoz
 - [x] Actualizar versión a v8.1 (cambio mediano +0.1)
+
+
+## Ampliar Menú de Configuración de Sonido - Todas las Categorías
+
+- [x] Incluir TODAS las categorías en SoundSettingsDialog (no solo comida)
+- [x] Añadir bebidas (drinks) al menú de configuración
+- [x] Añadir vinos (wines) al menú de configuración
+- [x] Añadir cafés (coffees) al menú de configuración
+- [x] Permitir selección individual de cada producto de bebidas/vinos/cafés
+- [x] Actualizar versión a v8.11 (cambio pequeño +0.01)

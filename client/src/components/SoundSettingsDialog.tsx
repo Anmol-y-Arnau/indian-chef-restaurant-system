@@ -12,8 +12,8 @@ interface SoundSettingsDialogProps {
   onClose: () => void;
 }
 
-// Categorías que pueden tener sonido (solo comida, no bebidas)
-const SOUND_CATEGORIES = ['starters', 'salads', 'tandoor', 'veg_curry', 'chicken_curry', 'fish_prawn_curry', 'lamb_curry', 'biryani', 'sides', 'desserts'];
+// TODAS las categorías del menú (control total para el usuario)
+const SOUND_CATEGORIES = ['starters', 'salads', 'tandoor', 'veg_curry', 'chicken_curry', 'fish_prawn_curry', 'lamb_curry', 'biryani', 'sides', 'wines', 'drinks', 'coffees', 'desserts'];
 
 export function SoundSettingsDialog({ isOpen, onClose }: SoundSettingsDialogProps) {
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
