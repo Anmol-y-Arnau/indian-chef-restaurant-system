@@ -636,3 +636,55 @@
 - [x] Solución implementada: eliminado completamente el useEffect problemático y refs innecesarios
 - [x] Con keys estables, React mantiene el scroll naturalmente sin intervención manual
 - [x] Actualizar versión a v8.36 (cambio pequeño +0.01)
+
+
+## Bug CRÍTICO - Scroll Sigue Subiendo Inmediatamente
+
+- [x] El scroll sigue saltando hacia arriba INMEDIATAMENTE al soltar el dedo
+- [x] A veces sube incluso ANTES de soltar el dedo
+- [x] A veces se queda 1 segundo abajo antes de subir
+- [x] Problema NO resuelto con las soluciones anteriores (keys estables + eliminar useEffect)
+- [x] Análisis profundo completado - 5 causas identificadas:
+  1. activeTables se recalcula en CADA render sin memoización
+  2. tables se reconstruye completamente en cada render
+  3. categorizeTableOrders usa .sort() MUTABLE
+  4. table.orders referencia cambia constantemente
+  5. useEffect de notificaciones depende de activeTables
+- [x] Soluciones implementadas:
+  - Memoizado tables con useMemo([dbTables, dbOrders])
+  - Memoizado activeTables con useMemo([tables])
+  - Cambiado .sort() a [...items].sort() (inmutable)
+- [x] Actualizar versión a v8.37 (cambio pequeño +0.01)
+
+
+## URGENTE - Scroll TODAVÍA salta después de memoizaciones
+
+- [ ] Confirmado: Después de hacer scroll hacia abajo, esperar 5s, el scroll vuelve arriba automáticamente
+- [ ] Las memoizaciones de tables y activeTables NO resolvieron el problema
+- [ ] Posibles causas adicionales a investigar:
+  - Refetch de tRPC cada 3s que invalida queries
+  - TableCard memo() no está funcionando correctamente
+  - El contenedor scrollable se está re-renderizando completamente
+  - Hay algún código oculto que resetea scroll position
+- [ ] Necesito revisar: refetchInterval en useQuery, memo de TableCard, y cualquier lógica de scroll restoration
+
+
+## CRÍTICO - Scroll TODAVÍA persiste después de TODAS las optimizaciones
+
+- [x] Usuario probó en tablet con nueva versión - el scroll SIGUE saltando hacia arriba
+- [x] Ya NO aparecen logs de [SOUND] Check en consola (buena señal - useEffect de sonido ya no se ejecuta constantemente)
+- [x] Optimizaciones ya implementadas que NO resolvieron el problema:
+  1. Keys estables basadas en ID único (key={`order-${order.id}`})
+  2. Eliminado useEffect que restauraba savedScrollPosition
+  3. Memoizado `tables` con dependencias estables
+  4. Memoizado `activeTables` con dependencias estables
+  5. Memoizado `currentPendingOrderCount` con dependencias estables
+  6. Sort inmutable ([...items].sort())
+  7. Añadida comparación personalizada al memo() de TableCard
+- [x] Patrón observado por usuario: "cada 3 veces, sube instantáneamente 2 veces seguidas"
+- [x] Causa REAL encontrada: DOS queries separadas (dbTables y dbOrders) con refetchInterval: 3000
+- [x] Ambas queries se ejecutan con milisegundos de diferencia → dos re-renders casi simultáneos
+- [x] Cada 3 ciclos se sincronizan → "dos saltos seguidos"
+- [x] Solución implementada: Desactivado refetchInterval y creado polling manual sincronizado
+- [x] Ahora un único setInterval invalida AMBAS queries simultáneamente cada 3s
+- [x] Actualizar versión a v8.38 (cambio pequeño +0.01)

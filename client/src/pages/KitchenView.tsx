@@ -27,17 +27,31 @@ export default function KitchenView() {
 
 
   // Queries directas con datos propios (no del contexto)
-  const { data: dbTables, refetch: refetchTables } = trpc.restaurant.getTables.useQuery(undefined, {
-    refetchInterval: 3000, // Polling cada 3 segundos
+  const utils = trpc.useUtils();
+  
+  const { data: dbTables = [] } = trpc.tables.getAll.useQuery(undefined, {
+    refetchInterval: false, // Desactivar polling automático
   });
-  const { data: dbOrders, refetch: refetchOrders } = trpc.restaurant.getAllOrders.useQuery(undefined, {
-    refetchInterval: 3000,
+  const { data: dbOrders = [] } = trpc.orders.getAll.useQuery(undefined, {
+    refetchInterval: false, // Desactivar polling automático
   });
+  
+  // Polling manual sincronizado: invalidar AMBAS queries al mismo tiempo
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      // Invalidar ambas queries simultáneamente
+      utils.restaurant.getTables.invalidate();
+      utils.restaurant.getAllOrders.invalidate();
+    }, 3000);
+    
+    return () => clearInterval(intervalId);
+  }, [utils]);
 
 
   
   // Construir tables con orders incluidos (igual que en RestaurantContext)
-  const tables = INITIAL_TABLES.map(initialTable => {
+  // MEMOIZADO para evitar reconstrucción constante
+  const tables = useMemo(() => INITIAL_TABLES.map(initialTable => {
     const dbTable = dbTables?.find(t => t.tableId === String(initialTable.id));
     const tableOrders = (dbOrders || []).filter(order => String(order.tableId) === String(initialTable.id));
 
@@ -67,20 +81,27 @@ export default function KitchenView() {
       orders,
       startTime: orders.length > 0 ? new Date() : undefined,
     };
-  });
+  }), [
+    // Usar valores estables en lugar de referencias de arrays
+    dbTables?.length,
+    dbTables?.map(t => `${t.tableId}-${t.status}`).join(','),
+    dbOrders?.length,
+    dbOrders?.map(o => `${o.id}-${o.isDelivered}`).join(',')
+  ]); // Solo recalcular cuando cambien los datos reales, no las referencias
   
   // Mutation para actualizar estado de entrega
   const updateDeliveryMutation = trpc.restaurant.updateOrderDeliveryStatus.useMutation({
     onSuccess: async () => {
       // Forzar recarga inmediata de datos
-      await refetchTables();
-      await refetchOrders();
+      await utils.restaurant.getTables.invalidate();
+      await utils.restaurant.getAllOrders.invalidate();
       console.log('[DELIVERED] Data refetched');
     },
   });
 
   // Obtener mesas activas (con pedidos) y ordenar por antigüedad
-  const activeTables = tables
+  // MEMOIZADO para evitar recalcular y reordenar constantemente
+  const activeTables = useMemo(() => tables
     .filter(table => table.orders.length > 0)
     .map(table => {
       // Calcular cuántos items están pendientes (isDelivered === 0)
@@ -108,7 +129,7 @@ export default function KitchenView() {
       }
       // Dentro de cada grupo, ordenar por antigüedad (más antiguo primero)
       return a.oldestTimestamp - b.oldestTimestamp;
-    });
+    }), [tables]); // Solo recalcular cuando cambien las mesas
 
   // Función para reproducir sonido de notificación (BIP fuerte y claro)
   const playNotificationSound = () => {
@@ -155,8 +176,8 @@ export default function KitchenView() {
     }
   };
 
-  // Detectar nuevos pedidos según configuración de sonido
-  useEffect(() => {
+  // Calcular count de pedidos pendientes de forma memoizada
+  const currentPendingOrderCount = useMemo(() => {
     // Cargar configuración de sonido desde localStorage
     const savedConfig = localStorage.getItem('kitchenSoundConfig');
     let soundEnabled = true;
@@ -172,14 +193,13 @@ export default function KitchenView() {
       }
     }
     
-    // Si el sonido está desactivado globalmente, no contar nada
+    // Si el sonido está desactivado globalmente, retornar 0
     if (!soundEnabled) {
-      setPreviousOrderCount(0);
-      return;
+      return 0;
     }
     
     // Contar solo pedidos configurados para sonar y que estén pendientes
-    const currentFoodOrderCount = activeTables.reduce((sum, table) => {
+    return activeTables.reduce((sum, table) => {
       const configuredOrders = table.orders.filter(order => {
         const isConfigured = selectedItems.size === 0 || selectedItems.has(order.menuItem.id);
         const isPending = !order.isDelivered;
@@ -187,12 +207,16 @@ export default function KitchenView() {
       });
       return sum + configuredOrders.length;
     }, 0);
-    
-    // Log para debugging (comentado para evitar re-renders)
-    // console.log('[SOUND] Check:', { previousCount: previousOrderCount, currentCount: currentFoodOrderCount });
-    
+  }, [
+    // Usar valores primitivos estables en lugar de referencia de array
+    activeTables.length,
+    activeTables.map(t => `${t.id}:${t.orders.map(o => `${o.id}-${o.isDelivered}`).join(',')}`).join('|')
+  ]);
+
+  // Detectar nuevos pedidos según configuración de sonido
+  useEffect(() => {
     // Si hay más pedidos de comida que antes (nueva mesa O items adicionales en mesa existente)
-    if (previousOrderCount > 0 && currentFoodOrderCount > previousOrderCount) {
+    if (previousOrderCount > 0 && currentPendingOrderCount > previousOrderCount) {
       const now = Date.now();
       const timeSinceLastNotification = now - lastNotificationTime;
       
@@ -206,8 +230,8 @@ export default function KitchenView() {
       }
     }
     
-    setPreviousOrderCount(currentFoodOrderCount);
-  }, [activeTables, previousOrderCount, lastNotificationTime]);
+    setPreviousOrderCount(currentPendingOrderCount);
+  }, [currentPendingOrderCount, previousOrderCount, lastNotificationTime]);
 
   const handleToggleItemDelivery = useCallback(async (orderId: number, currentStatus: boolean | number) => {
     // Convertir currentStatus a boolean si es number (tinyint de DB)
@@ -271,7 +295,8 @@ export default function KitchenView() {
     // NO separar pending y delivered - mantener orden original para evitar re-renders
     const categorize = (items: any[]) => {
       // Ordenar por categoría y antigüedad UNA SOLA VEZ
-      const sorted = items.sort((a, b) => {
+      // Usar [...items] para hacer sort INMUTABLE (no mutar el array original)
+      const sorted = [...items].sort((a, b) => {
         // Primero ordenar por categoría del menú
         const catA = getCategoryOrder(a.menuItem.category);
         const catB = getCategoryOrder(b.menuItem.category);
@@ -544,6 +569,17 @@ export default function KitchenView() {
         </div>
       </div>
     );
+  }, (prevProps, nextProps) => {
+    // Comparación personalizada: solo re-renderizar si cambian valores relevantes
+    if (prevProps.table.id !== nextProps.table.id) return false;
+    if (prevProps.tableCount !== nextProps.tableCount) return false;
+    if (prevProps.table.orders.length !== nextProps.table.orders.length) return false;
+    
+    // Comparar estado de delivered de cada order
+    const prevOrdersHash = prevProps.table.orders.map((o: any) => `${o.id}-${o.isDelivered}`).join(',');
+    const nextOrdersHash = nextProps.table.orders.map((o: any) => `${o.id}-${o.isDelivered}`).join(',');
+    
+    return prevOrdersHash === nextOrdersHash; // true = NO re-renderizar
   });
 
   return (
