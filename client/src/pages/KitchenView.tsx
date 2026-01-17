@@ -29,10 +29,10 @@ export default function KitchenView() {
   // Queries directas con datos propios (no del contexto)
   const utils = trpc.useUtils();
   
-  const { data: dbTables = [] } = trpc.tables.getAll.useQuery(undefined, {
+  const { data: dbTables = [] } = trpc.restaurant.getTables.useQuery(undefined, {
     refetchInterval: false, // Desactivar polling automático
   });
-  const { data: dbOrders = [] } = trpc.orders.getAll.useQuery(undefined, {
+  const { data: dbOrders = [] } = trpc.restaurant.getAllOrders.useQuery(undefined, {
     refetchInterval: false, // Desactivar polling automático
   });
   

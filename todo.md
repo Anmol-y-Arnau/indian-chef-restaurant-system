@@ -688,3 +688,27 @@
 - [x] Solución implementada: Desactivado refetchInterval y creado polling manual sincronizado
 - [x] Ahora un único setInterval invalida AMBAS queries simultáneamente cada 3s
 - [x] Actualizar versión a v8.38 (cambio pequeño +0.01)
+
+
+## Bug CRÍTICO - No aparecen pedidos en modo cocina
+
+- [ ] Después de implementar polling sincronizado (v8.38), el modo cocina no muestra ningún pedido
+- [ ] La pantalla de modo cocina está vacía
+- [ ] Posible causa: error en la lógica de invalidate de queries
+- [ ] Posible causa: nombres incorrectos de procedures en trpc.useUtils()
+- [ ] Posible causa: queries no se están ejecutando correctamente
+- [ ] Revisar console.log para ver errores de tRPC
+- [ ] Verificar que dbTables y dbOrders se estén cargando correctamente
+- [ ] Actualizar versión a v8.39 (cambio pequeño +0.01)
+
+
+## URGENTE - Modo cocina NO muestra pedidos (v8.38)
+
+- [x] Usuario reporta que NO aparece NADA en el menú de cocina después de rollback a v8.38
+- [x] Problema: queries usan nombres incorrectos (trpc.tables.getAll y trpc.orders.getAll NO EXISTEN)
+- [x] Los procedures correctos son: trpc.restaurant.getTables y trpc.restaurant.getAllOrders
+- [x] Solución: corregido nombres de queries en KitchenView.tsx líneas 32-37
+- [x] También corregido nombres en invalidate del polling sincronizado líneas 43-44
+- [x] Servidor reiniciado para limpiar cache de Babel
+- [x] Verificado que modo cocina ahora muestra pedidos correctamente
+- [x] Actualizar versión a v8.39 (fix crítico +0.01)

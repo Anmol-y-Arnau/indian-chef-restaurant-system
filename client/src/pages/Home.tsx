@@ -187,7 +187,7 @@ export default function Home() {
                   </div>
                   <div className="flex items-center gap-2">
                     <h2 className="font-heading text-xl text-primary">Indian Chef</h2>
-                    <span className="text-xs text-slate-500 font-mono">v8.38</span>
+                    <span className="text-xs text-slate-500 font-mono">v8.39</span>
                   </div>
                 </div>
                 <ScrollArea className="flex-1 -mx-2 px-2">
@@ -310,7 +310,7 @@ export default function Home() {
                 <h1 className="text-2xl md:text-5xl font-heading text-primary drop-shadow-lg">
                   {t('app_title')}
                 </h1>
-                <span className="text-xs md:text-sm text-slate-400 font-mono mt-1 md:mt-2">v8.38</span>
+                <span className="text-xs md:text-sm text-slate-400 font-mono mt-1 md:mt-2">v8.39</span>
               </div>
               <p className="text-muted-foreground text-xs md:text-lg max-w-md hidden md:block">
                 {t('subtitle')}
