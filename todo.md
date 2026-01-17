@@ -582,3 +582,18 @@
 - [x] Guardar y restaurar scrollTop en cada actualización (useEffect con deps [dbTables, dbOrders])
 - [x] Cambiar overflow-hidden a overflow-y-auto en contenedor principal
 - [x] Actualizar versión a v8.32 (cambio pequeño +0.01)
+
+
+## Bug Crítico Persistente - Scroll Sube Instantáneamente (Intento 2)
+
+- [x] La solución anterior con useRef NO funcionó
+- [x] El scroll sube instantáneamente cada vez que se llega abajo
+- [x] No es cada 3 segundos, es TODO EL RATO
+- [x] Problema causado por re-renders constantes de componentes hijos (TableCard)
+- [x] Implementar React.memo en TableCard para prevenir re-renders innecesarios
+- [x] Estabilizar keys del map (ya usa table.id)
+- [x] Eliminar console.log problemáticos que causan re-renders
+- [x] Simplificar grid layout: cambiar gridAutoRows de '1fr' a 'minmax(200px, auto)'
+- [x] Usar useMemo para categorizeTableOrders dentro de TableCard
+- [x] Reiniciar servidor para limpiar caché de Vite
+- [x] Actualizar versión a v8.33 (cambio pequeño +0.01)

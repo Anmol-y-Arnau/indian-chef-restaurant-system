@@ -1,7 +1,7 @@
 import { useRestaurant } from '@/contexts/RestaurantContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ChefHat, Check, CheckCircle2, RotateCcw, Settings } from 'lucide-react';
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo, memo } from 'react';
 import { trpc } from '@/lib/trpc';
 import { MENU_ITEMS, INITIAL_TABLES } from '@/lib/data';
 import { OrderItem } from '@/lib/types';
@@ -206,17 +206,8 @@ export default function KitchenView() {
       return sum + configuredOrders.length;
     }, 0);
     
-    // Log para debugging
-    console.log('[SOUND] Check:', { 
-      previousCount: previousOrderCount, 
-      currentCount: currentFoodOrderCount,
-      activeTables: activeTables.length,
-      allOrders: activeTables.flatMap(t => t.orders).map(o => ({ 
-        name: o.menuItem.name, 
-        category: o.menuItem.category,
-        isDelivered: o.isDelivered 
-      }))
-    });
+    // Log para debugging (comentado para evitar re-renders)
+    // console.log('[SOUND] Check:', { previousCount: previousOrderCount, currentCount: currentFoodOrderCount });
     
     // Si hay más pedidos de comida que antes (nueva mesa O items adicionales en mesa existente)
     if (previousOrderCount > 0 && currentFoodOrderCount > previousOrderCount) {
@@ -350,9 +341,9 @@ export default function KitchenView() {
 
 
 
-  const TableCard = ({ table, tableCount }: { table: any; tableCount: number }) => {
+  const TableCard = memo(({ table, tableCount }: { table: any; tableCount: number }) => {
     const [isExpanded, setIsExpanded] = useState(false);
-    const categorized = categorizeTableOrders(table.orders);
+    const categorized = useMemo(() => categorizeTableOrders(table.orders), [table.orders]);
     const hasPendingStarters = categorized.starters.pending.length > 0;
     const isFullyDelivered = table.isFullyDelivered;
 
@@ -607,7 +598,7 @@ export default function KitchenView() {
         </div>
       </div>
     );
-  };
+  });
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -639,7 +630,7 @@ export default function KitchenView() {
 
       <div ref={scrollContainerRef} className="container mx-auto px-3 py-3 h-[calc(100vh-100px)] overflow-y-auto">
         {activeTables.length > 0 ? (
-          <div className="grid grid-cols-4 gap-2 h-full" style={{ gridAutoRows: '1fr' }}>
+          <div className="grid grid-cols-4 gap-2 h-full" style={{ gridAutoRows: 'minmax(200px, auto)' }}>
             {activeTables.map(table => (
               <TableCard key={table.id} table={table} tableCount={activeTables.length} />
             ))}
