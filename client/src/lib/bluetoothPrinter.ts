@@ -181,6 +181,7 @@ export function disconnectPrinter(): void {
 
 /**
  * Send data to printer
+ * Uses smaller chunks and longer delays to prevent buffer overflow
  */
 async function sendToPrinter(data: string): Promise<void> {
   if (!printerConnection) {
@@ -190,13 +191,14 @@ async function sendToPrinter(data: string): Promise<void> {
   const encoder = new TextEncoder();
   const bytes = encoder.encode(data);
   
-  // Split into chunks of 512 bytes (Bluetooth limitation)
-  const chunkSize = 512;
+  // Split into smaller chunks of 256 bytes to avoid buffer overflow
+  // Some thermal printers have small buffers and need more time to process
+  const chunkSize = 256;
   for (let i = 0; i < bytes.length; i += chunkSize) {
     const chunk = bytes.slice(i, i + chunkSize);
     await printerConnection.characteristic.writeValue(chunk);
-    // Small delay between chunks
-    await new Promise(resolve => setTimeout(resolve, 50));
+    // Longer delay between chunks (100ms) to give printer time to process
+    await new Promise(resolve => setTimeout(resolve, 100));
   }
 }
 
@@ -239,6 +241,7 @@ export interface TicketData {
 
 /**
  * Print ticket
+ * Sends data in sections with pauses to prevent buffer overflow
  */
 export async function printTicket(data: TicketData): Promise<boolean> {
   try {
@@ -249,102 +252,98 @@ export async function printTicket(data: TicketData): Promise<boolean> {
       }
     }
 
-    let ticket = '';
+    // SECTION 1: Initialize and Header
+    let section1 = '';
+    section1 += Commands.INIT;
+    section1 += Commands.ALIGN_CENTER;
+    section1 += Commands.SIZE_DOUBLE;
+    section1 += Commands.BOLD_ON;
+    section1 += 'INDIAN CHEF';
+    section1 += Commands.LINE_FEED;
+    section1 += Commands.SIZE_NORMAL;
+    section1 += Commands.BOLD_OFF;
+    section1 += Commands.SIZE_NORMAL;
+    section1 += 'AJIT & RANJIT, S.L.';
+    section1 += Commands.LINE_FEED;
+    section1 += Commands.LINE_FEED;
+    section1 += separator('=');
+    section1 += Commands.LINE_FEED;
     
-    // Initialize printer
-    ticket += Commands.INIT;
+    await sendToPrinter(section1);
+    await new Promise(resolve => setTimeout(resolve, 200)); // Pause between sections
     
-    // Header - Company name (large, centered, bold)
-    ticket += Commands.ALIGN_CENTER;
-    ticket += Commands.SIZE_DOUBLE;
-    ticket += Commands.BOLD_ON;
-    ticket += 'INDIAN CHEF';
-    ticket += Commands.LINE_FEED;
-    ticket += Commands.SIZE_NORMAL;
-    ticket += Commands.BOLD_OFF;
+    // SECTION 2: Fiscal data and ticket info
+    let section2 = '';
+    section2 += Commands.ALIGN_LEFT;
+    section2 += 'NIF: B24897415';
+    section2 += Commands.LINE_FEED;
+    section2 += 'C/ Lasauca, 18 Bs';
+    section2 += Commands.LINE_FEED;
+    section2 += '17600 Figueres (Girona)';
+    section2 += Commands.LINE_FEED;
+    section2 += separator('-');
+    section2 += Commands.LINE_FEED;
+    section2 += `Ticket: #${String(data.ticketNumber).padStart(4, '0')}`;
+    section2 += Commands.LINE_FEED;
+    section2 += `Mesa: ${data.tableId}`;
+    section2 += Commands.LINE_FEED;
+    section2 += `Fecha: ${data.date.toLocaleDateString('es-ES')} ${data.date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}`;
+    section2 += Commands.LINE_FEED;
+    section2 += separator('-');
+    section2 += Commands.LINE_FEED;
     
-    // Company legal name
-    ticket += Commands.SIZE_NORMAL;
-    ticket += 'AJIT & RANJIT, S.L.';
-    ticket += Commands.LINE_FEED;
-    ticket += Commands.LINE_FEED;
+    await sendToPrinter(section2);
+    await new Promise(resolve => setTimeout(resolve, 200)); // Pause between sections
     
-    // Separator
-    ticket += separator('=');
-    ticket += Commands.LINE_FEED;
-    
-    // Fiscal data (left aligned, normal size)
-    ticket += Commands.ALIGN_LEFT;
-    ticket += 'NIF: B24897415';
-    ticket += Commands.LINE_FEED;
-    ticket += 'C/ Lasauca, 18 Bs';
-    ticket += Commands.LINE_FEED;
-    ticket += '17600 Figueres (Girona)';
-    ticket += Commands.LINE_FEED;
-    
-    // Separator
-    ticket += separator('-');
-    ticket += Commands.LINE_FEED;
-    
-    // Ticket info
-    ticket += `Ticket: #${String(data.ticketNumber).padStart(4, '0')}`;
-    ticket += Commands.LINE_FEED;
-    ticket += `Mesa: ${data.tableId}`;
-    ticket += Commands.LINE_FEED;
-    ticket += `Fecha: ${data.date.toLocaleDateString('es-ES')} ${data.date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}`;
-    ticket += Commands.LINE_FEED;
-    
-    // Separator
-    ticket += separator('-');
-    ticket += Commands.LINE_FEED;
-    
-    // Items
-    for (const item of data.items) {
-      const itemName = `${item.quantity}x ${item.name}`;
-      const itemPrice = formatPrice(item.price * item.quantity);
-      ticket += padLine(itemName, itemPrice);
-      ticket += Commands.LINE_FEED;
+    // SECTION 3: Items (send in batches of 3 items to avoid overflow)
+    const itemsPerBatch = 3;
+    for (let i = 0; i < data.items.length; i += itemsPerBatch) {
+      let itemsBatch = '';
+      const batch = data.items.slice(i, i + itemsPerBatch);
       
-      // Spice level and notes (if any)
-      if (item.spiceLevel && item.spiceLevel !== 'none') {
-        ticket += `   Picante: ${item.spiceLevel}`;
-        ticket += Commands.LINE_FEED;
+      for (const item of batch) {
+        const itemName = `${item.quantity}x ${item.name}`;
+        const itemPrice = formatPrice(item.price * item.quantity);
+        itemsBatch += padLine(itemName, itemPrice);
+        itemsBatch += Commands.LINE_FEED;
+        
+        // Spice level and notes (if any)
+        if (item.spiceLevel && item.spiceLevel !== 'none') {
+          itemsBatch += `   Picante: ${item.spiceLevel}`;
+          itemsBatch += Commands.LINE_FEED;
+        }
+        if (item.notes) {
+          itemsBatch += `   ${item.notes}`;
+          itemsBatch += Commands.LINE_FEED;
+        }
       }
-      if (item.notes) {
-        ticket += `   ${item.notes}`;
-        ticket += Commands.LINE_FEED;
-      }
+      
+      await sendToPrinter(itemsBatch);
+      // Longer pause between item batches (300ms)
+      await new Promise(resolve => setTimeout(resolve, 300));
     }
     
-    // Separator
-    ticket += separator('-');
-    ticket += Commands.LINE_FEED;
+    // SECTION 4: Total and footer
+    let section4 = '';
+    section4 += separator('-');
+    section4 += Commands.LINE_FEED;
+    section4 += Commands.SIZE_DOUBLE_HEIGHT;
+    section4 += Commands.BOLD_ON;
+    section4 += padLine('TOTAL:', formatPrice(data.total));
+    section4 += Commands.LINE_FEED;
+    section4 += Commands.SIZE_NORMAL;
+    section4 += Commands.BOLD_OFF;
+    section4 += separator('=');
+    section4 += Commands.LINE_FEED;
+    section4 += Commands.ALIGN_CENTER;
+    section4 += Commands.LINE_FEED;
+    section4 += 'Gracias por su visita!';
+    section4 += Commands.LINE_FEED;
+    section4 += Commands.LINE_FEED;
+    section4 += Commands.LINE_FEED;
+    section4 += Commands.CUT_PARTIAL;
     
-    // Total (bold, larger)
-    ticket += Commands.SIZE_DOUBLE_HEIGHT;
-    ticket += Commands.BOLD_ON;
-    ticket += padLine('TOTAL:', formatPrice(data.total));
-    ticket += Commands.LINE_FEED;
-    ticket += Commands.SIZE_NORMAL;
-    ticket += Commands.BOLD_OFF;
-    
-    // Separator
-    ticket += separator('=');
-    ticket += Commands.LINE_FEED;
-    
-    // Footer message (centered)
-    ticket += Commands.ALIGN_CENTER;
-    ticket += Commands.LINE_FEED;
-    ticket += 'Gracias por su visita!';
-    ticket += Commands.LINE_FEED;
-    ticket += Commands.LINE_FEED;
-    ticket += Commands.LINE_FEED;
-    
-    // Cut paper
-    ticket += Commands.CUT_PARTIAL;
-    
-    // Send to printer
-    await sendToPrinter(ticket);
+    await sendToPrinter(section4);
     
     return true;
   } catch (error) {

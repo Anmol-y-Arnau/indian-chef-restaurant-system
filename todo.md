@@ -609,3 +609,18 @@
 - [x] Eliminar lógica que separaba pending/delivered en arrays diferentes
 - [x] Usar ID único del pedido como key en lugar de índice (key={`order-${order.id}`})
 - [x] Actualizar versión a v8.34 (cambio pequeño +0.01)
+
+
+## Bug Reportado - Impresión Bluetooth Incompleta
+
+- [x] El ticket impreso solo muestra los últimos 4-5 items del pedido
+- [x] Faltan los primeros items de la lista (Murg Butter, Royal king, Lamb Curry, Naans, Murg Tikka)
+- [x] Total impreso (99.10€) no coincide con total real (94.20€)
+- [x] Problema: Buffer de impresora térmica se desborda o comandos se envían demasiado rápido
+- [x] Solución implementada:
+  - Reducido tamaño de chunk de 512 a 256 bytes
+  - Aumentado delay entre chunks de 50ms a 100ms
+  - Ticket dividido en 4 secciones separadas (header, fiscal, items, total)
+  - Items enviados en lotes de 3 con pausas de 300ms entre lotes
+  - Pausas de 200ms entre secciones principales
+- [x] Actualizar versión a v8.35 (cambio pequeño +0.01)
