@@ -597,3 +597,15 @@
 - [x] Usar useMemo para categorizeTableOrders dentro de TableCard
 - [x] Reiniciar servidor para limpiar caché de Vite
 - [x] Actualizar versión a v8.33 (cambio pequeño +0.01)
+
+
+## Bug Crítico Persistente - Scroll Sigue Subiendo (Intento 3 - Diagnóstico Correcto)
+
+- [x] Video analizado frame por frame: el problema NO es el refetchInterval
+- [x] Causa raíz: elementos dentro de TableCard se reordenan constantemente cuando cambian estados
+- [x] Ejemplo: "Plain Rice" marcado como entregado cambia de posición → re-render → scroll reset
+- [x] Solución: estabilizar orden de elementos para que NO se reordenen al marcar como entregado
+- [x] Mantener posición original de items, solo cambiar visualización (opacidad, color)
+- [x] Eliminar lógica que separaba pending/delivered en arrays diferentes
+- [x] Usar ID único del pedido como key en lugar de índice (key={`order-${order.id}`})
+- [x] Actualizar versión a v8.34 (cambio pequeño +0.01)

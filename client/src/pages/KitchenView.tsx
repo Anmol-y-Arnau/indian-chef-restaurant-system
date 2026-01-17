@@ -286,8 +286,9 @@ export default function KitchenView() {
       o.menuItem.category !== 'tea'
     );
     
-    // Separar entregados y pendientes, ordenar por categoría y antigüedad
+    // NO separar pending y delivered - mantener orden original para evitar re-renders
     const categorize = (items: any[]) => {
+      // Ordenar por categoría y antigüedad UNA SOLA VEZ
       const sorted = items.sort((a, b) => {
         // Primero ordenar por categoría del menú
         const catA = getCategoryOrder(a.menuItem.category);
@@ -301,34 +302,9 @@ export default function KitchenView() {
         return aTime - bTime; // Más antiguo primero
       });
       
-      const pending = sorted.filter(o => !o.isDelivered);
-      const deliveredItems = sorted.filter(o => o.isDelivered);
-      
-      // Agrupar pedidos entregados del mismo item
-      const deliveredGrouped = deliveredItems.reduce((acc: any[], order) => {
-        const existing = acc.find(o => o.menuItem.id === order.menuItem.id);
-        if (existing) {
-          // Sumar la cantidad al pedido existente
-          existing.quantity += order.quantity;
-          // Guardar los IDs originales para el botón de toggle
-          if (!existing.originalIds) {
-            existing.originalIds = [Number(existing.id)];
-          }
-          existing.originalIds.push(Number(order.id));
-        } else {
-          // Primer pedido de este item
-          acc.push({
-            ...order,
-            originalIds: [Number(order.id)] // Guardar el ID original
-          });
-        }
-        return acc;
-      }, []);
-      
-      return {
-        pending,
-        delivered: deliveredGrouped
-      };
+      // Devolver TODOS los items en su orden original, sin separarlos
+      // La visualización (pending vs delivered) se maneja en el componente OrderItem
+      return sorted;
     };
     
     return {
@@ -344,7 +320,7 @@ export default function KitchenView() {
   const TableCard = memo(({ table, tableCount }: { table: any; tableCount: number }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const categorized = useMemo(() => categorizeTableOrders(table.orders), [table.orders]);
-    const hasPendingStarters = categorized.starters.pending.length > 0;
+    const hasPendingStarters = categorized.starters.some((o: any) => !o.isDelivered);
     const isFullyDelivered = table.isFullyDelivered;
 
     // Contar items totales en esta mesa
@@ -497,10 +473,10 @@ export default function KitchenView() {
         {/* Contenedor scrollable para todas las categorías */}
         <div className="flex-1 overflow-y-auto">
           {/* ENTRANTES - PRIORIDAD */}
-          {(categorized.starters.pending.length > 0 || categorized.starters.delivered.length > 0) && (
+          {categorized.starters.length > 0 && (
           <div className="mb-6">
             <div className={`border-2 rounded-lg ${sizes.itemPadding} transition-all ${
-              categorized.starters.pending.length > 0 
+              categorized.starters.some((o: any) => !o.isDelivered)
                 ? 'bg-orange-500/20 border-orange-500' 
                 : 'bg-slate-700/20 border-slate-600'
             }`}>
@@ -509,11 +485,8 @@ export default function KitchenView() {
                 <span>ENTRANTES</span>
               </div>
               <div className="space-y-2">
-                {categorized.starters.pending.map((order, idx) => (
-                  <OrderItem key={`pending-${idx}`} order={order} isPending={true} />
-                ))}
-                {categorized.starters.delivered.map((order, idx) => (
-                  <OrderItem key={`delivered-${idx}`} order={order} isPending={false} />
+                {categorized.starters.map((order: any) => (
+                  <OrderItem key={`order-${order.id}`} order={order} isPending={!order.isDelivered} />
                 ))}
               </div>
             </div>
@@ -521,10 +494,10 @@ export default function KitchenView() {
         )}
 
         {/* PLATOS PRINCIPALES */}
-        {(categorized.mains.pending.length > 0 || categorized.mains.delivered.length > 0) && (
+        {categorized.mains.length > 0 && (
           <div className="mb-6">
             <div className={`border-2 rounded-lg ${sizes.itemPadding} transition-all ${
-              categorized.mains.pending.length > 0 
+              categorized.mains.some((o: any) => !o.isDelivered)
                 ? 'bg-slate-700/50 border-slate-600' 
                 : 'bg-slate-700/20 border-slate-700'
             }`}>
@@ -532,11 +505,8 @@ export default function KitchenView() {
                 🍛 PLATOS PRINCIPALES
               </div>
               <div className="space-y-2">
-                {categorized.mains.pending.map((order, idx) => (
-                  <OrderItem key={`pending-${idx}`} order={order} isPending={true} />
-                ))}
-                {categorized.mains.delivered.map((order, idx) => (
-                  <OrderItem key={`delivered-${idx}`} order={order} isPending={false} />
+                {categorized.mains.map((order: any) => (
+                  <OrderItem key={`order-${order.id}`} order={order} isPending={!order.isDelivered} />
                 ))}
               </div>
             </div>
@@ -544,10 +514,10 @@ export default function KitchenView() {
         )}
 
         {/* POSTRES - PARA CHEF */}
-        {(categorized.desserts.pending.length > 0 || categorized.desserts.delivered.length > 0) && (
+        {categorized.desserts.length > 0 && (
           <div className="mb-6">
             <div className={`border-2 rounded-lg ${sizes.itemPadding} transition-all ${
-              categorized.desserts.pending.length > 0 
+              categorized.desserts.some((o: any) => !o.isDelivered)
                 ? 'bg-slate-700/50 border-slate-600' 
                 : 'bg-slate-700/20 border-slate-700'
             }`}>
@@ -555,11 +525,8 @@ export default function KitchenView() {
                 🍰 POSTRES
               </div>
               <div className="space-y-2">
-                {categorized.desserts.pending.map((order, idx) => (
-                  <OrderItem key={`pending-${idx}`} order={order} isPending={true} />
-                ))}
-                {categorized.desserts.delivered.map((order, idx) => (
-                  <OrderItem key={`delivered-${idx}`} order={order} isPending={false} />
+                {categorized.desserts.map((order: any) => (
+                  <OrderItem key={`order-${order.id}`} order={order} isPending={!order.isDelivered} />
                 ))}
               </div>
             </div>
@@ -567,18 +534,15 @@ export default function KitchenView() {
         )}
 
         {/* BEBIDAS, CAFÉ & TÉ - MENOS VISIBLE (CAMARERO) */}
-        {(categorized.drinks.pending.length > 0 || categorized.drinks.delivered.length > 0) && (
+        {categorized.drinks.length > 0 && (
           <div className="mb-6 opacity-40">
             <div className={`bg-slate-800/50 border border-slate-700 rounded-lg ${sizes.itemPadding}`}>
               <div className="text-slate-500 font-bold text-sm mb-2">
                 🥤 BEBIDAS, CAFÉ & TÉ (Camarero)
               </div>
               <div className="space-y-1">
-                {categorized.drinks.pending.map((order, idx) => (
-                  <OrderItem key={`pending-${idx}`} order={order} isPending={true} />
-                ))}
-                {categorized.drinks.delivered.map((order, idx) => (
-                  <OrderItem key={`delivered-${idx}`} order={order} isPending={false} />
+                {categorized.drinks.map((order: any) => (
+                  <OrderItem key={`order-${order.id}`} order={order} isPending={!order.isDelivered} />
                 ))}
               </div>
             </div>
