@@ -568,3 +568,17 @@
 - [x] Implementar detección automática de servicio y característica correctos (bucle de prueba)
 - [x] Añadir logs en consola para debugging (Found service/characteristic)
 - [x] Actualizar versión a v8.31 (cambio pequeño +0.01)
+
+
+## Bug Crítico - Modo Cocina: Scroll Vuelve Arriba Automáticamente
+
+- [x] Al hacer scroll hacia abajo en modo cocina, la vista vuelve arriba automáticamente
+- [x] Imposible acceder a pedidos en la parte inferior de la pantalla
+- [x] Solo se puede ver contenido inferior por medio segundo antes de que vuelva arriba
+- [x] Impide pulsar botón "Delivered" en pedidos que están abajo
+- [x] Problema causado por actualizaciones constantes del componente (refetchInterval: 3000ms)
+- [x] Implementar preservación de posición de scroll durante actualizaciones (useRef con scrollTop)
+- [x] Desactivar auto-scroll cuando el usuario está navegando manualmente
+- [x] Guardar y restaurar scrollTop en cada actualización (useEffect con deps [dbTables, dbOrders])
+- [x] Cambiar overflow-hidden a overflow-y-auto en contenedor principal
+- [x] Actualizar versión a v8.32 (cambio pequeño +0.01)
