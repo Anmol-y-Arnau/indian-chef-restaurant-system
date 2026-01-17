@@ -14,8 +14,6 @@ export default function KitchenView() {
   const [lastNotificationTime, setLastNotificationTime] = useState(0);
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
   const [isSoundSettingsOpen, setIsSoundSettingsOpen] = useState(false);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const savedScrollPosition = useRef<number>(0);
   
   // Inicializar AudioContext
   useEffect(() => {
@@ -26,17 +24,7 @@ export default function KitchenView() {
     };
   }, []);
 
-  // Guardar posición de scroll antes de cada actualización
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (container) {
-      const handleScroll = () => {
-        savedScrollPosition.current = container.scrollTop;
-      };
-      container.addEventListener('scroll', handleScroll);
-      return () => container.removeEventListener('scroll', handleScroll);
-    }
-  }, []);
+
 
   // Queries directas con datos propios (no del contexto)
   const { data: dbTables, refetch: refetchTables } = trpc.restaurant.getTables.useQuery(undefined, {
@@ -46,13 +34,7 @@ export default function KitchenView() {
     refetchInterval: 3000,
   });
 
-  // Restaurar posición de scroll después de cada actualización
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (container && savedScrollPosition.current > 0) {
-      container.scrollTop = savedScrollPosition.current;
-    }
-  }, [dbTables, dbOrders]);
+
   
   // Construir tables con orders incluidos (igual que en RestaurantContext)
   const tables = INITIAL_TABLES.map(initialTable => {
@@ -592,7 +574,7 @@ export default function KitchenView() {
         </div>
       </div>
 
-      <div ref={scrollContainerRef} className="container mx-auto px-3 py-3 h-[calc(100vh-100px)] overflow-y-auto">
+      <div className="container mx-auto px-3 py-3 h-[calc(100vh-100px)] overflow-y-auto">
         {activeTables.length > 0 ? (
           <div className="grid grid-cols-4 gap-2 h-full" style={{ gridAutoRows: 'minmax(200px, auto)' }}>
             {activeTables.map(table => (

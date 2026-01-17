@@ -624,3 +624,15 @@
   - Items enviados en lotes de 3 con pausas de 300ms entre lotes
   - Pausas de 200ms entre secciones principales
 - [x] Actualizar versión a v8.35 (cambio pequeño +0.01)
+
+
+## Bug Persistente - Scroll Sigue Saltando en Modo Cocina Desktop
+
+- [x] A pesar de la solución anterior (keys estables), el scroll sigue saltando hacia arriba
+- [x] Usuario usa tablet en modo desktop de Chrome
+- [x] Problema ocurre tanto al marcar items como al expandir mesas completadas
+- [x] Causa real encontrada: useEffect que restauraba savedScrollPosition cada vez que cambiaban dbTables/dbOrders (cada 3s)
+- [x] Este useEffect forzaba container.scrollTop = savedScrollPosition.current en medio de re-renders
+- [x] Solución implementada: eliminado completamente el useEffect problemático y refs innecesarios
+- [x] Con keys estables, React mantiene el scroll naturalmente sin intervención manual
+- [x] Actualizar versión a v8.36 (cambio pequeño +0.01)
