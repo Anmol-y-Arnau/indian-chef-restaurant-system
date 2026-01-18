@@ -344,20 +344,7 @@ export async function printTicket(data: TicketData): Promise<boolean> {
       }
     }
 
-    // SECTION 0: ASCII Logo
-    let logoSection = '';
-    logoSection += Commands.ALIGN_CENTER;
-    logoSection += '▄▖   ▌▘      ▄▖▌   ▐▘';
-    logoSection += Commands.LINE_FEED;
-    logoSection += '▐ ▛▌▛▌▌▀▌▛▌  ▌ ▛▌█▌▜▘';
-    logoSection += Commands.LINE_FEED;
-    logoSection += '▟▖▌▌▙▌▌█▌▌▌  ▙▖▌▌▙▖▐ ';
-    logoSection += Commands.LINE_FEED;
-    logoSection += Commands.LINE_FEED;
-    
-    await sendToPrinter(logoSection);
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
+
     // SECTION 1: Initialize and Header
     let section1 = '';
     section1 += Commands.ALIGN_CENTER;

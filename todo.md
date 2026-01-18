@@ -764,3 +764,10 @@
 - [x] Asegurar que el logo aparezca centrado en el ticket
 - [x] Reemplazar logo PNG por ASCII art proporcionado por usuario
 - [x] Actualizar versión a v8.51 (logo ASCII en tickets +0.01)
+
+
+## Revertir Logo ASCII en Tickets
+
+- [x] Eliminar código de logo ASCII (caracteres Unicode no compatibles)
+- [x] Dejar ticket en formato original sin logo
+- [x] Actualizar versión a v8.52 (revertir logo ASCII +0.01)
