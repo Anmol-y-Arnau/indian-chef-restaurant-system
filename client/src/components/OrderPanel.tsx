@@ -202,9 +202,9 @@ export function OrderPanel() {
         
         <div className="space-y-2">
           <div className="flex gap-2">
-            <Button 
-              variant="outline" 
-              className="flex-1 border-primary/50 hover:bg-primary/10 hover:text-primary px-2"
+          <Button 
+            variant="outline" 
+            className="flex-1 border-primary/50 hover:gradient-primary hover:text-primary-foreground hover:border-transparent px-2"
               onClick={handleCopyTicket}
               disabled={table.orders.length === 0}
               title={t('copy_ticket')}
@@ -232,7 +232,7 @@ export function OrderPanel() {
           </div>
           <Button 
             variant="default" 
-            className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+            className="w-full gradient-primary text-primary-foreground hover:glow-magenta border-0"
             onClick={handlePayment}
             disabled={table.orders.length === 0}
           >

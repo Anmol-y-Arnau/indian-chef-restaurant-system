@@ -31,7 +31,7 @@ export function MenuCard({ item, onAdd, onCustomize, showCustomizeButton = false
   return (
     <button
       onClick={onAdd}
-      className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-all hover:border-primary hover:shadow-md text-left h-full"
+      className="group relative flex flex-col overflow-hidden rounded-xl border-2 border-border bg-card transition-all hover:border-primary hover:shadow-xl hover:glow-magenta text-left h-full"
     >
       <div className="relative h-32 w-full overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
@@ -47,7 +47,7 @@ export function MenuCard({ item, onAdd, onCustomize, showCustomizeButton = false
         {showCustomizeButton && onCustomize && (
           <button
             onClick={handleCustomizeClick}
-            className="absolute top-2 right-2 z-20 bg-orange-600/90 hover:bg-orange-500 backdrop-blur-sm p-1.5 rounded-md shadow-md transition-all hover:scale-110"
+            className="absolute top-2 right-2 z-20 gradient-accent hover:glow-orange backdrop-blur-sm p-1.5 rounded-md shadow-md transition-all hover:scale-110"
             title="Personalizar"
           >
             <Edit3 className="w-3.5 h-3.5 text-white" />
@@ -77,7 +77,7 @@ export function MenuCard({ item, onAdd, onCustomize, showCustomizeButton = false
       </div>
       
       <div className="p-3 flex flex-col flex-grow">
-        <h4 className="font-heading text-base leading-tight mb-1 group-hover:text-primary transition-colors">
+        <h4 className="font-heading text-base leading-tight mb-1 group-hover:gradient-text transition-colors">
           {displayName}
         </h4>
         <p className="text-xs text-muted-foreground line-clamp-2 mt-auto">
@@ -86,7 +86,7 @@ export function MenuCard({ item, onAdd, onCustomize, showCustomizeButton = false
       </div>
       
       {/* Ripple effect overlay on click could be added here */}
-      <div className="absolute inset-0 bg-primary/10 opacity-0 group-active:opacity-100 transition-opacity pointer-events-none" />
+      <div className="absolute inset-0 gradient-primary opacity-0 group-active:opacity-20 transition-opacity pointer-events-none" />
     </button>
   );
 }

@@ -44,94 +44,94 @@
   --font-sans: "Poppins", sans-serif;
 }
 
-/* Modern Bollywood Chic Palette */
+/* Indian Chef Brand Palette - Logo Colors */
 :root {
-  /* Charcoal Base */
-  --background: oklch(0.2 0.02 280);
-  --foreground: oklch(0.95 0.01 100);
+  /* Deep Purple Base - Elegant & Modern */
+  --background: oklch(0.18 0.04 300);
+  --foreground: oklch(0.98 0.01 100);
   
-  /* Card Background - Slightly lighter charcoal */
-  --card: oklch(0.25 0.02 280);
-  --card-foreground: oklch(0.95 0.01 100);
+  /* Card Background - Rich Purple */
+  --card: oklch(0.22 0.05 300);
+  --card-foreground: oklch(0.98 0.01 100);
   
   /* Popover */
-  --popover: oklch(0.25 0.02 280);
-  --popover-foreground: oklch(0.95 0.01 100);
+  --popover: oklch(0.22 0.05 300);
+  --popover-foreground: oklch(0.98 0.01 100);
   
-  /* Primary - Saffron/Marigold Orange */
-  --primary: oklch(0.7 0.18 60);
-  --primary-foreground: oklch(0.2 0.02 280);
+  /* Primary - Vibrant Magenta (Logo Color) */
+  --primary: oklch(0.65 0.28 340);
+  --primary-foreground: oklch(0.98 0.01 100);
   
-  /* Secondary - Deep Fuchsia */
-  --secondary: oklch(0.5 0.25 330);
-  --secondary-foreground: oklch(0.95 0.01 100);
+  /* Secondary - Bright Orange (Logo Color) */
+  --secondary: oklch(0.7 0.22 50);
+  --secondary-foreground: oklch(0.15 0.04 300);
   
-  /* Muted - Dark Slate */
-  --muted: oklch(0.3 0.03 280);
-  --muted-foreground: oklch(0.7 0.02 280);
+  /* Muted - Soft Purple */
+  --muted: oklch(0.28 0.06 300);
+  --muted-foreground: oklch(0.75 0.03 300);
   
-  /* Accent - Gold */
-  --accent: oklch(0.85 0.15 85);
-  --accent-foreground: oklch(0.2 0.02 280);
+  /* Accent - Deep Red (Logo Color) */
+  --accent: oklch(0.55 0.24 25);
+  --accent-foreground: oklch(0.98 0.01 100);
   
-  /* Destructive - Chili Red */
-  --destructive: oklch(0.55 0.2 25);
-  --destructive-foreground: oklch(0.95 0.01 100);
+  /* Destructive - Bright Red */
+  --destructive: oklch(0.58 0.26 30);
+  --destructive-foreground: oklch(0.98 0.01 100);
   
-  /* Borders & Inputs */
-  --border: oklch(0.35 0.03 280);
-  --input: oklch(0.35 0.03 280);
-  --ring: oklch(0.7 0.18 60);
+  /* Borders & Inputs - Purple Tint */
+  --border: oklch(0.35 0.08 310);
+  --input: oklch(0.35 0.08 310);
+  --ring: oklch(0.65 0.28 340);
   
-  /* Charts */
-  --chart-1: oklch(0.7 0.18 60); /* Saffron */
-  --chart-2: oklch(0.5 0.25 330); /* Fuchsia */
-  --chart-3: oklch(0.85 0.15 85); /* Gold */
-  --chart-4: oklch(0.6 0.15 150); /* Emerald */
-  --chart-5: oklch(0.4 0.1 250); /* Royal Blue */
+  /* Charts - Logo Colors */
+  --chart-1: oklch(0.65 0.28 340); /* Magenta */
+  --chart-2: oklch(0.7 0.22 50); /* Orange */
+  --chart-3: oklch(0.55 0.24 25); /* Red */
+  --chart-4: oklch(0.5 0.22 280); /* Purple */
+  --chart-5: oklch(0.75 0.18 60); /* Gold Accent */
   
-  /* Sidebar */
-  --sidebar: oklch(0.18 0.02 280);
-  --sidebar-foreground: oklch(0.95 0.01 100);
-  --sidebar-primary: oklch(0.7 0.18 60);
-  --sidebar-primary-foreground: oklch(0.2 0.02 280);
-  --sidebar-accent: oklch(0.25 0.02 280);
-  --sidebar-accent-foreground: oklch(0.95 0.01 100);
-  --sidebar-border: oklch(0.3 0.03 280);
+  /* Sidebar - Deep Purple with Magenta Accent */
+  --sidebar: oklch(0.15 0.05 300);
+  --sidebar-foreground: oklch(0.98 0.01 100);
+  --sidebar-primary: oklch(0.65 0.28 340);
+  --sidebar-primary-foreground: oklch(0.98 0.01 100);
+  --sidebar-accent: oklch(0.22 0.06 310);
+  --sidebar-accent-foreground: oklch(0.98 0.01 100);
+  --sidebar-border: oklch(0.3 0.08 310);
   --sidebar-ring: oklch(0.7 0.18 60);
   
   --radius: 0.75rem;
 }
 
 .dark {
-  /* Same as root since we are going for a dark theme by default */
-  --background: oklch(0.2 0.02 280);
-  --foreground: oklch(0.95 0.01 100);
-  --card: oklch(0.25 0.02 280);
-  --card-foreground: oklch(0.95 0.01 100);
-  --popover: oklch(0.25 0.02 280);
-  --popover-foreground: oklch(0.95 0.01 100);
-  --primary: oklch(0.7 0.18 60);
-  --primary-foreground: oklch(0.2 0.02 280);
-  --secondary: oklch(0.5 0.25 330);
-  --secondary-foreground: oklch(0.95 0.01 100);
-  --muted: oklch(0.3 0.03 280);
-  --muted-foreground: oklch(0.7 0.02 280);
-  --accent: oklch(0.85 0.15 85);
-  --accent-foreground: oklch(0.2 0.02 280);
-  --destructive: oklch(0.55 0.2 25);
-  --destructive-foreground: oklch(0.95 0.01 100);
-  --border: oklch(0.35 0.03 280);
-  --input: oklch(0.35 0.03 280);
-  --ring: oklch(0.7 0.18 60);
-  --sidebar: oklch(0.18 0.02 280);
-  --sidebar-foreground: oklch(0.95 0.01 100);
-  --sidebar-primary: oklch(0.7 0.18 60);
-  --sidebar-primary-foreground: oklch(0.2 0.02 280);
-  --sidebar-accent: oklch(0.25 0.02 280);
-  --sidebar-accent-foreground: oklch(0.95 0.01 100);
-  --sidebar-border: oklch(0.3 0.03 280);
-  --sidebar-ring: oklch(0.7 0.18 60);
+  /* Same as root - Logo colors for dark theme */
+  --background: oklch(0.18 0.04 300);
+  --foreground: oklch(0.98 0.01 100);
+  --card: oklch(0.22 0.05 300);
+  --card-foreground: oklch(0.98 0.01 100);
+  --popover: oklch(0.22 0.05 300);
+  --popover-foreground: oklch(0.98 0.01 100);
+  --primary: oklch(0.65 0.28 340);
+  --primary-foreground: oklch(0.98 0.01 100);
+  --secondary: oklch(0.7 0.22 50);
+  --secondary-foreground: oklch(0.15 0.04 300);
+  --muted: oklch(0.28 0.06 300);
+  --muted-foreground: oklch(0.75 0.03 300);
+  --accent: oklch(0.55 0.24 25);
+  --accent-foreground: oklch(0.98 0.01 100);
+  --destructive: oklch(0.58 0.26 30);
+  --destructive-foreground: oklch(0.98 0.01 100);
+  --border: oklch(0.35 0.08 310);
+  --input: oklch(0.35 0.08 310);
+  --ring: oklch(0.65 0.28 340);
+  --sidebar: oklch(0.15 0.05 300);
+  --sidebar-foreground: oklch(0.98 0.01 100);
+  --sidebar-primary: oklch(0.65 0.28 340);
+  --sidebar-primary-foreground: oklch(0.98 0.01 100);
+  --sidebar-accent: oklch(0.22 0.06 310);
+  --sidebar-accent-foreground: oklch(0.98 0.01 100);
+  --sidebar-border: oklch(0.3 0.08 310);
+  --sidebar-ring: oklch(0.65 0.28 340);
 }
 
 @layer base {
@@ -205,5 +205,44 @@
   }
   ::-webkit-scrollbar-thumb:hover {
     background: var(--primary); 
+  }
+}
+
+/* Indian Chef Brand Gradients */
+@layer utilities {
+  .gradient-primary {
+    background: linear-gradient(135deg, oklch(0.65 0.28 340) 0%, oklch(0.7 0.22 50) 100%);
+  }
+  
+  .gradient-accent {
+    background: linear-gradient(135deg, oklch(0.7 0.22 50) 0%, oklch(0.55 0.24 25) 100%);
+  }
+  
+  .gradient-purple {
+    background: linear-gradient(135deg, oklch(0.5 0.22 280) 0%, oklch(0.65 0.28 340) 100%);
+  }
+  
+  .gradient-text {
+    background: linear-gradient(135deg, oklch(0.65 0.28 340) 0%, oklch(0.7 0.22 50) 50%, oklch(0.55 0.24 25) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .glow-magenta {
+    box-shadow: 0 0 20px oklch(0.65 0.28 340 / 0.4), 0 0 40px oklch(0.65 0.28 340 / 0.2);
+  }
+  
+  .glow-orange {
+    box-shadow: 0 0 20px oklch(0.7 0.22 50 / 0.4), 0 0 40px oklch(0.7 0.22 50 / 0.2);
+  }
+  
+  .border-gradient {
+    border: 2px solid transparent;
+    background-image: 
+      linear-gradient(oklch(0.22 0.05 300), oklch(0.22 0.05 300)),
+      linear-gradient(135deg, oklch(0.65 0.28 340), oklch(0.7 0.22 50), oklch(0.55 0.24 25));
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
   }
 }

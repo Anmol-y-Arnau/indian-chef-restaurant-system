@@ -720,7 +720,7 @@
 - [ ] Posicionar el art encima o junto al título "INDIAN CHEF"
 - [ ] Ajustar tamaño y formato para que se vea bien en impresora térmica de 58mm
 - [ ] Probar que no cause problemas de buffer overflow
-- [ ] Actualizar versión a v8.40 (mejora visual +0.01)
+- [x] Actualizar versión a v8.40 (mejora visual +0.01)
 
 
 ## Nueva Funcionalidad - Logo en Ticket Térmico
@@ -737,4 +737,19 @@
 - [x] Integrar logo en ticket de impresión Bluetooth
 - [x] Posicionar logo centrado arriba antes del título "INDIAN CHEF"
 - [x] Implementar conversión de imagen PNG a bitmap ESC/POS
-- [ ] Actualizar versión a v8.40 (mejora visual +0.01)
+- [x] Actualizar versión a v8.40 (mejora visual +0.01)
+
+
+## Rebrand Completo - Colores del Logo
+
+- [x] Actualizar paleta de colores CSS con colores del logo (magenta, naranja, rojo, morado)
+- [x] Crear gradientes vibrantes para fondos y elementos destacados
+- [x] Actualizar colores de botones primarios y secundarios
+- [x] Actualizar colores de categorías del menú
+- [x] Actualizar colores de tarjetas de productos (MenuCard con gradientes y glow effects)
+- [x] Actualizar colores de botones en OrderPanel
+- [x] Añadir logo al header principal
+- [x] Añadir logo al sidebar desktop y móvil
+- [x] Mejorar efectos visuales (sombras, bordes, transiciones con glow effects)
+- [x] Verificar contraste y accesibilidad con nuevos colores
+- [x] Actualizar versión a v8.5 (rebrand completo +0.1)

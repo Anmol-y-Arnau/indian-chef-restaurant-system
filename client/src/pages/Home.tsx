@@ -182,12 +182,12 @@ export default function Home() {
             <SheetContent side="left" className="w-[300px] p-0 bg-sidebar border-r border-border">
               <div className="p-6 flex flex-col h-full">
                 <div className="flex items-center gap-3 mb-8">
-                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center border border-primary p-1">
-                    <img src="/images/chef-icon.png" alt="Logo" className="w-full h-full object-contain" />
+                  <div className="w-14 h-14 rounded-xl gradient-primary flex items-center justify-center p-2 glow-magenta">
+                    <img src="/indian-chef-logo-icon.png" alt="Logo" className="w-full h-full object-contain" />
                   </div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="font-heading text-xl text-primary">Indian Chef</h2>
-                    <span className="text-xs text-slate-500 font-mono">v8.39</span>
+                  <div className="flex flex-col">
+                    <h2 className="font-heading text-xl gradient-text">Indian Chef</h2>
+                    <span className="text-xs text-muted-foreground font-mono">v8.5</span>
                   </div>
                 </div>
                 <ScrollArea className="flex-1 -mx-2 px-2">
@@ -202,7 +202,7 @@ export default function Home() {
                         className={cn(
                           "aspect-square rounded-xl flex flex-col items-center justify-center transition-all duration-300 relative border",
                           activeTableId === table.id 
-                            ? "bg-primary text-primary-foreground border-primary shadow-lg scale-105" 
+                            ? "gradient-primary text-primary-foreground border-transparent glow-magenta scale-105" 
                             : "bg-card hover:bg-accent hover:text-accent-foreground border-border",
                           table.status === 'occupied' && activeTableId !== table.id && "border-secondary border-2"
                         )}
@@ -226,7 +226,7 @@ export default function Home() {
                       setIsKitchenMode(true);
                       setIsTablesOpen(false);
                     }}
-                    className="w-full bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white rounded-lg py-4 px-4 flex items-center justify-center gap-3 transition-all shadow-lg hover:shadow-xl active:scale-95"
+                    className="w-full gradient-accent hover:glow-orange text-white rounded-lg py-4 px-4 flex items-center justify-center gap-3 transition-all shadow-lg hover:shadow-xl active:scale-95"
                   >
                     <ChefHat className="w-6 h-6" />
                     <span className="font-bold text-lg">Modo Cocina</span>
@@ -259,8 +259,8 @@ export default function Home() {
 
       {/* DESKTOP SIDEBAR - TABLES */}
       <div className="hidden md:flex w-24 lg:w-32 flex-shrink-0 border-r border-border bg-sidebar flex-col items-center py-6 gap-6 z-20 shadow-xl">
-        <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center border-2 border-primary p-1">
-          <img src="/images/chef-icon.png" alt="Logo" className="w-full h-full object-contain" />
+        <div className="w-16 h-16 rounded-xl gradient-primary flex items-center justify-center p-2 glow-magenta">
+          <img src="/indian-chef-logo-icon.png" alt="Logo" className="w-full h-full object-contain" />
         </div>
         
         <ScrollArea className="flex-1 w-full px-2">
@@ -272,7 +272,7 @@ export default function Home() {
                 className={cn(
                   "w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-300 relative",
                   activeTableId === table.id 
-                    ? "bg-primary text-primary-foreground shadow-[0_0_15px_rgba(255,165,0,0.5)] scale-110" 
+                    ? "gradient-primary text-primary-foreground glow-magenta scale-110" 
                     : "bg-card hover:bg-accent hover:text-accent-foreground border border-border",
                   table.status === 'occupied' && activeTableId !== table.id && "border-l-4 border-l-secondary"
                 )}
@@ -305,16 +305,21 @@ export default function Home() {
               alt="Spices" 
               className="w-full h-full object-cover"
             />
-            <div className="absolute bottom-4 left-4 md:bottom-6 md:left-8 z-20">
-              <div className="flex items-center gap-2 md:gap-3">
-                <h1 className="text-2xl md:text-5xl font-heading text-primary drop-shadow-lg">
-                  {t('app_title')}
-                </h1>
-                <span className="text-xs md:text-sm text-slate-400 font-mono mt-1 md:mt-2">v8.39</span>
+            <div className="absolute bottom-4 left-4 md:bottom-6 md:left-8 z-20 flex items-center gap-3 md:gap-4">
+              <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl gradient-primary flex items-center justify-center p-2 glow-magenta">
+                <img src="/indian-chef-logo-icon.png" alt="Indian Chef Logo" className="w-full h-full object-contain" />
               </div>
-              <p className="text-muted-foreground text-xs md:text-lg max-w-md hidden md:block">
-                {t('subtitle')}
-              </p>
+              <div>
+                <div className="flex items-center gap-2 md:gap-3">
+                  <h1 className="text-2xl md:text-5xl font-heading gradient-text drop-shadow-lg">
+                    {t('app_title')}
+                  </h1>
+                  <span className="text-xs md:text-sm text-muted-foreground font-mono mt-1 md:mt-2">v8.5</span>
+                </div>
+                <p className="text-muted-foreground text-xs md:text-lg max-w-md hidden md:block">
+                  {t('subtitle')}
+                </p>
+              </div>
             </div>
             
             {/* Search Bar - Desktop only */}
@@ -323,7 +328,7 @@ export default function Home() {
                 onClick={() => setIsKitchenMode(true)}
                 variant="outline"
                 size="sm"
-                className="bg-orange-600/90 hover:bg-orange-500 text-white border-orange-500 backdrop-blur-md transition-all"
+                className="gradient-accent text-white border-transparent hover:glow-orange backdrop-blur-md transition-all shadow-lg"
               >
                 <ChefHat className="w-4 h-4 mr-2" />
                 {t('kitchen_mode') || 'Modo Cocina'}
@@ -355,7 +360,7 @@ export default function Home() {
                         key={category.id} 
                         value={category.id}
                         onClick={() => setSearchQuery("")}
-                        className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full px-4 py-1.5 md:px-6 md:py-2 border border-border data-[state=active]:border-primary transition-all duration-300 text-sm md:text-base shrink-0"
+                        className="data-[state=active]:gradient-primary data-[state=active]:text-primary-foreground data-[state=active]:border-transparent data-[state=active]:glow-magenta rounded-full px-4 py-1.5 md:px-6 md:py-2 border border-border transition-all duration-300 text-sm md:text-base shrink-0"
                       >
                         <span className="mr-2 text-base md:text-lg">{category.icon}</span>
                         {t(`categories.${category.id}`)}
