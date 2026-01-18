@@ -712,3 +712,29 @@
 - [x] Servidor reiniciado para limpiar cache de Babel
 - [x] Verificado que modo cocina ahora muestra pedidos correctamente
 - [x] Actualizar versión a v8.39 (fix crítico +0.01)
+
+
+## Nueva Funcionalidad - ASCII Art del Taj Mahal en Ticket
+
+- [ ] Añadir ASCII art del Taj Mahal al principio del ticket térmico
+- [ ] Posicionar el art encima o junto al título "INDIAN CHEF"
+- [ ] Ajustar tamaño y formato para que se vea bien en impresora térmica de 58mm
+- [ ] Probar que no cause problemas de buffer overflow
+- [ ] Actualizar versión a v8.40 (mejora visual +0.01)
+
+
+## Nueva Funcionalidad - Logo en Ticket Térmico
+
+- [x] Generar logo moderno y simple con elefantes y Taj Mahal
+- [x] Usar colores vibrantes indios: lila, magenta, naranja, rojo, dorado
+- [x] Crear 4 opciones diferentes para que el usuario elija
+- [x] Usuario eligió opción 2 (diseño geométrico minimalista)
+- [x] Añadir texto "INDIAN CHEF" abajo con fuente que concuerde
+- [x] Generar logo CON texto "INDIAN CHEF" con fondo transparente
+- [x] Generar logo SIN texto con fondo transparente
+- [x] Guardar ambas versiones en /client/public/ (indian-chef-logo.png e indian-chef-logo-icon.png)
+- [x] Optimizar imagen para impresora térmica (alto contraste, 200px ancho)
+- [x] Integrar logo en ticket de impresión Bluetooth
+- [x] Posicionar logo centrado arriba antes del título "INDIAN CHEF"
+- [x] Implementar conversión de imagen PNG a bitmap ESC/POS
+- [ ] Actualizar versión a v8.40 (mejora visual +0.01)

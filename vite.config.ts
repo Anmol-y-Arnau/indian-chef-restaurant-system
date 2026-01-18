@@ -16,6 +16,8 @@ const plugins = [
     registerType: 'autoUpdate',
     includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
     workbox: {
+      // Aumentar límite de tamaño para archivos grandes (logos)
+      maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10 MB
       // Estrategia de caché para imágenes del menú
       runtimeCaching: [
         {

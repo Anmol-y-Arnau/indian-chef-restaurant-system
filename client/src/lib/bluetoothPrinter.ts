@@ -42,6 +42,9 @@ const Commands = {
   // Initialize printer
   INIT: `${ESC}@`,
   
+  // Print raster bitmap
+  PRINT_RASTER: `${GS}v0`,
+  
   // Text alignment
   ALIGN_LEFT: `${ESC}a\x00`,
   ALIGN_CENTER: `${ESC}a\x01`,
@@ -203,6 +206,95 @@ async function sendToPrinter(data: string): Promise<void> {
 }
 
 /**
+ * Load image and convert to 1-bit bitmap for thermal printer
+ */
+async function loadImageAsBitmap(imagePath: string, maxWidth: number = 384): Promise<Uint8Array | null> {
+  try {
+    // Load image
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    
+    await new Promise((resolve, reject) => {
+      img.onload = resolve;
+      img.onerror = reject;
+      img.src = imagePath;
+    });
+    
+    // Create canvas
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+    
+    // Calculate dimensions (maintain aspect ratio)
+    const scale = Math.min(1, maxWidth / img.width);
+    canvas.width = Math.floor(img.width * scale);
+    canvas.height = Math.floor(img.height * scale);
+    
+    // Draw image
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    
+    // Get image data
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const pixels = imageData.data;
+    
+    // Convert to 1-bit bitmap (black and white)
+    const width = canvas.width;
+    const height = canvas.height;
+    const bytesPerLine = Math.ceil(width / 8);
+    const bitmap = new Uint8Array(bytesPerLine * height);
+    
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const pixelIndex = (y * width + x) * 4;
+        const r = pixels[pixelIndex];
+        const g = pixels[pixelIndex + 1];
+        const b = pixels[pixelIndex + 2];
+        const a = pixels[pixelIndex + 3];
+        
+        // Calculate brightness (0-255)
+        const brightness = (r + g + b) / 3;
+        
+        // Threshold: if pixel is dark enough (and not transparent), mark as black
+        const isBlack = brightness < 128 && a > 128;
+        
+        if (isBlack) {
+          const byteIndex = y * bytesPerLine + Math.floor(x / 8);
+          const bitIndex = 7 - (x % 8);
+          bitmap[byteIndex] |= (1 << bitIndex);
+        }
+      }
+    }
+    
+    // Create ESC/POS raster bitmap command
+    // Format: GS v 0 m xL xH yL yH d1...dk
+    // m = mode (0 = normal, 1 = double width, 2 = double height, 3 = quadruple)
+    const mode = 0;
+    const xL = bytesPerLine & 0xFF;
+    const xH = (bytesPerLine >> 8) & 0xFF;
+    const yL = height & 0xFF;
+    const yH = (height >> 8) & 0xFF;
+    
+    const command = new Uint8Array(8 + bitmap.length);
+    command[0] = 0x1D; // GS
+    command[1] = 0x76; // v
+    command[2] = 0x30; // 0
+    command[3] = mode;
+    command[4] = xL;
+    command[5] = xH;
+    command[6] = yL;
+    command[7] = yH;
+    command.set(bitmap, 8);
+    
+    return command;
+  } catch (error) {
+    console.error('Failed to load image as bitmap:', error);
+    return null;
+  }
+}
+
+/**
  * Format price to avoid € symbol (not supported by all printers)
  */
 function formatPrice(price: number): string {
@@ -252,9 +344,30 @@ export async function printTicket(data: TicketData): Promise<boolean> {
       }
     }
 
+    // SECTION 0: Logo (if available)
+    try {
+      const logoBitmap = await loadImageAsBitmap('/indian-chef-logo-icon.png', 200);
+      if (logoBitmap) {
+        // Center alignment for logo
+        const centerCmd = Commands.ALIGN_CENTER;
+        await sendToPrinter(centerCmd);
+        await new Promise(resolve => setTimeout(resolve, 50));
+        
+        // Send logo bitmap directly as Uint8Array
+        await printerConnection!.characteristic.writeValue(logoBitmap as any);
+        await new Promise(resolve => setTimeout(resolve, 300)); // Extra pause after image
+        
+        // Line feed after logo
+        await sendToPrinter(Commands.LINE_FEED);
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+    } catch (error) {
+      console.error('Failed to print logo:', error);
+      // Continue without logo if it fails
+    }
+    
     // SECTION 1: Initialize and Header
     let section1 = '';
-    section1 += Commands.INIT;
     section1 += Commands.ALIGN_CENTER;
     section1 += Commands.SIZE_DOUBLE;
     section1 += Commands.BOLD_ON;
