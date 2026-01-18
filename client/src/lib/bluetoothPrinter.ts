@@ -344,27 +344,19 @@ export async function printTicket(data: TicketData): Promise<boolean> {
       }
     }
 
-    // SECTION 0: Logo (if available)
-    try {
-      const logoBitmap = await loadImageAsBitmap('/indian-chef-logo-icon.png', 200);
-      if (logoBitmap) {
-        // Center alignment for logo
-        const centerCmd = Commands.ALIGN_CENTER;
-        await sendToPrinter(centerCmd);
-        await new Promise(resolve => setTimeout(resolve, 50));
-        
-        // Send logo bitmap directly as Uint8Array
-        await printerConnection!.characteristic.writeValue(logoBitmap as any);
-        await new Promise(resolve => setTimeout(resolve, 300)); // Extra pause after image
-        
-        // Line feed after logo
-        await sendToPrinter(Commands.LINE_FEED);
-        await new Promise(resolve => setTimeout(resolve, 100));
-      }
-    } catch (error) {
-      console.error('Failed to print logo:', error);
-      // Continue without logo if it fails
-    }
+    // SECTION 0: ASCII Logo
+    let logoSection = '';
+    logoSection += Commands.ALIGN_CENTER;
+    logoSection += '▄▖   ▌▘      ▄▖▌   ▐▘';
+    logoSection += Commands.LINE_FEED;
+    logoSection += '▐ ▛▌▛▌▌▀▌▛▌  ▌ ▛▌█▌▜▘';
+    logoSection += Commands.LINE_FEED;
+    logoSection += '▟▖▌▌▙▌▌█▌▌▌  ▙▖▌▌▙▖▐ ';
+    logoSection += Commands.LINE_FEED;
+    logoSection += Commands.LINE_FEED;
+    
+    await sendToPrinter(logoSection);
+    await new Promise(resolve => setTimeout(resolve, 100));
     
     // SECTION 1: Initialize and Header
     let section1 = '';

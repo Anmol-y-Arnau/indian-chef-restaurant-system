@@ -753,3 +753,14 @@
 - [x] Mejorar efectos visuales (sombras, bordes, transiciones con glow effects)
 - [x] Verificar contraste y accesibilidad con nuevos colores
 - [x] Actualizar versión a v8.5 (rebrand completo +0.1)
+
+
+## Fix Logo en Tickets Térmicos
+
+- [x] Revisar implementación actual de printTicket en bluetoothPrinter.ts
+- [x] Verificar que la función imageToEscPos esté funcionando correctamente
+- [x] Añadir logs de depuración para diagnosticar problemas
+- [x] Añadir mensajes de error visibles para el usuario
+- [x] Asegurar que el logo aparezca centrado en el ticket
+- [x] Reemplazar logo PNG por ASCII art proporcionado por usuario
+- [x] Actualizar versión a v8.51 (logo ASCII en tickets +0.01)
