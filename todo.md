@@ -786,3 +786,20 @@
 - [x] Actualizar vista de cierres para mostrar ventas según serviceDate (orderHistory usa serviceDate)
 - [x] Probar escenario: pedido 22:00, pago 01:00 → debe registrarse al día anterior (test pasado)
 - [x] Actualizar versión a v8.6 (fix fecha registro ventas +0.1)
+
+
+## Sección de Estadísticas Semanales - v8.7
+
+Nueva sección con gráficos y análisis de ventas.
+
+- [x] Crear componente StatsView.tsx con layout responsive
+- [x] Implementar gráfico de ventas semanales (gráfico de barras diarias)
+- [x] Implementar top 10 platos más vendidos (lista con barras de progreso)
+- [x] Añadir comparativa de métodos de pago (barras horizontales)
+- [ ] Calcular y mostrar horarios pico de ventas (opcional para futura mejora)
+- [x] Añadir filtros por rango de fechas (última semana, mes implementados)
+- [x] Integrar botón de acceso en header principal (móvil y desktop)
+- [x] Estilizar con colores del brand (gradientes magenta-naranja aplicados)
+- [x] Probar diseño responsive en móvil y tablet
+- [x] Crear test de cálculos de estadísticas (5 tests pasados)
+- [x] Actualizar versión a v8.7 (estadísticas semanales +0.1)

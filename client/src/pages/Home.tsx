@@ -12,8 +12,9 @@ import { useRestaurant } from "@/contexts/RestaurantContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { CATEGORIES, MENU_ITEMS } from "@/lib/data";
 import { cn } from "@/lib/utils";
-import { Menu, Search, ShoppingBag, ChefHat } from "lucide-react";
+import { Menu, Search, ShoppingBag, ChefHat, BarChart3 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { useLocation } from "wouter";
 import KitchenView from "./KitchenView";
 import { CustomizationModal } from "@/components/CustomizationModal";
 import { MenuDelDiaDialog } from "@/components/MenuDelDiaDialog";
@@ -252,6 +253,14 @@ export default function Home() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => window.location.href = "/stats"}
+            className="rounded-full w-10 h-10 border-primary/50 text-primary hover:bg-primary/10"
+          >
+            <BarChart3 className="w-5 h-5" />
+          </Button>
           <HistoryDialog />
           <LanguageSwitcher />
         </div>
@@ -334,6 +343,14 @@ export default function Home() {
                 {t('kitchen_mode') || 'Modo Cocina'}
               </Button>
               <LanguageSwitcher />
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => window.location.href = "/stats"}
+                className="rounded-full w-10 h-10 border-primary/50 text-primary hover:bg-primary/10"
+              >
+                <BarChart3 className="w-5 h-5" />
+              </Button>
               <HistoryDialog />
               <div className="relative w-80">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
