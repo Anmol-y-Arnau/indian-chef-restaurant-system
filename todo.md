@@ -771,3 +771,18 @@
 - [x] Eliminar código de logo ASCII (caracteres Unicode no compatibles)
 - [x] Dejar ticket en formato original sin logo
 - [x] Actualizar versión a v8.52 (revertir logo ASCII +0.01)
+
+
+## Fix Fecha de Registro de Ventas en Cierres
+
+**Problema:** Cuando un cliente pide antes de medianoche pero paga después, el sistema registra la venta al día siguiente.
+
+**Solución:** Registrar ventas con la fecha del primer pedido de la mesa, no la fecha de cobro.
+
+- [x] Añadir campo `serviceDate` a tabla sales en schema
+- [x] Aplicar migración de base de datos (pnpm db:push)
+- [x] Modificar función de cobro para calcular serviceDate desde el pedido más antiguo
+- [x] Actualizar addSale para usar serviceDate
+- [x] Actualizar vista de cierres para mostrar ventas según serviceDate (orderHistory usa serviceDate)
+- [x] Probar escenario: pedido 22:00, pago 01:00 → debe registrarse al día anterior (test pasado)
+- [x] Actualizar versión a v8.6 (fix fecha registro ventas +0.1)

@@ -273,7 +273,8 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
   const orderHistory: OrderHistoryItem[] = (dbSales || []).map(sale => ({
     id: String(sale.id),
     tableId: sale.tableId,
-    date: sale.createdAt.toISOString(),
+    // Use serviceDate (first order) if available, fallback to createdAt for old sales
+    date: (sale.serviceDate || sale.createdAt).toISOString(),
     total: parseFloat(sale.total),
     items: sale.items as any, // JSON field from database
     paymentMethod: sale.paymentMethod as 'cash' | 'card' | 'mixed' | undefined,

@@ -70,7 +70,8 @@ export const sales = mysqlTable("sales", {
   splitBetween: int("splitBetween").default(1), // Number of people splitting the bill
   cashPayers: int("cashPayers").default(0), // Number of people paying cash (for mixed payments)
   cardPayers: int("cardPayers").default(0), // Number of people paying card (for mixed payments)
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  serviceDate: timestamp("serviceDate").notNull(), // Fecha del primer pedido (para cierres correctos)
+  createdAt: timestamp("createdAt").defaultNow().notNull(), // Fecha de cobro
 });
 
 export type Sale = typeof sales.$inferSelect;

@@ -31,6 +31,7 @@ export interface Table {
   orders: OrderItem[];
   guests: number;
   startTime?: Date;
+  firstOrderTimestamp?: number; // Timestamp del primer pedido para registro correcto en cierres
 }
 
 export interface Category {

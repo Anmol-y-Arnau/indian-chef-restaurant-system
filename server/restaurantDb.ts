@@ -106,6 +106,13 @@ export async function clearTableOrders(tableId: string) {
 export async function addSale(sale: InsertSale) {
   const db = await getDb();
   if (!db) return;
+  
+  // Ensure serviceDate is set (should be provided by caller)
+  if (!sale.serviceDate) {
+    console.warn('[addSale] serviceDate not provided, using current time');
+    sale.serviceDate = new Date();
+  }
+  
   await db.insert(sales).values(sale);
 }
 

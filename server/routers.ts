@@ -103,6 +103,17 @@ export const appRouter = router({
         cardPayers: z.number().optional(),
       }))
       .mutation(async ({ input }) => {
+        // Get the oldest order timestamp for this table to use as serviceDate
+        const tableOrders = await restaurantDb.getOrdersByTable(input.tableId);
+        const oldestOrder = tableOrders.reduce((oldest, order) => {
+          if (!oldest || new Date(order.createdAt) < new Date(oldest.createdAt)) {
+            return order;
+          }
+          return oldest;
+        }, tableOrders[0]);
+        
+        const serviceDate = oldestOrder ? new Date(oldestOrder.createdAt) : new Date();
+        
         await restaurantDb.addSale({
           tableId: input.tableId,
           items: input.items,
@@ -111,6 +122,7 @@ export const appRouter = router({
           splitBetween: input.splitBetween,
           cashPayers: input.cashPayers,
           cardPayers: input.cardPayers,
+          serviceDate, // Use the timestamp of the first order
         });
         await restaurantDb.clearTableOrders(input.tableId);
         await restaurantDb.upsertTable(input.tableId, "free");
