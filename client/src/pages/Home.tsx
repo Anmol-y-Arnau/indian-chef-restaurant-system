@@ -188,7 +188,7 @@ export default function Home() {
                   </div>
                   <div className="flex flex-col">
                     <h2 className="font-heading text-xl gradient-text">Indian Chef</h2>
-                    <span className="text-xs text-muted-foreground font-mono">v8.5</span>
+                    <span className="text-xs text-muted-foreground font-mono">v8.8</span>
                   </div>
                 </div>
                 <ScrollArea className="flex-1 -mx-2 px-2">
@@ -217,6 +217,23 @@ export default function Home() {
                         )}
                       </button>
                     ))}
+                    
+                    {/* TAKEAWAY Button */}
+                    <button
+                      onClick={() => {
+                        setActiveTableId('TAKEAWAY');
+                        setIsTablesOpen(false);
+                      }}
+                      className={cn(
+                        "aspect-square rounded-xl flex flex-col items-center justify-center transition-all duration-300 relative border border-2 border-dashed text-xs font-bold",
+                        activeTableId === 'TAKEAWAY' 
+                          ? "gradient-primary text-primary-foreground border-transparent glow-magenta scale-105" 
+                          : "bg-card hover:bg-accent hover:text-accent-foreground border-border"
+                      )}
+                    >
+                      <span className="font-heading">TAKE</span>
+                      <span className="font-heading">AWAY</span>
+                    </button>
                   </div>
                 </ScrollArea>
                 
@@ -238,7 +255,7 @@ export default function Home() {
           </Sheet>
 
           <div className="font-heading text-sm text-primary truncate max-w-[80px]">
-            {activeTableId !== null ? `${t('table')} ${activeTableId}` : t('no_table')}
+            {activeTableId === 'TAKEAWAY' ? 'TAKEAWAY' : activeTableId !== null ? `${t('table')} ${activeTableId}` : t('no_table')}
           </div>
         </div>
 
@@ -267,7 +284,7 @@ export default function Home() {
       </div>
 
       {/* DESKTOP SIDEBAR - TABLES */}
-      <div className="hidden md:flex w-24 lg:w-32 flex-shrink-0 border-r border-border bg-sidebar flex-col items-center py-6 gap-6 z-20 shadow-xl">
+      <div className="hidden md:flex w-24 lg:w-32 flex-shrink-0 border-r border-border bg-sidebar flex-col items-center py-6 gap-6 z-20 shadow-xl h-full overflow-hidden">
         <div className="w-16 h-16 rounded-xl gradient-primary flex items-center justify-center p-2 glow-magenta">
           <img src="/indian-chef-logo-icon.png" alt="Logo" className="w-full h-full object-contain" />
         </div>
@@ -295,6 +312,20 @@ export default function Home() {
                 )}
               </button>
             ))}
+            
+            {/* TAKEAWAY Button */}
+            <button
+              onClick={() => setActiveTableId('TAKEAWAY')}
+              className={cn(
+                "w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-300 relative text-xs font-bold",
+                activeTableId === 'TAKEAWAY' 
+                  ? "gradient-primary text-primary-foreground glow-magenta scale-110" 
+                  : "bg-card hover:bg-accent hover:text-accent-foreground border border-border border-2 border-dashed"
+              )}
+            >
+              <span className="font-heading">TAKE</span>
+              <span className="font-heading">AWAY</span>
+            </button>
           </div>
         </ScrollArea>
       </div>

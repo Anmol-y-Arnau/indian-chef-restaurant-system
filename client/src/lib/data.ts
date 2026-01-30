@@ -816,6 +816,7 @@ export const MENU_ITEMS: MenuItem[] = [
 ];
 
 export const INITIAL_TABLES: Table[] = [
+  { id: 'TAKEAWAY', name: 'TAKEAWAY', status: 'free', orders: [], guests: 0 },
   { id: '0+', name: 'Mesa 0+', status: 'free', orders: [], guests: 0 },
   { id: '0-', name: 'Mesa 0-', status: 'free', orders: [], guests: 0 },
   ...Array.from({ length: 10 }, (_, i) => ({

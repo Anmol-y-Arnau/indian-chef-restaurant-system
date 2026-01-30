@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { sortOrdersByCategory } from "@/lib/orderUtils";
 import { Copy, MessageCircle, Minus, Printer, Trash2, X, Bluetooth } from "lucide-react";
 import PaymentModal, { type PaymentData } from "./PaymentModal";
+
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import { Separator } from "./ui/separator";
@@ -24,6 +25,7 @@ export function OrderPanel() {
   } = useRestaurant();
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+
 
   if (!activeTableId) {
     return (
@@ -104,11 +106,13 @@ export function OrderPanel() {
   };
 
   const handleConfirmPayment = (paymentData: PaymentData) => {
-    closeTable(activeTableId, paymentData);
     setShowPaymentModal(false);
-    setActiveTableId(null); // Close panel after payment
+    closeTable(activeTableId, paymentData);
+    setActiveTableId(null);
     toast.success('Pago registrado correctamente');
   };
+
+
 
   const getTicketText = () => {
     const date = new Date().toLocaleString();
@@ -261,6 +265,8 @@ export function OrderPanel() {
         total={total}
         onConfirm={handleConfirmPayment}
       />
+
+
     </div>
   );
 }

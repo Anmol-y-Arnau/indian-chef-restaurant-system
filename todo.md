@@ -803,3 +803,20 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Probar diseño responsive en móvil y tablet
 - [x] Crear test de cálculos de estadísticas (5 tests pasados)
 - [x] Actualizar versión a v8.7 (estadísticas semanales +0.1)
+
+
+## Fix Scroll Mesas + Sistema Takeaway v8.8
+
+### Fix Scroll Sidebar Mesas
+- [x] Arreglar scroll vertical en sidebar desktop para ver todas las mesas (añadido h-full overflow-hidden)
+- [ ] Verificar que funciona correctamente en diferentes resoluciones
+
+### Sistema Takeaway
+- [x] Añadir botón "TAKEAWAY" en sidebar (móvil y desktop)
+- [x] TAKEAWAY funciona exactamente como una mesa normal (múltiples pedidos simultáneos)
+- [x] Eliminar modal PickupTimeModal (no necesario)
+- [x] Eliminar campo pickupTime de base de datos (no necesario)
+- [x] Verificar que TAKEAWAY aparece correctamente en modo cocina
+- [x] Verificar flujo completo: añadir items → cobrar → imprimir ticket → marcar delivered
+
+- [x] Actualizar versión a v8.8 (scroll fix + takeaway simplificado +0.1)
