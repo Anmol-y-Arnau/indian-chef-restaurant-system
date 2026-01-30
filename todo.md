@@ -820,3 +820,12 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Verificar flujo completo: añadir items → cobrar → imprimir ticket → marcar delivered
 
 - [x] Actualizar versión a v8.8 (scroll fix + takeaway simplificado +0.1)
+
+## Bug Reportado - Scroll Sidebar Desktop No Funciona
+
+- [x] El scroll vertical en el sidebar de mesas desktop no funciona correctamente
+- [x] No se pueden ver todas las mesas (TAKEAWAY queda fuera de vista)
+- [x] Revisar clases de Tailwind en el sidebar desktop
+- [x] Implementar scroll funcional con ScrollArea o overflow-y-auto
+- [x] Verificar que todas las mesas son visibles y accesibles
+- [x] Actualizar versión a v8.8.1 (scroll sidebar fix +0.01)

@@ -188,7 +188,7 @@ export default function Home() {
                   </div>
                   <div className="flex flex-col">
                     <h2 className="font-heading text-xl gradient-text">Indian Chef</h2>
-                    <span className="text-xs text-muted-foreground font-mono">v8.8</span>
+                    <span className="text-xs text-muted-foreground font-mono">v8.8.1</span>
                   </div>
                 </div>
                 <ScrollArea className="flex-1 -mx-2 px-2">
@@ -284,12 +284,12 @@ export default function Home() {
       </div>
 
       {/* DESKTOP SIDEBAR - TABLES */}
-      <div className="hidden md:flex w-24 lg:w-32 flex-shrink-0 border-r border-border bg-sidebar flex-col items-center py-6 gap-6 z-20 shadow-xl h-full overflow-hidden">
+      <div className="hidden md:flex w-24 lg:w-32 flex-shrink-0 border-r border-border bg-sidebar flex-col items-center py-6 gap-6 z-20 shadow-xl h-full">
         <div className="w-16 h-16 rounded-xl gradient-primary flex items-center justify-center p-2 glow-magenta">
           <img src="/indian-chef-logo-icon.png" alt="Logo" className="w-full h-full object-contain" />
         </div>
         
-        <ScrollArea className="flex-1 w-full px-2">
+        <ScrollArea className="flex-1 w-full px-2 min-h-0">
           <div className="flex flex-col gap-4 items-center pb-4">
             {tables.map(table => (
               <button
