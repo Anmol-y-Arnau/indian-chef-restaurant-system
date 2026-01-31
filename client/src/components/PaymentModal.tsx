@@ -1,11 +1,14 @@
 import { useState } from 'react';
-import { X, CreditCard, Banknote, Users } from 'lucide-react';
+import { X, CreditCard, Banknote, Users, UserPlus } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { OrderItem } from '@/lib/types';
+import CustomSplitModal from './CustomSplitModal';
 
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
   total: number;
+  orders: OrderItem[];
   onConfirm: (paymentData: PaymentData) => void;
 }
 
@@ -14,14 +17,25 @@ export interface PaymentData {
   splitBetween: number;
   cashPayers: number;
   cardPayers: number;
+  customSplit?: PersonPayment[];
 }
 
-export default function PaymentModal({ isOpen, onClose, total, onConfirm }: PaymentModalProps) {
+export interface PersonPayment {
+  personId: number;
+  name: string;
+  items: { orderId: string | number; quantity: number }[];
+  total: number;
+  method: 'cash' | 'card';
+}
+
+export default function PaymentModal({ isOpen, onClose, total, orders, onConfirm }: PaymentModalProps) {
   const { t } = useLanguage();
   const [method, setMethod] = useState<'cash' | 'card' | 'mixed'>('cash');
   const [splitBetween, setSplitBetween] = useState(1);
   const [cashPayers, setCashPayers] = useState(0);
   const [cardPayers, setCardPayers] = useState(0);
+  const [isCustomSplit, setIsCustomSplit] = useState(false);
+  const [customSplitData, setCustomSplitData] = useState<PersonPayment[]>([]);
 
   if (!isOpen) return null;
 
@@ -151,6 +165,22 @@ export default function PaymentModal({ isOpen, onClose, total, onConfirm }: Paym
           )}
         </div>
 
+        {/* Custom Split Button */}
+        {orders.length > 0 && (
+          <button
+            onClick={() => setIsCustomSplit(true)}
+            className="w-full p-3 bg-purple-500/20 hover:bg-purple-500/30 border-2 border-purple-500 rounded-lg transition-all"
+          >
+            <div className="flex items-center justify-center gap-2 text-purple-400">
+              <UserPlus className="w-5 h-5" />
+              <span className="font-medium">Dividir Personalizado</span>
+            </div>
+            <div className="text-xs text-slate-400 mt-1">
+              Asigna cada plato a quien lo paga
+            </div>
+          </button>
+        )}
+
         {/* Mixed Payment Details */}
         {method === 'mixed' && (
           <div className="space-y-3 bg-slate-700/50 p-4 rounded-lg">
@@ -253,6 +283,31 @@ export default function PaymentModal({ isOpen, onClose, total, onConfirm }: Paym
           </button>
         </div>
       </div>
+      
+      {/* Custom Split Modal */}
+      <CustomSplitModal
+        isOpen={isCustomSplit}
+        onClose={() => setIsCustomSplit(false)}
+        orders={orders}
+        onConfirm={(persons) => {
+          setCustomSplitData(persons);
+          setIsCustomSplit(false);
+          // Calculate totals from custom split
+          const cashTotal = persons.filter(p => p.method === 'cash').reduce((sum, p) => sum + p.total, 0);
+          const cardTotal = persons.filter(p => p.method === 'card').reduce((sum, p) => sum + p.total, 0);
+          const cashCount = persons.filter(p => p.method === 'cash').length;
+          const cardCount = persons.filter(p => p.method === 'card').length;
+          
+          // Update payment data
+          onConfirm({
+            method: cashCount > 0 && cardCount > 0 ? 'mixed' : (cashCount > 0 ? 'cash' : 'card'),
+            splitBetween: persons.length,
+            cashPayers: cashCount,
+            cardPayers: cardCount,
+            customSplit: persons
+          });
+        }}
+      />
     </div>
   );
 }

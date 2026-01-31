@@ -249,6 +249,7 @@ export function HistoryDialog() {
             setEditingSaleTotal(0);
           }}
           total={editingSaleTotal}
+          orders={[]} // No orders available in history mode
           onConfirm={async (paymentData) => {
             await updateSalePaymentMethod(editingSaleId, paymentData);
             setEditingSaleId(null);

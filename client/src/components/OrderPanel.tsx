@@ -263,6 +263,7 @@ export function OrderPanel() {
         isOpen={showPaymentModal}
         onClose={() => setShowPaymentModal(false)}
         total={total}
+        orders={table.orders}
         onConfirm={handleConfirmPayment}
       />
 

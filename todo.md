@@ -829,3 +829,17 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Implementar scroll funcional con ScrollArea o overflow-y-auto
 - [x] Verificar que todas las mesas son visibles y accesibles
 - [x] Actualizar versión a v8.8.1 (scroll sidebar fix +0.01)
+
+
+## División Personalizada de Cuenta
+
+- [x] Analizar modal de pago actual (PaymentModal.tsx)
+- [x] Diseñar UI para asignar platos a personas específicas
+- [x] Añadir botón "Dividir Personalizado" en modal de pago
+- [x] Crear vista de asignación de platos por persona (CustomSplitModal)
+- [x] Permitir seleccionar qué platos paga cada persona
+- [x] Calcular subtotales por persona automáticamente
+- [x] Mostrar resumen de quién paga qué
+- [x] Actualizar backend para procesar pagos divididos personalizados
+- [x] Probar flujo completo: seleccionar platos → asignar personas → cobrar
+- [x] Actualizar versión a v8.9 (división personalizada de cuenta +0.1)
