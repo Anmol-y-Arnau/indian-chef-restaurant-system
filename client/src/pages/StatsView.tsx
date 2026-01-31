@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useRestaurant } from "@/contexts/RestaurantContext";
 import { format, subDays, startOfWeek, endOfWeek, eachDayOfInterval, isWithinInterval } from "date-fns";
 import { es } from "date-fns/locale";
-import { ArrowLeft, TrendingUp, DollarSign, ShoppingBag, Clock } from "lucide-react";
+import { ArrowLeft, TrendingUp, DollarSign, ShoppingBag, Clock, Users, Share2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useLocation } from "wouter";
 
@@ -123,8 +123,46 @@ export default function StatsView() {
   const totalRevenue = filteredSales.reduce((sum, sale) => sum + sale.total, 0);
   const totalOrders = filteredSales.length;
   const averageTicket = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+  
+  // Calculate total diners (comensales)
+  const totalDiners = filteredSales.reduce((sum, sale) => sum + (sale.totalPayers || 1), 0);
+  const averagePerDiner = totalDiners > 0 ? totalRevenue / totalDiners : 0;
 
   const maxSale = dailySales.reduce((max, day) => day.total > max ? day.total : max, 0);
+
+  // Generate WhatsApp message with all details
+  const generateWhatsAppMessage = () => {
+    const periodText = `${format(dateRange.start, "dd MMM", { locale: es })} - ${format(dateRange.end, "dd MMM yyyy", { locale: es })}`;
+    
+    let message = `📊 *CONTABILIDAD INDIAN CHEF*\n`;
+    message += `📅 Período: ${periodText}\n\n`;
+    
+    message += `💰 *RESUMEN FINANCIERO*\n`;
+    message += `• Ingresos Totales: ${totalRevenue.toFixed(2)}€\n`;
+    message += `• Número de Pedidos: ${totalOrders}\n`;
+    message += `• Total Comensales: ${totalDiners}\n`;
+    message += `• Promedio por Mesa: ${averageTicket.toFixed(2)}€\n`;
+    message += `• Promedio por Comensal: ${averagePerDiner.toFixed(2)}€\n`;
+    message += `• Día Máximo: ${maxSale.toFixed(2)}€\n\n`;
+    
+    message += `💳 *MÉTODOS DE PAGO*\n`;
+    message += `• Efectivo: ${paymentStats.cash.toFixed(2)}€ (${paymentStats.cashPercent.toFixed(1)}%)\n`;
+    message += `• Tarjeta: ${paymentStats.card.toFixed(2)}€ (${paymentStats.cardPercent.toFixed(1)}%)\n\n`;
+    
+    message += `🍽️ *TOP 5 PLATOS MÁS VENDIDOS*\n`;
+    topItems.slice(0, 5).forEach((item, index) => {
+      message += `${index + 1}. ${item.name}: ${item.count} uds (${item.revenue.toFixed(2)}€)\n`;
+    });
+    
+    message += `\n📊 *VENTAS DIARIAS*\n`;
+    dailySales.forEach(day => {
+      if (day.total > 0) {
+        message += `• ${day.date}: ${day.total.toFixed(2)}€ (${day.count} pedidos)\n`;
+      }
+    });
+    
+    return message;
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -146,15 +184,29 @@ export default function StatsView() {
             {format(dateRange.start, "dd MMM", { locale: es })} - {format(dateRange.end, "dd MMM yyyy", { locale: es })}
           </p>
         </div>
-        <Select value={timeRange} onValueChange={(v: any) => setTimeRange(v)}>
-          <SelectTrigger className="w-[140px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="week">Última semana</SelectItem>
-            <SelectItem value="month">Último mes</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              const message = generateWhatsAppMessage();
+              window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+            }}
+            className="gap-2"
+          >
+            <Share2 className="w-4 h-4" />
+            Compartir
+          </Button>
+          <Select value={timeRange} onValueChange={(v: any) => setTimeRange(v)}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="week">Última semana</SelectItem>
+              <SelectItem value="month">Último mes</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <ScrollArea className="flex-1">
@@ -180,13 +232,13 @@ export default function StatsView() {
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <ShoppingBag className="w-4 h-4 text-secondary" />
-                  Ticket Promedio
+                  Promedio por Mesa
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-secondary">{averageTicket.toFixed(2)}€</div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Por pedido
+                  {totalOrders} mesas
                 </p>
               </CardContent>
             </Card>
@@ -194,14 +246,14 @@ export default function StatsView() {
             <Card className="border-accent/20 bg-gradient-to-br from-accent/5 to-transparent">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-accent" />
-                  Día Máximo
+                  <Users className="w-4 h-4 text-accent" />
+                  Promedio por Comensal
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-accent">{maxSale.toFixed(2)}€</div>
+                <div className="text-2xl font-bold text-accent">{averagePerDiner.toFixed(2)}€</div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Mejor día del período
+                  {totalDiners} comensales
                 </p>
               </CardContent>
             </Card>

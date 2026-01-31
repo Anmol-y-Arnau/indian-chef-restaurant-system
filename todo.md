@@ -843,3 +843,14 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Actualizar backend para procesar pagos divididos personalizados
 - [x] Probar flujo completo: seleccionar platos → asignar personas → cobrar
 - [x] Actualizar versión a v8.9 (división personalizada de cuenta +0.1)
+
+
+## Mejoras en Contabilidad (v8.10)
+- [x] Analizar página de contabilidad actual (StatsView.tsx)
+- [x] Añadir cálculo de "Promedio por Comensal" (además del promedio por mesa)
+- [x] Mostrar ambos promedios: por mesa y por comensal
+- [x] Crear función para generar texto de contabilidad formateado (generateWhatsAppMessage)
+- [x] Añadir botón "Compartir por WhatsApp" en página de contabilidad
+- [x] Incluir todos los detalles: ventas totales, número de mesas, comensales, promedios, métodos de pago, top 5 platos, ventas diarias
+- [x] Probar compartir por WhatsApp y verificar formato
+- [x] Actualizar versión a v8.10 (mejoras contabilidad + WhatsApp share +0.1)
