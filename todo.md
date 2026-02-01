@@ -901,3 +901,14 @@ Nueva sección con gráficos y análisis de ventas.
 - [ ] Probar flujo completo: seleccionar TAKEAWAY → ingresar tiempo → ver cuenta regresiva
 
 - [x] Actualizar versión a v9.0 (mejoras múltiples +0.89)
+
+
+## Bug: Botón TAKEAWAY Duplicado (v9.0.1)
+- [x] Buscar todos los botones TAKEAWAY en Home.tsx (móvil y desktop)
+- [x] Eliminar el botón TAKEAWAY duplicado (filtrar del loop de mesas)
+- [x] Dejar solo el botón TAKEAWAY del final (el que tiene el modal de tiempo)
+- [x] Añadir TAKEAWAY al final de INITIAL_TABLES para mantener funcionalidad
+- [x] Filtrar TAKEAWAY del loop de mesas en sidebar móvil y desktop
+- [x] Verificar en móvil que solo hay un botón TAKEAWAY (filtrado correctamente)
+- [x] Verificar en desktop que solo hay un botón TAKEAWAY (al final del sidebar)
+- [x] Actualizar versión a v9.0.1 (fix botón duplicado +0.01)

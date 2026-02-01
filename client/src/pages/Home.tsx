@@ -190,12 +190,12 @@ export default function Home() {
                   </div>
                   <div className="flex flex-col">
                     <h2 className="font-heading text-xl gradient-text">Indian Chef</h2>
-                    <span className="text-xs text-muted-foreground font-mono">v9.0</span>
+                    <span className="text-xs text-muted-foreground font-mono">v9.0.1</span>
                   </div>
                 </div>
                 <ScrollArea className="flex-1 -mx-2 px-2">
                   <div className="grid grid-cols-3 gap-3">
-                    {tables.map(table => (
+                    {tables.filter(t => t.id !== 'TAKEAWAY').map(table => (
                       <button
                         key={table.id}
                         onClick={() => {
@@ -276,7 +276,7 @@ export default function Home() {
         
         <ScrollArea className="flex-1 w-full px-2 min-h-0">
           <div className="flex flex-col gap-4 items-center pb-4">
-            {tables.map(table => (
+            {tables.filter(t => t.id !== 'TAKEAWAY').map(table => (
               <button
                 key={table.id}
                 onClick={() => setActiveTableId(table.id)}
@@ -345,7 +345,7 @@ export default function Home() {
                   <h1 className="text-2xl md:text-5xl font-heading gradient-text drop-shadow-lg">
                     {t('app_title')}
                   </h1>
-                  <span className="text-xs md:text-sm text-muted-foreground font-mono mt-1 md:mt-2">v9.0</span>
+                  <span className="text-xs md:text-sm text-muted-foreground font-mono mt-1 md:mt-2">v9.0.1</span>
                 </div>
                 <p className="text-muted-foreground text-xs md:text-lg max-w-md hidden md:block">
                   {t('subtitle')}
