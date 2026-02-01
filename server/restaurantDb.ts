@@ -141,3 +141,9 @@ export async function updateSalePaymentMethod(saleId: number, paymentData: { pay
     })
     .where(eq(sales.id, saleId));
 }
+
+export async function deleteSale(saleId: number) {
+  const db = await getDb();
+  if (!db) return;
+  await db.delete(sales).where(eq(sales.id, saleId));
+}

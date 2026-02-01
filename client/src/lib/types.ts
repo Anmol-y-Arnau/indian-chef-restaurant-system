@@ -32,6 +32,8 @@ export interface Table {
   guests: number;
   startTime?: Date;
   firstOrderTimestamp?: number; // Timestamp del primer pedido para registro correcto en cierres
+  pickupTime?: number; // Minutos para recogida (solo TAKEAWAY)
+  pickupDeadline?: number; // Timestamp de cuándo debe estar listo (solo TAKEAWAY)
 }
 
 export interface Category {

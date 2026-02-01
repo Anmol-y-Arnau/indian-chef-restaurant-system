@@ -865,3 +865,39 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Incluir en el mensaje: fecha, ventas totales, número de mesas, comensales, promedios, métodos de pago, lista de ventas
 - [x] Probar compartir registro del día por WhatsApp
 - [x] Actualizar versión a v8.11 (compartir registro diario por WhatsApp +0.01)
+
+
+## Mejoras Múltiples (v9.0)
+
+### Botón Eliminar en Historial
+- [x] Añadir botón "Eliminar" al lado de "Recuperar" en HistoryDialog
+- [x] Implementar confirmación antes de eliminar
+- [x] Eliminar venta de la base de datos permanentemente (deleteSale)
+- [x] Actualizar lista de ventas después de eliminar
+
+### Quitar Indicadores de Picante en Tickets
+- [x] Revisar código de generación de tickets (OrderPanel.tsx)
+- [x] Eliminar líneas "Picante: +", "Picante: +-", etc. del ticket impreso
+- [ ] Verificar que el ticket se imprime correctamente sin indicadores
+
+#### Arreglar Responsive Móvil en HistoryDialog
+- [x] Revisar diseño del HistoryDialog en móvil
+- [x] Ajustar ancho de columnas para que no se recorten (w-[95vw])
+- [x] Añadir flex-wrap a botones para que se adapten
+- [ ] Verificar que se ve correctamente en pantallas pequeñasas### Eliminar Primer Botón TAKEAWAY
+- [x] Revisar sidebar móvil en Home.tsx
+- [x] Eliminar primer botón TAKEAWAY (el que tiene letra grande)
+- [x] Dejar solo el botón TAKEAWAY del final (tamaño normal)
+- [x] Verificar que solo aparece un botón TAKEAWAY en móvil
+
+### Modal de Tiempo para TAKEAWAY
+- [x] Crear TakeawayTimeModal.tsx para preguntar minutos
+- [x] Añadir campo pickupTime a la tabla tables en el contexto
+- [x] Integrar modal en Home.tsx para abrir al hacer clic en TAKEAWAY
+- [ ] Guardar tiempo de recogida al seleccionar TAKEAWAY (pendiente backend)
+- [ ] Mostrar cuenta regresiva en modo cocina para TAKEAWAY
+- [ ] Actualizar cuenta regresiva cada minuto
+- [ ] Añadir alerta visual cuando el tiempo se agota
+- [ ] Probar flujo completo: seleccionar TAKEAWAY → ingresar tiempo → ver cuenta regresiva
+
+- [x] Actualizar versión a v9.0 (mejoras múltiples +0.89)

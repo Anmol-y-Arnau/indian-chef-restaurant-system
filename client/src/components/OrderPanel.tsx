@@ -119,7 +119,7 @@ export function OrderPanel() {
     const sortedOrders = sortOrdersByCategory(table.orders);
     const items = sortedOrders.map(o => {
       let line = `${o.quantity}x ${o.menuItem.name} (${(o.menuItem.price * o.quantity).toFixed(2)}€)`;
-      if (o.spiceLevel) line += `\n   🌶️ Picante: ${o.spiceLevel}`;
+      // Removed spiceLevel from printed ticket
       if (o.notes) line += `\n   📝 ${o.notes}`;
       return line;
     }).join('\n');

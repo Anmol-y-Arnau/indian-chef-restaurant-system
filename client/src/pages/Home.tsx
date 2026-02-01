@@ -18,6 +18,7 @@ import { useLocation } from "wouter";
 import KitchenView from "./KitchenView";
 import { CustomizationModal } from "@/components/CustomizationModal";
 import { MenuDelDiaDialog } from "@/components/MenuDelDiaDialog";
+import { TakeawayTimeModal } from "@/components/TakeawayTimeModal";
 import type { MenuItem } from "@/lib/types";
 
 export default function Home() {
@@ -40,6 +41,7 @@ export default function Home() {
   const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
   const [menuDelDiaItem, setMenuDelDiaItem] = useState<MenuItem | null>(null);
   const [isMenuDelDiaOpen, setIsMenuDelDiaOpen] = useState(false);
+  const [isTakeawayTimeModalOpen, setIsTakeawayTimeModalOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Todos los productos pueden ser personalizados
@@ -188,7 +190,7 @@ export default function Home() {
                   </div>
                   <div className="flex flex-col">
                     <h2 className="font-heading text-xl gradient-text">Indian Chef</h2>
-                    <span className="text-xs text-muted-foreground font-mono">v8.11</span>
+                    <span className="text-xs text-muted-foreground font-mono">v9.0</span>
                   </div>
                 </div>
                 <ScrollArea className="flex-1 -mx-2 px-2">
@@ -216,24 +218,7 @@ export default function Home() {
                           )} />
                         )}
                       </button>
-                    ))}
-                    
-                    {/* TAKEAWAY Button */}
-                    <button
-                      onClick={() => {
-                        setActiveTableId('TAKEAWAY');
-                        setIsTablesOpen(false);
-                      }}
-                      className={cn(
-                        "aspect-square rounded-xl flex flex-col items-center justify-center transition-all duration-300 relative border border-2 border-dashed text-xs font-bold",
-                        activeTableId === 'TAKEAWAY' 
-                          ? "gradient-primary text-primary-foreground border-transparent glow-magenta scale-105" 
-                          : "bg-card hover:bg-accent hover:text-accent-foreground border-border"
-                      )}
-                    >
-                      <span className="font-heading">TAKE</span>
-                      <span className="font-heading">AWAY</span>
-                    </button>
+                   ))}
                   </div>
                 </ScrollArea>
                 
@@ -315,7 +300,13 @@ export default function Home() {
             
             {/* TAKEAWAY Button */}
             <button
-              onClick={() => setActiveTableId('TAKEAWAY')}
+              onClick={() => {
+                if (activeTableId !== 'TAKEAWAY') {
+                  setIsTakeawayTimeModalOpen(true);
+                } else {
+                  setActiveTableId('TAKEAWAY');
+                }
+              }}
               className={cn(
                 "w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-300 relative text-xs font-bold",
                 activeTableId === 'TAKEAWAY' 
@@ -354,7 +345,7 @@ export default function Home() {
                   <h1 className="text-2xl md:text-5xl font-heading gradient-text drop-shadow-lg">
                     {t('app_title')}
                   </h1>
-                  <span className="text-xs md:text-sm text-muted-foreground font-mono mt-1 md:mt-2">v8.11</span>
+                  <span className="text-xs md:text-sm text-muted-foreground font-mono mt-1 md:mt-2">v9.0</span>
                 </div>
                 <p className="text-muted-foreground text-xs md:text-lg max-w-md hidden md:block">
                   {t('subtitle')}
@@ -511,6 +502,18 @@ export default function Home() {
           menuItem={menuDelDiaItem}
         />
       )}
+
+      {/* Takeaway Time Modal */}
+      <TakeawayTimeModal
+        isOpen={isTakeawayTimeModalOpen}
+        onClose={() => setIsTakeawayTimeModalOpen(false)}
+        onConfirm={(minutes) => {
+          // Set pickup time for TAKEAWAY table
+          const deadline = Date.now() + (minutes * 60 * 1000);
+          // TODO: Store pickupTime and pickupDeadline in table state
+          setActiveTableId('TAKEAWAY');
+        }}
+      />
     </div>
   );
 }

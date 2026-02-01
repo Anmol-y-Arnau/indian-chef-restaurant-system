@@ -18,6 +18,7 @@ interface RestaurantContextType {
   closeTable: (tableId: number | string, paymentData?: { method: string; splitBetween: number; cashPayers: number; cardPayers: number }) => void;
   restoreOrderToTable: (tableId: number | string, items: OrderItem[]) => void;
   updateSalePaymentMethod: (saleId: number, paymentData: { method: string; splitBetween: number; cashPayers: number; cardPayers: number }) => Promise<void>;
+  deleteSale: (saleId: number) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -269,6 +270,18 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
     }
   };
 
+  const deleteSaleMutation = trpc.restaurant.deleteSale.useMutation();
+
+  const deleteSale = async (saleId: number) => {
+    try {
+      await deleteSaleMutation.mutateAsync({ saleId });
+      toast.success('Venta eliminada correctamente');
+    } catch (error) {
+      toast.error('Error al eliminar la venta');
+      console.error(error);
+    }
+  };
+
   // Convert database sales to order history format
   const orderHistory: OrderHistoryItem[] = (dbSales || []).map(sale => ({
     id: String(sale.id),
@@ -298,6 +311,7 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
       closeTable,
       restoreOrderToTable,
       updateSalePaymentMethod,
+      deleteSale,
       isLoading,
     }}>
       {children}

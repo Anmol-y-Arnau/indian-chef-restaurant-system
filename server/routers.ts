@@ -153,6 +153,14 @@ export const appRouter = router({
         return { success: true };
       }),
 
+    // Delete a sale
+    deleteSale: publicProcedure
+      .input(z.object({ saleId: z.number() }))
+      .mutation(async ({ input }) => {
+        await restaurantDb.deleteSale(input.saleId);
+        return { success: true };
+      }),
+
     // Initialize tables (run once on startup)
     initializeTables: publicProcedure
       .input(z.object({ tableIds: z.array(z.string()) }))

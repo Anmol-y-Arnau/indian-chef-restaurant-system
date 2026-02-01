@@ -10,7 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRestaurant } from "@/contexts/RestaurantContext";
 import { format, startOfDay, endOfDay, isWithinInterval } from "date-fns";
 import { es } from "date-fns/locale";
-import { History, RotateCcw, Calendar, TrendingUp, CreditCard, Share2, Users } from "lucide-react";
+import { History, RotateCcw, Calendar, TrendingUp, CreditCard, Share2, Users, Trash2 } from "lucide-react";
 import { useState, useMemo } from "react";
 import PaymentModal from "./PaymentModal";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
@@ -19,7 +19,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 
 export function HistoryDialog() {
-  const { orderHistory, restoreOrderToTable, tables, updateSalePaymentMethod } = useRestaurant();
+  const { orderHistory, restoreOrderToTable, tables, updateSalePaymentMethod, deleteSale } = useRestaurant();
   const [selectedTableForRestore, setSelectedTableForRestore] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [showStats, setShowStats] = useState(false);
@@ -117,13 +117,13 @@ export function HistoryDialog() {
           <History className="w-5 h-5" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl h-[85vh] flex flex-col">
+      <DialogContent className="max-w-2xl w-[95vw] h-[85vh] flex flex-col p-4 md:p-6">
         <DialogHeader>
           <DialogTitle className="font-heading text-2xl text-primary">Historial de Ventas</DialogTitle>
         </DialogHeader>
         
         {/* Toolbar */}
-        <div className="flex gap-2 items-center border-b border-border pb-3">
+        <div className="flex flex-wrap gap-2 items-center border-b border-border pb-3">
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2">
@@ -258,7 +258,7 @@ export function HistoryDialog() {
                     <span>{item.total.toFixed(2)}€</span>
                   </div>
                   
-                  <div className="pt-2 flex gap-2">
+                  <div className="pt-2 flex flex-wrap gap-2">
                     <Button
                       size="sm"
                       variant="outline"
@@ -293,6 +293,18 @@ export function HistoryDialog() {
                       }}
                     >
                       <RotateCcw className="w-3 h-3 mr-1" /> Recuperar
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="destructive" 
+                      className="h-8 text-xs"
+                      onClick={() => {
+                        if (confirm(`¿Eliminar venta de Mesa ${item.tableId} (${item.total.toFixed(2)}€)?\n\nEsta acción no se puede deshacer.`)) {
+                          deleteSale(Number(item.id));
+                        }
+                      }}
+                    >
+                      <Trash2 className="w-3 h-3" />
                     </Button>
                   </div>
                 </div>
