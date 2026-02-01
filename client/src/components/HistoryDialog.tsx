@@ -10,7 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRestaurant } from "@/contexts/RestaurantContext";
 import { format, startOfDay, endOfDay, isWithinInterval } from "date-fns";
 import { es } from "date-fns/locale";
-import { History, RotateCcw, Calendar, TrendingUp, CreditCard } from "lucide-react";
+import { History, RotateCcw, Calendar, TrendingUp, CreditCard, Share2, Users } from "lucide-react";
 import { useState, useMemo } from "react";
 import PaymentModal from "./PaymentModal";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
@@ -62,15 +62,53 @@ export function HistoryDialog() {
 
     const ticketCount = filteredHistory.length;
     const averageTicket = ticketCount > 0 ? totalSales / ticketCount : 0;
+    
+    // Calculate total diners
+    const totalDiners = filteredHistory.reduce((sum, item) => sum + (item.totalPayers || 1), 0);
+    const averagePerDiner = totalDiners > 0 ? totalSales / totalDiners : 0;
 
     return {
       totalSales,
       cashSales,
       cardSales,
       ticketCount,
-      averageTicket
+      averageTicket,
+      totalDiners,
+      averagePerDiner
     };
   }, [filteredHistory]);
+
+  // Generate WhatsApp message with day details
+  const generateWhatsAppMessage = () => {
+    const dateText = selectedDate ? format(selectedDate, "dd/MM/yyyy", { locale: es }) : "Hoy";
+    
+    let message = `📊 *REGISTRO DEL DÍA - INDIAN CHEF*\n`;
+    message += `📅 Fecha: ${dateText}\n\n`;
+    
+    message += `💰 *RESUMEN FINANCIERO*\n`;
+    message += `• Ingresos Totales: ${stats.totalSales.toFixed(2)}€\n`;
+    message += `• Número de Mesas: ${stats.ticketCount}\n`;
+    message += `• Total Comensales: ${stats.totalDiners}\n`;
+    message += `• Promedio por Mesa: ${stats.averageTicket.toFixed(2)}€\n`;
+    message += `• Promedio por Comensal: ${stats.averagePerDiner.toFixed(2)}€\n\n`;
+    
+    message += `💳 *MÉTODOS DE PAGO*\n`;
+    message += `• Efectivo: ${stats.cashSales.toFixed(2)}€\n`;
+    message += `• Tarjeta: ${stats.cardSales.toFixed(2)}€\n\n`;
+    
+    message += `📋 *DETALLE DE VENTAS*\n`;
+    filteredHistory.forEach((item, index) => {
+      const time = format(new Date(item.date), "HH:mm", { locale: es });
+      const paymentIcon = item.paymentMethod === 'cash' ? '💵' : item.paymentMethod === 'card' ? '💳' : '💵💳';
+      message += `${index + 1}. Mesa ${item.tableId} - ${time} ${paymentIcon}\n`;
+      item.items.forEach(orderItem => {
+        message += `   • ${orderItem.quantity}x ${orderItem.menuItem.name}\n`;
+      });
+      message += `   Total: ${item.total.toFixed(2)}€\n\n`;
+    });
+    
+    return message;
+  };
 
   return (
     <Dialog>
@@ -113,6 +151,21 @@ export function HistoryDialog() {
             <TrendingUp className="w-4 h-4" />
             Contabilidad
           </Button>
+          
+          {showStats && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              onClick={() => {
+                const message = generateWhatsAppMessage();
+                window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+              }}
+            >
+              <Share2 className="w-4 h-4" />
+              Compartir
+            </Button>
+          )}
 
           {selectedDate && (
             <Button 
@@ -144,9 +197,17 @@ export function HistoryDialog() {
               <p className="text-xs text-muted-foreground">Tickets</p>
               <p className="text-xl font-bold">{stats.ticketCount}</p>
             </div>
-            <div className="col-span-2 md:col-span-4 space-y-1 pt-2 border-t border-border">
-              <p className="text-xs text-muted-foreground">Ticket Promedio</p>
+            <div className="col-span-1 md:col-span-2 space-y-1 pt-2 border-t border-border">
+              <p className="text-xs text-muted-foreground">Promedio por Mesa</p>
               <p className="text-lg font-bold text-primary">{stats.averageTicket.toFixed(2)}€</p>
+            </div>
+            <div className="col-span-1 md:col-span-2 space-y-1 pt-2 border-t border-border">
+              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <Users className="w-3 h-3" />
+                Promedio por Comensal
+              </p>
+              <p className="text-lg font-bold text-accent">{stats.averagePerDiner.toFixed(2)}€</p>
+              <p className="text-xs text-muted-foreground">{stats.totalDiners} comensales</p>
             </div>
           </div>
         )}

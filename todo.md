@@ -854,3 +854,14 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Incluir todos los detalles: ventas totales, número de mesas, comensales, promedios, métodos de pago, top 5 platos, ventas diarias
 - [x] Probar compartir por WhatsApp y verificar formato
 - [x] Actualizar versión a v8.10 (mejoras contabilidad + WhatsApp share +0.1)
+
+
+## Mejoras en HistoryDialog - Compartir Registro del Día (v8.11)
+- [x] Analizar HistoryDialog.tsx para entender estructura actual
+- [x] Añadir cálculo de "Promedio por Comensal" en la sección de contabilidad del día
+- [x] Mostrar "Promedio por Mesa" y "Promedio por Comensal" en el resumen del día
+- [x] Crear función para generar mensaje de WhatsApp con detalles del día seleccionado
+- [x] Añadir botón "Compartir por WhatsApp" en HistoryDialog
+- [x] Incluir en el mensaje: fecha, ventas totales, número de mesas, comensales, promedios, métodos de pago, lista de ventas
+- [x] Probar compartir registro del día por WhatsApp
+- [x] Actualizar versión a v8.11 (compartir registro diario por WhatsApp +0.01)
