@@ -912,3 +912,10 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Verificar en móvil que solo hay un botón TAKEAWAY (filtrado correctamente)
 - [x] Verificar en desktop que solo hay un botón TAKEAWAY (al final del sidebar)
 - [x] Actualizar versión a v9.0.1 (fix botón duplicado +0.01)
+
+
+## Bug: Botón TAKEAWAY no aparece en móvil (v9.0.2)
+- [x] Revisar sidebar móvil en Home.tsx
+- [x] Añadir botón TAKEAWAY al final del grid de mesas en móvil
+- [x] Botón abre modal de tiempo y cierra sidebar correctamente
+- [x] Actualizar versión a v9.0.2 (fix TAKEAWAY móvil +0.01)
