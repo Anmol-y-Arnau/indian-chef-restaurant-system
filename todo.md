@@ -919,3 +919,10 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Añadir botón TAKEAWAY al final del grid de mesas en móvil
 - [x] Botón abre modal de tiempo y cierra sidebar correctamente
 - [x] Actualizar versión a v9.0.2 (fix TAKEAWAY móvil +0.01)
+
+
+## Bug: Botón TAKEAWAY móvil en posición incorrecta (v9.0.3)
+- [x] Mover botón TAKEAWAY dentro del ScrollArea en sidebar móvil
+- [x] Posicionar al final del grid de mesas (después de mesa 10) con col-span-3
+- [x] Debe hacer scroll para verlo, igual que en desktop
+- [x] Actualizar versión a v9.0.3 (fix posición TAKEAWAY móvil +0.01)

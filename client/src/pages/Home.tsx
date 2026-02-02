@@ -190,7 +190,7 @@ export default function Home() {
                   </div>
                   <div className="flex flex-col">
                     <h2 className="font-heading text-xl gradient-text">Indian Chef</h2>
-                    <span className="text-xs text-muted-foreground font-mono">v9.0.2</span>
+                    <span className="text-xs text-muted-foreground font-mono">v9.0.3</span>
                   </div>
                 </div>
                 <ScrollArea className="flex-1 -mx-2 px-2">
@@ -219,22 +219,20 @@ export default function Home() {
                         )}
                       </button>
                    ))}
+                    
+                    {/* Botón TAKEAWAY dentro del grid */}
+                    <button
+                      onClick={() => {
+                        setIsTakeawayTimeModalOpen(true);
+                        setIsTablesOpen(false);
+                      }}
+                      className="col-span-3 gradient-primary hover:glow-magenta text-white rounded-xl py-3 px-4 flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-xl active:scale-95"
+                    >
+                      <span className="text-2xl">🥡</span>
+                      <span className="font-bold text-base">TAKE AWAY</span>
+                    </button>
                   </div>
                 </ScrollArea>
-                
-                {/* Botón TAKEAWAY */}
-                <div className="mt-4 px-2">
-                  <button
-                    onClick={() => {
-                      setIsTakeawayTimeModalOpen(true);
-                      setIsTablesOpen(false);
-                    }}
-                    className="w-full gradient-primary hover:glow-magenta text-white rounded-xl py-3 px-4 flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-xl active:scale-95"
-                  >
-                    <span className="text-2xl">🥡</span>
-                    <span className="font-bold text-base">TAKE AWAY</span>
-                  </button>
-                </div>
                 
                 {/* Botón Modo Cocina */}
                 <div className="mt-auto pt-4 border-t border-border">
@@ -359,7 +357,7 @@ export default function Home() {
                   <h1 className="text-2xl md:text-5xl font-heading gradient-text drop-shadow-lg">
                     {t('app_title')}
                   </h1>
-                  <span className="text-xs md:text-sm text-muted-foreground font-mono mt-1 md:mt-2">v9.0.2</span>
+                  <span className="text-xs md:text-sm text-muted-foreground font-mono mt-1 md:mt-2">v9.0.3</span>
                 </div>
                 <p className="text-muted-foreground text-xs md:text-lg max-w-md hidden md:block">
                   {t('subtitle')}
