@@ -3,8 +3,9 @@ import { useRestaurant } from "@/contexts/RestaurantContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import { sortOrdersByCategory } from "@/lib/orderUtils";
-import { Copy, MessageCircle, Minus, Printer, Trash2, X, Bluetooth } from "lucide-react";
+import { Copy, QrCode, Minus, Printer, Trash2, X, Bluetooth } from "lucide-react";
 import PaymentModal, { type PaymentData } from "./PaymentModal";
+import { QRCodeModal } from "./QRCodeModal";
 import { trpc } from "@/lib/trpc";
 import { MENU_ITEMS } from "@/lib/data";
 
@@ -27,6 +28,8 @@ export function OrderPanel() {
   } = useRestaurant();
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [qrData, setQrData] = useState<{ url: string; ticketNumber: number } | null>(null);
   
   // MUST be called before any conditional returns (Rules of Hooks)
   const generatePDFMutation = trpc.restaurant.generateTicketPDF.useMutation();
@@ -139,7 +142,7 @@ export function OrderPanel() {
     toast.success(t('ticket_copied'));
   };
 
-  const handleWhatsApp = async () => {
+  const handleGenerateQR = async () => {
     if (table.orders.length === 0) return;
     
     try {
@@ -183,16 +186,11 @@ export function OrderPanel() {
       });
       
       toast.dismiss();
-      toast.success('PDF generado correctamente');
+      toast.success('Código QR generado');
       
-      // Abrir WhatsApp con enlace al PDF
-      const message = encodeURIComponent(
-        `🍛 *INDIAN CHEF RESTAURANT*\n\n` +
-        `Ticket de ${table.name}\n` +
-        `Total: ${total.toFixed(2)}€\n\n` +
-        `Ver ticket completo: ${result.url}`
-      );
-      window.open(`https://wa.me/?text=${message}`, '_blank');
+      // Mostrar modal con QR
+      setQrData({ url: result.url, ticketNumber });
+      setShowQRModal(true);
     } catch (error) {
       toast.dismiss();
       toast.error('Error al generar el PDF');
@@ -280,11 +278,11 @@ export function OrderPanel() {
             <Button 
               variant="outline" 
               className="flex-1 border-primary/50 hover:bg-primary/10 hover:text-primary px-2"
-              onClick={handleWhatsApp}
+              onClick={handleGenerateQR}
               disabled={table.orders.length === 0}
-              title={t('send_whatsapp')}
+              title="Generar código QR"
             >
-              <MessageCircle className="w-4 h-4" />
+              <QrCode className="w-4 h-4" />
             </Button>
             <Button 
               variant="outline" 
@@ -329,7 +327,19 @@ export function OrderPanel() {
         onConfirm={handleConfirmPayment}
       />
 
-
+      {/* QR Code Modal */}
+      {qrData && (
+        <QRCodeModal
+          open={showQRModal}
+          onClose={() => {
+            setShowQRModal(false);
+            setQrData(null);
+          }}
+          pdfUrl={qrData.url}
+          ticketNumber={qrData.ticketNumber}
+          tableName={table.name}
+        />
+      )}
     </div>
   );
 }

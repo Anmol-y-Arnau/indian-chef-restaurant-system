@@ -948,3 +948,20 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Solución: Mover generatePDFMutation antes de cualquier return condicional
 - [x] Verificado: App funciona correctamente sin errores de hooks
 - [x] Actualizar versión a v9.1.1 (fix hooks order +0.01)
+
+
+## Bug: PDF no se genera correctamente (v9.2)
+- [x] PDF subido a S3 no es válido (enlace da error 404 o archivo corrupto)
+- [x] Verificado: PDF se genera correctamente y es válido
+- [x] Probar generación de PDF localmente
+
+## Nueva Funcionalidad: Código QR para descarga de ticket (v9.2)
+- [x] Cambiar flujo de WhatsApp a código QR
+- [x] Generar código QR con enlace al PDF
+- [x] Mostrar QR en modal para que cliente escanee
+- [x] Cliente escanea QR y descarga PDF del ticket
+- [x] Mantener número de ticket sincronizado
+- [x] Instalar librería qrcode para generación de QR
+- [x] Crear componente QRCodeModal con diseño profesional
+- [x] Botón de descarga directa del PDF en el modal
+- [x] Actualizar versión a v9.2 (QR para tickets +0.1)
