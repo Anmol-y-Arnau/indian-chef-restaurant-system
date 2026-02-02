@@ -4,6 +4,8 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import * as restaurantDb from "./restaurantDb";
+import { generateTicketPDF } from "./ticketPdf";
+import { storagePut } from "./storage";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -159,6 +161,49 @@ export const appRouter = router({
       .mutation(async ({ input }) => {
         await restaurantDb.deleteSale(input.saleId);
         return { success: true };
+      }),
+
+    // Generate PDF ticket for WhatsApp
+    generateTicketPDF: publicProcedure
+      .input(z.object({
+        tableId: z.string(),
+        orders: z.array(z.object({
+          id: z.number(),
+          tableId: z.string(),
+          itemId: z.string(),
+          itemName: z.string(),
+          itemPrice: z.string(),
+          quantity: z.number(),
+          isDelivered: z.number(),
+          spiceLevel: z.string().nullable(),
+          notes: z.string().nullable(),
+          createdAt: z.date(),
+          updatedAt: z.date(),
+          menuItem: z.object({
+            name: z.string(),
+            price: z.number(),
+          }),
+        })),
+        total: z.number(),
+        ticketNumber: z.number(),
+      }))
+      .mutation(async ({ input }) => {
+        // Generate PDF
+        const pdfBuffer = generateTicketPDF({
+          tableId: input.tableId,
+          orders: input.orders,
+          total: input.total,
+          date: new Date(),
+          ticketNumber: input.ticketNumber,
+        });
+
+        // Upload to S3
+        const timestamp = Date.now();
+        const random = Math.random().toString(36).substring(7);
+        const fileName = `ticket_${input.tableId}_${timestamp}_${random}.pdf`;
+        const { url } = await storagePut(`tickets/${fileName}`, pdfBuffer, 'application/pdf');
+
+        return { url };
       }),
 
     // Initialize tables (run once on startup)

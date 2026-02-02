@@ -926,3 +926,17 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Posicionar al final del grid de mesas (después de mesa 10) con col-span-3
 - [x] Debe hacer scroll para verlo, igual que en desktop
 - [x] Actualizar versión a v9.0.3 (fix posición TAKEAWAY móvil +0.01)
+
+
+## Nueva Funcionalidad: Generar PDF de Ticket para WhatsApp (v9.1)
+- [x] Crear endpoint tRPC para generar PDF de ticket con datos de la empresa
+- [x] Implementar generación de PDF con jspdf en el backend
+- [x] Modificar OrderPanel para generar PDF en lugar de texto al compartir por WhatsApp
+- [x] PDF debe incluir: logo, nombre empresa, NIF, dirección, mesa, fecha, items, total
+- [x] Subir PDF generado a S3 y obtener URL pública
+- [x] Abrir WhatsApp con enlace al PDF en lugar de texto plano
+- [x] Sincronizar número de ticket entre impresión y PDF (mismo número consecutivo)
+- [x] Guardar número de ticket por mesa al imprimir
+- [x] Usar mismo número al generar PDF para WhatsApp
+- [x] Tests creados y pasando (4/4 tests)
+- [x] Actualizar versión a v9.1 (PDF tickets para WhatsApp +0.1)

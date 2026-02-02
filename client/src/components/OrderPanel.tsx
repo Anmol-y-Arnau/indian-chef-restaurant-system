@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import { sortOrdersByCategory } from "@/lib/orderUtils";
 import { Copy, MessageCircle, Minus, Printer, Trash2, X, Bluetooth } from "lucide-react";
 import PaymentModal, { type PaymentData } from "./PaymentModal";
+import { trpc } from "@/lib/trpc";
+import { MENU_ITEMS } from "@/lib/data";
 
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
@@ -84,8 +86,9 @@ export function OrderPanel() {
       const success = await printTicket(ticketData);
       
       if (success) {
-        // Save ticket number
+        // Save ticket number globally and for this table
         localStorage.setItem('lastTicketNumber', ticketNumber.toString());
+        localStorage.setItem(`ticketNumber_${table.id}`, ticketNumber.toString());
         toast.success(t('ticket_sent_printer'));
         updateTableStatus(activeTableId, 'payment_pending');
       } else {
@@ -98,6 +101,8 @@ export function OrderPanel() {
   };
 
   const handlePayment = () => {
+    // Clear ticket number for this table when payment is initiated
+    localStorage.removeItem(`ticketNumber_${table.id}`);
     if (table.orders.length === 0) {
       toast.error('No hay pedidos para pagar');
       return;
@@ -132,10 +137,67 @@ export function OrderPanel() {
     toast.success(t('ticket_copied'));
   };
 
-  const handleWhatsApp = () => {
+  const generatePDFMutation = trpc.restaurant.generateTicketPDF.useMutation();
+
+  const handleWhatsApp = async () => {
     if (table.orders.length === 0) return;
-    const text = encodeURIComponent(getTicketText());
-    window.open(`https://wa.me/?text=${text}`, '_blank');
+    
+    try {
+      toast.loading('Generando ticket PDF...');
+      
+      // Get or generate ticket number
+      let ticketNumber = parseInt(localStorage.getItem(`ticketNumber_${table.id}`) || '0');
+      if (ticketNumber === 0) {
+        // If not printed yet, generate new ticket number
+        const lastTicketNumber = parseInt(localStorage.getItem('lastTicketNumber') || '0');
+        ticketNumber = lastTicketNumber + 1;
+        localStorage.setItem('lastTicketNumber', ticketNumber.toString());
+        localStorage.setItem(`ticketNumber_${table.id}`, ticketNumber.toString());
+      }
+      
+      // Preparar datos de los pedidos para el backend
+      const ordersForBackend = table.orders.map(order => ({
+        id: typeof order.id === 'string' ? parseInt(order.id) : order.id,
+        tableId: String(table.id),
+        itemId: order.menuItem.id,
+        itemName: order.menuItem.name,
+        itemPrice: order.menuItem.price.toFixed(2),
+        quantity: order.quantity,
+        isDelivered: order.isDelivered ? 1 : 0,
+        spiceLevel: order.spiceLevel || null,
+        notes: order.notes || null,
+        createdAt: order.createdAt ? new Date(order.createdAt) : new Date(),
+        updatedAt: new Date(),
+        menuItem: {
+          name: order.menuItem.name,
+          price: order.menuItem.price,
+        },
+      }));
+      
+      // Generar PDF y subir a S3
+      const result = await generatePDFMutation.mutateAsync({
+        tableId: table.name,
+        orders: ordersForBackend,
+        total,
+        ticketNumber,
+      });
+      
+      toast.dismiss();
+      toast.success('PDF generado correctamente');
+      
+      // Abrir WhatsApp con enlace al PDF
+      const message = encodeURIComponent(
+        `🍛 *INDIAN CHEF RESTAURANT*\n\n` +
+        `Ticket de ${table.name}\n` +
+        `Total: ${total.toFixed(2)}€\n\n` +
+        `Ver ticket completo: ${result.url}`
+      );
+      window.open(`https://wa.me/?text=${message}`, '_blank');
+    } catch (error) {
+      toast.dismiss();
+      toast.error('Error al generar el PDF');
+      console.error('Error generating PDF:', error);
+    }
   };
 
   return (
