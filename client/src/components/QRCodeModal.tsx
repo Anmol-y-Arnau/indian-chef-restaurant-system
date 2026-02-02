@@ -16,19 +16,28 @@ export function QRCodeModal({ open, onClose, pdfUrl, ticketNumber, tableName }: 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    if (open && canvasRef.current && pdfUrl) {
-      // Generate QR code
-      QRCode.toCanvas(canvasRef.current, pdfUrl, {
-        width: 300,
-        margin: 2,
-        color: {
-          dark: '#000000',
-          light: '#FFFFFF',
-        },
-      }).catch((err) => {
-        console.error('Error generating QR code:', err);
-      });
-    }
+    // Add small delay to ensure canvas is mounted
+    const timer = setTimeout(() => {
+      if (open && canvasRef.current && pdfUrl) {
+        console.log('Generating QR for URL:', pdfUrl);
+        // Generate QR code
+        QRCode.toCanvas(canvasRef.current, pdfUrl, {
+          width: 300,
+          margin: 2,
+          color: {
+            dark: '#000000',
+            light: '#FFFFFF',
+          },
+          errorCorrectionLevel: 'M',
+        }).then(() => {
+          console.log('QR code generated successfully');
+        }).catch((err) => {
+          console.error('Error generating QR code:', err);
+        });
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, [open, pdfUrl]);
 
   const handleDownload = () => {

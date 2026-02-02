@@ -965,3 +965,13 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Crear componente QRCodeModal con diseño profesional
 - [x] Botón de descarga directa del PDF en el modal
 - [x] Actualizar versión a v9.2 (QR para tickets +0.1)
+
+
+## Bug: QR Code no se genera visualmente (v9.2.1)
+- [x] El canvas del QR aparece en blanco
+- [x] Revisar useEffect y dependencias
+- [x] Añadido timeout de 100ms para asegurar que canvas esté montado
+- [x] Añadidos logs para debugging
+- [x] Verificar que QRCode.toCanvas funciona correctamente
+- [x] Asegurar colores negro (#000000) sobre blanco (#FFFFFF) visibles
+- [x] Actualizar versión a v9.2.1 (fix QR display +0.01)
