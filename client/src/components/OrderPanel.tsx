@@ -27,7 +27,9 @@ export function OrderPanel() {
   } = useRestaurant();
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-
+  
+  // MUST be called before any conditional returns (Rules of Hooks)
+  const generatePDFMutation = trpc.restaurant.generateTicketPDF.useMutation();
 
   if (!activeTableId) {
     return (
@@ -136,8 +138,6 @@ export function OrderPanel() {
     navigator.clipboard.writeText(getTicketText());
     toast.success(t('ticket_copied'));
   };
-
-  const generatePDFMutation = trpc.restaurant.generateTicketPDF.useMutation();
 
   const handleWhatsApp = async () => {
     if (table.orders.length === 0) return;

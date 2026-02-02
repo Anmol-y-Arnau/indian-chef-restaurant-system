@@ -940,3 +940,11 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Usar mismo número al generar PDF para WhatsApp
 - [x] Tests creados y pasando (4/4 tests)
 - [x] Actualizar versión a v9.1 (PDF tickets para WhatsApp +0.1)
+
+
+## Bug Crítico: Hooks Order en OrderPanel (v9.1.1)
+- [x] Error: "Rendered more hooks than during the previous render"
+- [x] Causa: useMutation llamado después de early return (viola Rules of Hooks)
+- [x] Solución: Mover generatePDFMutation antes de cualquier return condicional
+- [x] Verificado: App funciona correctamente sin errores de hooks
+- [x] Actualizar versión a v9.1.1 (fix hooks order +0.01)
