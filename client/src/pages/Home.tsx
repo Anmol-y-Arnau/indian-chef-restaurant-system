@@ -186,7 +186,7 @@ export default function Home() {
               <div className="p-6 flex flex-col h-full">
                 <div className="flex items-center gap-3 mb-8">
                   <div className="w-14 h-14 rounded-xl gradient-primary flex items-center justify-center p-2 glow-magenta">
-                    <img src="/indian-chef-logo-icon.png" alt="Logo" className="w-full h-full object-contain" />
+                    <img src="https://files.manuscdn.com/user_upload_by_module/session_file/99644924/SnzQqCrezlPndEim.png" alt="Logo" className="w-full h-full object-contain" />
                   </div>
                   <div className="flex flex-col">
                     <h2 className="font-heading text-xl gradient-text">Indian Chef</h2>
@@ -283,7 +283,7 @@ export default function Home() {
       {/* DESKTOP SIDEBAR - TABLES */}
       <div className="hidden md:flex w-24 lg:w-32 flex-shrink-0 border-r border-border bg-sidebar flex-col items-center py-6 gap-6 z-20 shadow-xl h-full">
         <div className="w-16 h-16 rounded-xl gradient-primary flex items-center justify-center p-2 glow-magenta">
-          <img src="/indian-chef-logo-icon.png" alt="Logo" className="w-full h-full object-contain" />
+          <img src="https://files.manuscdn.com/user_upload_by_module/session_file/99644924/SnzQqCrezlPndEim.png" alt="Logo" className="w-full h-full object-contain" />
         </div>
         
         <ScrollArea className="flex-1 w-full px-2 min-h-0">
@@ -344,13 +344,13 @@ export default function Home() {
           )}>
             <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent z-10" />
             <img 
-              src="/images/hero-bg.jpg" 
+              src="https://files.manuscdn.com/user_upload_by_module/session_file/99644924/BvOCZAJtZCiJBJVF.jpg" 
               alt="Spices" 
               className="w-full h-full object-cover"
             />
             <div className="absolute bottom-4 left-4 md:bottom-6 md:left-8 z-20 flex items-center gap-3 md:gap-4">
               <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl gradient-primary flex items-center justify-center p-2 glow-magenta">
-                <img src="/indian-chef-logo-icon.png" alt="Indian Chef Logo" className="w-full h-full object-contain" />
+                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/99644924/SnzQqCrezlPndEim.png" alt="Indian Chef Logo" className="w-full h-full object-contain" />
               </div>
               <div>
                 <div className="flex items-center gap-2 md:gap-3">

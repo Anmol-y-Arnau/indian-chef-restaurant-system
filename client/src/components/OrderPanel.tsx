@@ -222,7 +222,7 @@ export function OrderPanel() {
       <ScrollArea className="flex-1 p-4 min-h-0">
         {table.orders.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-40 text-muted-foreground opacity-60 mt-10">
-            <img src="/images/empty-state.jpg" alt="Empty" className="w-32 h-32 object-cover rounded-full mb-4 opacity-50 grayscale" />
+            <img src="https://files.manuscdn.com/user_upload_by_module/session_file/99644924/lUdxRzpijMEVVSby.jpg" alt="Empty" className="w-32 h-32 object-cover rounded-full mb-4 opacity-50 grayscale" />
             <p>{t('empty_order')}</p>
           </div>
         ) : (

@@ -975,3 +975,16 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Verificar que QRCode.toCanvas funciona correctamente
 - [x] Asegurar colores negro (#000000) sobre blanco (#FFFFFF) visibles
 - [x] Actualizar versión a v9.2.1 (fix QR display +0.01)
+
+
+## Bugs: Agrupación incorrecta en Modo Cocina (v9.2.2)
+- [x] Bug 1: Contador de cantidades no se actualiza correctamente (2 + 1 no suma 3)
+- [x] Bug 2: Nivel de picante se agrupa mal (1 picante + 2 normales = muestra "3 picantes")
+- [x] Bug 3: Notas se agrupan incorrectamente (3 refrescos con notas diferentes solo muestra 1 nota)
+- [x] Revisar lógica de agrupación en restaurantDb.ts addOrder()
+- [x] Items ahora se agrupan SOLO si tienen exactamente los mismos atributos (itemId + spiceLevel + notes)
+- [x] Si un item tiene spiceLevel diferente, se crea un grupo separado
+- [x] Si un item tiene notes diferentes, se crea un grupo separado
+- [x] Items entregados NO se agrupan con pendientes
+- [x] Tests creados y pasando (5/5 tests)
+- [x] Actualizar versión a v9.2.2 (fix kitchen grouping +0.01)

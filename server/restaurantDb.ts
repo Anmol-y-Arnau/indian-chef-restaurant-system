@@ -52,23 +52,32 @@ export async function addOrder(order: InsertOrder) {
   const existingOrders = await db.select().from(orders)
     .where(eq(orders.tableId, order.tableId));
   
-  // Filter by itemId and find a pending (not delivered) order
+  // Filter by itemId and find a pending (not delivered) order with EXACT same attributes
   const sameItemOrders = existingOrders.filter(o => o.itemId === order.itemId);
-  const pendingOrder = sameItemOrders.find((o: any) => o.isDelivered === 0);
+  
+  // CRITICAL: Only group if spiceLevel AND notes are EXACTLY the same
+  // Normalize null/undefined to null for comparison
+  const normalizeValue = (val: string | null | undefined) => val || null;
+  
+  const pendingOrder = sameItemOrders.find((o: any) => 
+    o.isDelivered === 0 && 
+    normalizeValue(o.spiceLevel) === normalizeValue(order.spiceLevel) &&
+    normalizeValue(o.notes) === normalizeValue(order.notes)
+  );
   
   if (pendingOrder) {
-    // Update the quantity of the existing pending order
+    // Update the quantity of the existing pending order with EXACT same attributes
     await db.update(orders)
       .set({ 
         quantity: pendingOrder.quantity + (order.quantity || 1),
         updatedAt: new Date() 
       })
       .where(eq(orders.id, pendingOrder.id));
-    console.log(`[addOrder] Updated pending order ${pendingOrder.id} with new quantity: ${pendingOrder.quantity + (order.quantity || 1)}`);
+    console.log(`[addOrder] Updated pending order ${pendingOrder.id} with new quantity: ${pendingOrder.quantity + (order.quantity || 1)} (spiceLevel: ${order.spiceLevel}, notes: ${order.notes})`);
   } else {
-    // No pending order found, create a new one
+    // No matching pending order found, create a new one
     await db.insert(orders).values(order);
-    console.log(`[addOrder] Created new order for item ${order.itemId} on table ${order.tableId}`);
+    console.log(`[addOrder] Created new order for item ${order.itemId} on table ${order.tableId} (spiceLevel: ${order.spiceLevel}, notes: ${order.notes})`);
   }
 }
 
