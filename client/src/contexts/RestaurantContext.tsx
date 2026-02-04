@@ -1,7 +1,7 @@
 import { trpc } from "@/lib/trpc";
 import { INITIAL_TABLES, MENU_ITEMS } from "@/lib/data";
 import { MenuItem, OrderHistoryItem, OrderItem, Table } from "@/lib/types";
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 
 interface RestaurantContextType {
@@ -31,13 +31,13 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
 
   // tRPC hooks
   const { data: dbTables, refetch: refetchTables } = trpc.restaurant.getTables.useQuery(undefined, {
-    refetchInterval: 3000, // Poll every 3 seconds for real-time sync
+    refetchInterval: 10000, // Poll every 10 seconds (optimized for RAM)
   });
   const { data: dbOrders, refetch: refetchOrders } = trpc.restaurant.getAllOrders.useQuery(undefined, {
-    refetchInterval: 3000, // Poll every 3 seconds
+    refetchInterval: 10000, // Poll every 10 seconds (optimized for RAM)
   });
   const { data: dbSales } = trpc.restaurant.getSales.useQuery(undefined, {
-    refetchInterval: 5000, // Less frequent for history
+    refetchInterval: 15000, // Poll every 15 seconds (optimized for RAM)
   });
 
   const addOrderMutation = trpc.restaurant.addOrder.useMutation({
@@ -296,24 +296,27 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
     cardPayers: sale.cardPayers || undefined,
   }));
 
+  // Memoize context value to prevent unnecessary re-renders
+  const contextValue = useMemo(() => ({
+    tables,
+    activeTableId,
+    setActiveTableId,
+    addOrderToTable,
+    removeOrderFromTable,
+    updateTableStatus,
+    updateTableGuests,
+    clearTable,
+    getTableTotal,
+    orderHistory,
+    closeTable,
+    restoreOrderToTable,
+    updateSalePaymentMethod,
+    deleteSale,
+    isLoading,
+  }), [tables, activeTableId, orderHistory, isLoading]);
+
   return (
-    <RestaurantContext.Provider value={{
-      tables,
-      activeTableId,
-      setActiveTableId,
-      addOrderToTable,
-      removeOrderFromTable,
-      updateTableStatus,
-      updateTableGuests,
-      clearTable,
-      getTableTotal,
-      orderHistory,
-      closeTable,
-      restoreOrderToTable,
-      updateSalePaymentMethod,
-      deleteSale,
-      isLoading,
-    }}>
+    <RestaurantContext.Provider value={contextValue}>
       {children}
     </RestaurantContext.Provider>
   );

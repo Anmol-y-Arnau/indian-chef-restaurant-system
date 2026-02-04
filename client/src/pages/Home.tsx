@@ -2,7 +2,7 @@ import { CustomItemDialog } from "@/components/CustomItemDialog";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { HistoryDialog } from "@/components/HistoryDialog";
 import { QuickOrderDialog } from "@/components/QuickOrderDialog";
-import { MenuCard } from "@/components/MenuCard";
+import { MenuCardMemo } from "@/components/MenuCardMemo";
 import { OrderPanel } from "@/components/OrderPanel";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -426,7 +426,7 @@ export default function Home() {
                 <div className="p-4 md:p-6 pb-24 md:pb-6">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                     {filteredItems.map(item => (
-                      <MenuCard 
+                      <MenuCardMemo 
                         key={item.id} 
                         item={item} 
                         onAdd={() => handleAddItem(item)}

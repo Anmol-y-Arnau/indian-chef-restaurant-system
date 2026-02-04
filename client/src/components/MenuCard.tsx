@@ -57,6 +57,7 @@ export function MenuCard({ item, onAdd, onCustomize, showCustomizeButton = false
         <img 
           src={item.image} 
           alt={item.name}
+          loading="lazy"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
         <div className="absolute bottom-2 left-2 right-2 z-10 flex justify-between items-end">

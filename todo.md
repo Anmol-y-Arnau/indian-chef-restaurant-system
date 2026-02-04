@@ -988,3 +988,16 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Items entregados NO se agrupan con pendientes
 - [x] Tests creados y pasando (5/5 tests)
 - [x] Actualizar versión a v9.2.2 (fix kitchen grouping +0.01)
+
+
+## Bugs: Imágenes faltantes y alto consumo de RAM (v9.2.3)
+- [x] Algunas fotos no se muestran después de mover a S3 (solo imágenes grandes fueron movidas)
+- [x] Identificar qué imágenes faltan y actualizar referencias (chef-icon y menú están en local)
+- [x] Alto consumo de RAM en el navegador
+- [x] Diagnosticar causas del consumo excesivo de memoria (polling cada 3s era el problema)
+- [x] Optimizar re-renders innecesarios (añadido useMemo en RestaurantContext)
+- [x] Revisar si hay memory leaks en componentes (no encontrados)
+- [x] Optimizar carga de imágenes (lazy loading añadido a MenuCard)
+- [x] Reducir polling de 3s a 10s (tablas y pedidos) y 15s (ventas)
+- [x] Crear MenuCardMemo con React.memo para evitar re-renders
+- [x] Actualizar versión a v9.2.3 (fix images + RAM optimization +0.01)
