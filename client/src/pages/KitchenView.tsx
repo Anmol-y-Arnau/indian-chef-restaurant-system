@@ -7,6 +7,7 @@ import { MENU_ITEMS, INITIAL_TABLES } from '@/lib/data';
 import { OrderItem } from '@/lib/types';
 import { sortOrdersByCategory, getCategoryOrder } from '@/lib/orderUtils';
 import { SoundSettingsDialog } from '@/components/SoundSettingsDialog';
+import { useHaptic } from '@/hooks/useHaptic';
 
 export default function KitchenView() {
   const { t } = useLanguage();
@@ -14,6 +15,7 @@ export default function KitchenView() {
   const [lastNotificationTime, setLastNotificationTime] = useState(0);
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
   const [isSoundSettingsOpen, setIsSoundSettingsOpen] = useState(false);
+  const haptic = useHaptic();
   
   // Inicializar AudioContext
   useEffect(() => {
@@ -245,6 +247,13 @@ export default function KitchenView() {
         orderId: Number(orderId),
         isDelivered: newStatus
       });
+      
+      // Vibración de éxito al marcar como entregado
+      if (newStatus) {
+        haptic.success();
+      } else {
+        haptic.light();
+      }
       console.log('[DELIVERED] Success');
     } catch (error) {
       console.error('[DELIVERED] Error:', error);
@@ -260,6 +269,7 @@ export default function KitchenView() {
           orderId: Number(orderId),
           isDelivered: true
         });
+        haptic.light(); // Vibración por cada item marcado
       }
       console.log('[DELIVERED] All marked successfully');
     } catch (error) {

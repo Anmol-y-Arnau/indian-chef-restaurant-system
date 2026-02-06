@@ -14,6 +14,7 @@ import { CATEGORIES, MENU_ITEMS } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { Menu, Search, ShoppingBag, ChefHat, BarChart3 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { useHaptic } from "@/hooks/useHaptic";
 import { useLocation } from "wouter";
 import KitchenView from "./KitchenView";
 import { CustomizationModal } from "@/components/CustomizationModal";
@@ -43,6 +44,7 @@ export default function Home() {
   const [isMenuDelDiaOpen, setIsMenuDelDiaOpen] = useState(false);
   const [isTakeawayTimeModalOpen, setIsTakeawayTimeModalOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const haptic = useHaptic();
 
   // Todos los productos pueden ser personalizados
   const canBeCustomized = (item: MenuItem) => {
@@ -66,6 +68,7 @@ export default function Home() {
 
     // Añadir directamente sin modal
     addOrderToTable(activeTableId, item);
+    haptic.light(); // Vibración suave al añadir item
   };
 
   // Función para manejar la personalización de un item (abrir modal)
@@ -201,6 +204,7 @@ export default function Home() {
                         onClick={() => {
                           setActiveTableId(table.id);
                           setIsTablesOpen(false);
+                          haptic.selection(); // Vibración al cambiar mesa
                         }}
                         className={cn(
                           "aspect-square rounded-xl flex flex-col items-center justify-center transition-all duration-300 relative border",
@@ -291,7 +295,10 @@ export default function Home() {
             {tables.filter(t => t.id !== 'TAKEAWAY').map(table => (
               <button
                 key={table.id}
-                onClick={() => setActiveTableId(table.id)}
+                onClick={() => {
+                  setActiveTableId(table.id);
+                  haptic.selection(); // Vibración al cambiar mesa
+                }}
                 className={cn(
                   "w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-300 relative",
                   activeTableId === table.id 
@@ -317,6 +324,7 @@ export default function Home() {
                   setIsTakeawayTimeModalOpen(true);
                 } else {
                   setActiveTableId('TAKEAWAY');
+                  haptic.selection(); // Vibración al seleccionar TAKEAWAY
                 }
               }}
               className={cn(
@@ -401,7 +409,10 @@ export default function Home() {
 
           {/* Categories & Menu Grid */}
           <div className="flex flex-col bg-background">
-            <Tabs defaultValue={CATEGORIES[0].id} value={activeCategory} onValueChange={setActiveCategory} className="flex flex-col">
+            <Tabs defaultValue={CATEGORIES[0].id} value={activeCategory} onValueChange={(value) => {
+              setActiveCategory(value);
+              haptic.selection(); // Vibración al cambiar categoría
+            }} className="flex flex-col">
               {/* Categories - Sticky on mobile */}
               <div className="sticky top-0 md:relative px-4 md:px-6 py-3 md:py-4 border-b border-border bg-background/95 backdrop-blur-md z-10">
                 <div className="w-full overflow-x-auto pb-2 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">

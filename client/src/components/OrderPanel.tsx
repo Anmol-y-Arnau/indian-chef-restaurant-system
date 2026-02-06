@@ -4,6 +4,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import { sortOrdersByCategory } from "@/lib/orderUtils";
 import { Copy, QrCode, Minus, Printer, Trash2, X, Bluetooth } from "lucide-react";
+import { useHaptic } from "@/hooks/useHaptic";
 import PaymentModal, { type PaymentData } from "./PaymentModal";
 import { QRCodeModal } from "./QRCodeModal";
 import { trpc } from "@/lib/trpc";
@@ -33,6 +34,7 @@ export function OrderPanel() {
   
   // MUST be called before any conditional returns (Rules of Hooks)
   const generatePDFMutation = trpc.restaurant.generateTicketPDF.useMutation();
+  const haptic = useHaptic();
 
   if (!activeTableId) {
     return (
@@ -119,6 +121,7 @@ export function OrderPanel() {
     setShowPaymentModal(false);
     closeTable(activeTableId, paymentData);
     setActiveTableId(null);
+    haptic.success(); // Vibración de éxito al completar pago
     toast.success('Pago registrado correctamente');
   };
 
@@ -247,7 +250,10 @@ export function OrderPanel() {
                   variant="ghost"
                   size="icon"
                   className="h-6 w-6 ml-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                  onClick={() => removeOrderFromTable(activeTableId, String(order.id))}
+                  onClick={() => {
+                    removeOrderFromTable(activeTableId, String(order.id));
+                    haptic.medium(); // Vibración media al eliminar item
+                  }}
                 >
                   <Minus className="w-3 h-3" />
                 </Button>

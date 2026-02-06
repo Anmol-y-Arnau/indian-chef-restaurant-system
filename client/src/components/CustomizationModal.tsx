@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Flame, Plus, Minus } from 'lucide-react';
+import { useHaptic } from '@/hooks/useHaptic';
 
 interface CustomizationModalProps {
   isOpen: boolean;
@@ -23,9 +24,11 @@ export function CustomizationModal({ isOpen, onClose, onConfirm, itemName }: Cus
   const [spiceLevel, setSpiceLevel] = useState<string>(''); // Default: Sin especificar
   const [notes, setNotes] = useState<string>('');
   const [quantity, setQuantity] = useState<number>(1);
+  const haptic = useHaptic();
 
   const handleConfirm = () => {
     onConfirm(spiceLevel, notes, quantity);
+    haptic.light(); // Vibración al confirmar personalización
     // Reset state
     setSpiceLevel(''); // Reset to "Sin especificar"
     setNotes('');

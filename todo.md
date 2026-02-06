@@ -1001,3 +1001,17 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Reducir polling de 3s a 10s (tablas y pedidos) y 15s (ventas)
 - [x] Crear MenuCardMemo con React.memo para evitar re-renders
 - [x] Actualizar versión a v9.2.3 (fix images + RAM optimization +0.01)
+
+
+## Nueva Funcionalidad: Haptic Feedback (Vibración) (v9.3)
+- [x] Crear hook personalizado `useHaptic` para gestionar vibraciones
+- [x] Implementar diferentes patrones de vibración (light: 10ms, selection: 5ms, medium: 20ms, heavy: 50ms, success: [10,50,10], error: 100ms)
+- [x] Añadir vibración suave al añadir items al pedido
+- [x] Añadir vibración media al eliminar items del pedido
+- [x] Añadir vibración de éxito al completar pago/cerrar mesa (patrón success)
+- [x] Añadir vibración muy corta al cambiar de mesa activa (5ms)
+- [x] Añadir vibración muy corta al cambiar de categoría en el menú (5ms)
+- [x] Añadir vibración de éxito al marcar pedido como entregado en cocina
+- [x] Añadir vibración suave al confirmar personalización de items
+- [x] Detectar soporte de Vibration API y manejar gracefully si no está disponible
+- [x] Actualizar versión a v9.3 (haptic feedback +0.1)
