@@ -45,7 +45,7 @@ export interface Category {
 export interface OrderHistoryItem {
   id: string;
   tableId: number | string;
-  date: string; // ISO string
+  date: string | Date; // ISO string or Date object
   total: number;
   items: OrderItem[];
   paymentMethod?: 'cash' | 'card' | 'mixed';

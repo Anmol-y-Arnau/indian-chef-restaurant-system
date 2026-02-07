@@ -287,7 +287,8 @@ export function RestaurantProvider({ children }: { children: React.ReactNode }) 
     id: String(sale.id),
     tableId: sale.tableId,
     // Use serviceDate (first order) if available, fallback to createdAt for old sales
-    date: (sale.serviceDate || sale.createdAt).toISOString(),
+    // Keep as Date object to avoid timezone conversion issues
+    date: new Date(sale.serviceDate || sale.createdAt),
     total: parseFloat(sale.total),
     items: sale.items as any, // JSON field from database
     paymentMethod: sale.paymentMethod as 'cash' | 'card' | 'mixed' | undefined,

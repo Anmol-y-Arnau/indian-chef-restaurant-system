@@ -1,0 +1,170 @@
+{
+  "query": "SELECT id, tableId, total, paymentMethod, serviceDate, createdAt \nFROM sales \nWHERE DATE(serviceDate) >= '2026-01-28' AND DATE(serviceDate) <= '2026-02-02'\nORDER BY serviceDate DESC\nLIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Uq8k8iGCZwrkNA.b6083e981c0a --database WzNUPpTsWu5Uc4xnu9Kr5J --execute SELECT id, tableId, total, paymentMethod, serviceDate, createdAt \nFROM sales \nWHERE DATE(serviceDate) >= '2026-01-28' AND DATE(serviceDate) <= '2026-02-02'\nORDER BY serviceDate DESC\nLIMIT 20;",
+  "rows": [
+    {
+      "id": "1680011",
+      "tableId": "0+",
+      "total": "25.00",
+      "paymentMethod": "cash",
+      "serviceDate": "2026-02-02 21:49:33",
+      "createdAt": "2026-02-02 21:49:34"
+    },
+    {
+      "id": "1680009",
+      "tableId": "3",
+      "total": "38.60",
+      "paymentMethod": "card",
+      "serviceDate": "2026-02-02 21:11:58",
+      "createdAt": "2026-02-02 21:41:00"
+    },
+    {
+      "id": "1680006",
+      "tableId": "0-",
+      "total": "66.50",
+      "paymentMethod": "cash",
+      "serviceDate": "2026-02-02 20:48:11",
+      "createdAt": "2026-02-02 21:29:30"
+    },
+    {
+      "id": "1680008",
+      "tableId": "6",
+      "total": "51.50",
+      "paymentMethod": "card",
+      "serviceDate": "2026-02-02 20:31:15",
+      "createdAt": "2026-02-02 21:39:52"
+    },
+    {
+      "id": "1680007",
+      "tableId": "10",
+      "total": "16.80",
+      "paymentMethod": "card",
+      "serviceDate": "2026-02-02 20:26:39",
+      "createdAt": "2026-02-02 21:38:29"
+    },
+    {
+      "id": "1680004",
+      "tableId": "1",
+      "total": "47.10",
+      "paymentMethod": "card",
+      "serviceDate": "2026-02-02 20:00:34",
+      "createdAt": "2026-02-02 20:38:25"
+    },
+    {
+      "id": "1680005",
+      "tableId": "4",
+      "total": "45.50",
+      "paymentMethod": "card",
+      "serviceDate": "2026-02-02 19:58:56",
+      "createdAt": "2026-02-02 21:10:50"
+    },
+    {
+      "id": "1680003",
+      "tableId": "2",
+      "total": "69.40",
+      "paymentMethod": "card",
+      "serviceDate": "2026-02-02 19:08:39",
+      "createdAt": "2026-02-02 20:28:46"
+    },
+    {
+      "id": "1680002",
+      "tableId": "0+",
+      "total": "64.40",
+      "paymentMethod": "card",
+      "serviceDate": "2026-02-02 18:14:55",
+      "createdAt": "2026-02-02 19:57:34"
+    },
+    {
+      "id": "1680001",
+      "tableId": "0+",
+      "total": "39.80",
+      "paymentMethod": "card",
+      "serviceDate": "2026-02-02 14:49:34",
+      "createdAt": "2026-02-02 18:14:40"
+    },
+    {
+      "id": "1650003",
+      "tableId": "1",
+      "total": "38.60",
+      "paymentMethod": "card",
+      "serviceDate": "2026-02-02 13:34:13",
+      "createdAt": "2026-02-02 14:34:15"
+    },
+    {
+      "id": "1650002",
+      "tableId": "4",
+      "total": "81.70",
+      "paymentMethod": "card",
+      "serviceDate": "2026-02-02 13:01:06",
+      "createdAt": "2026-02-02 14:33:43"
+    },
+    {
+      "id": "1650004",
+      "tableId": "0+",
+      "total": "48.60",
+      "paymentMethod": "card",
+      "serviceDate": "2026-02-02 12:38:59",
+      "createdAt": "2026-02-02 14:48:33"
+    },
+    {
+      "id": "1650001",
+      "tableId": "TAKEAWAY",
+      "total": "17.40",
+      "paymentMethod": "card",
+      "serviceDate": "2026-02-02 12:27:50",
+      "createdAt": "2026-02-02 12:28:23"
+    },
+    {
+      "id": "1650005",
+      "tableId": "2",
+      "total": "65.00",
+      "paymentMethod": "card",
+      "serviceDate": "2026-02-02 12:24:06",
+      "createdAt": "2026-02-02 14:48:43"
+    },
+    {
+      "id": "1620007",
+      "tableId": "TAKEAWAY",
+      "total": "51.30",
+      "paymentMethod": "card",
+      "serviceDate": "2026-02-01 18:34:38",
+      "createdAt": "2026-02-01 19:25:31"
+    },
+    {
+      "id": "1620006",
+      "tableId": "4",
+      "total": "52.40",
+      "paymentMethod": "card",
+      "serviceDate": "2026-02-01 14:17:55",
+      "createdAt": "2026-02-01 15:20:47"
+    },
+    {
+      "id": "1620004",
+      "tableId": "0-",
+      "total": "56.70",
+      "paymentMethod": "card",
+      "serviceDate": "2026-02-01 13:18:13",
+      "createdAt": "2026-02-01 14:20:33"
+    },
+    {
+      "id": "1620003",
+      "tableId": "8",
+      "total": "42.60",
+      "paymentMethod": "card",
+      "serviceDate": "2026-02-01 13:09:39",
+      "createdAt": "2026-02-01 14:04:02"
+    },
+    {
+      "id": "1620005",
+      "tableId": "0+",
+      "total": "71.20",
+      "paymentMethod": "card",
+      "serviceDate": "2026-02-01 13:03:02",
+      "createdAt": "2026-02-01 14:49:06"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttableId\ttotal\tpaymentMethod\tserviceDate\tcreatedAt\n1680011\t0+\t25.00\tcash\t2026-02-02 21:49:33\t2026-02-02 21:49:34\n1680009\t3\t38.60\tcard\t2026-02-02 21:11:58\t2026-02-02 21:41:00\n1680006\t0-\t66.50\tcash\t2026-02-02 20:48:11\t2026-02-02 21:29:30\n1680008\t6\t51.50\tcard\t2026-02-02 20:31:15\t2026-02-02 21:39:52\n1680007\t10\t16.80\tcard\t2026-02-02 20:26:39\t2026-02-02 21:38:29\n1680004\t1\t47.10\tcard\t2026-02-02 20:00:34\t2026-02-02 20:38:25\n1680005\t4\t45.50\tcard\t2026-02-02 19:58:56\t2026-02-02 21:10:50\n1680003\t2\t69.40\tcard\t2026-02-02 19:08:39\t2026-02-02 20:28:46\n1680002\t0+\t64.40\tcard\t2026-02-02 18:14:55\t2026-02-02 19:57:34\n1680001\t0+\t39.80\tcard\t2026-02-02 14:49:34\t2026-02-02 18:14:40\n1650003\t1\t38.60\tcard\t2026-02-02 13:34:13\t2026-02-02 14:34:15\n1650002\t4\t81.70\tcard\t2026-02-02 13:01:06\t2026-02-02 14:33:43\n1650004\t0+\t48.60\tcard\t2026-02-02 12:38:59\t2026-02-02 14:48:33\n1650001\tTAKEAWAY\t17.40\tcard\t2026-02-02 12:27:50\t2026-02-02 12:28:23\n1650005\t2\t65.00\tcard\t2026-02-02 12:24:06\t2026-02-02 14:48:43\n1620007\tTAKEAWAY\t51.30\tcard\t2026-02-01 18:34:38\t2026-02-01 19:25:31\n1620006\t4\t52.40\tcard\t2026-02-01 14:17:55\t2026-02-01 15:20:47\n1620004\t0-\t56.70\tcard\t2026-02-01 13:18:13\t2026-02-01 14:20:33\n1620003\t8\t42.60\tcard\t2026-02-01 13:09:39\t2026-02-01 14:04:02\n1620005\t0+\t71.20\tcard\t2026-02-01 13:03:02\t2026-02-01 14:49:06\n",
+  "stderr": "",
+  "execution_time_ms": 609
+}

@@ -1,0 +1,150 @@
+{
+  "query": "SELECT id, tableId, total, paymentMethod, \n       DATE(serviceDate) as service_day,\n       DATE(createdAt) as created_day,\n       serviceDate, \n       createdAt \nFROM sales \nWHERE DATE(serviceDate) = '2026-01-30'\nORDER BY serviceDate DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Uq8k8iGCZwrkNA.b6083e981c0a --database WzNUPpTsWu5Uc4xnu9Kr5J --execute SELECT id, tableId, total, paymentMethod, \n       DATE(serviceDate) as service_day,\n       DATE(createdAt) as created_day,\n       serviceDate, \n       createdAt \nFROM sales \nWHERE DATE(serviceDate) = '2026-01-30'\nORDER BY serviceDate DESC;",
+  "rows": [
+    {
+      "id": "1440010",
+      "tableId": "TAKEAWAY",
+      "total": "15.90",
+      "paymentMethod": "cash",
+      "service_day": "2026-01-30",
+      "created_day": "2026-01-30",
+      "serviceDate": "2026-01-30 21:50:42",
+      "createdAt": "2026-01-30 21:52:42"
+    },
+    {
+      "id": "1470002",
+      "tableId": "6",
+      "total": "162.00",
+      "paymentMethod": "mixed",
+      "service_day": "2026-01-30",
+      "created_day": "2026-01-30",
+      "serviceDate": "2026-01-30 21:37:30",
+      "createdAt": "2026-01-30 23:12:32"
+    },
+    {
+      "id": "1470001",
+      "tableId": "5",
+      "total": "86.60",
+      "paymentMethod": "mixed",
+      "service_day": "2026-01-30",
+      "created_day": "2026-01-30",
+      "serviceDate": "2026-01-30 21:16:58",
+      "createdAt": "2026-01-30 23:09:41"
+    },
+    {
+      "id": "1440007",
+      "tableId": "TAKEAWAY",
+      "total": "10.00",
+      "paymentMethod": "cash",
+      "service_day": "2026-01-30",
+      "created_day": "2026-01-30",
+      "serviceDate": "2026-01-30 20:58:08",
+      "createdAt": "2026-01-30 20:58:08"
+    },
+    {
+      "id": "1440011",
+      "tableId": "4",
+      "total": "52.60",
+      "paymentMethod": "card",
+      "service_day": "2026-01-30",
+      "created_day": "2026-01-30",
+      "serviceDate": "2026-01-30 20:28:52",
+      "createdAt": "2026-01-30 22:02:16"
+    },
+    {
+      "id": "1440012",
+      "tableId": "2",
+      "total": "98.60",
+      "paymentMethod": "card",
+      "service_day": "2026-01-30",
+      "created_day": "2026-01-30",
+      "serviceDate": "2026-01-30 20:27:26",
+      "createdAt": "2026-01-30 22:11:47"
+    },
+    {
+      "id": "1440008",
+      "tableId": "7",
+      "total": "40.50",
+      "paymentMethod": "cash",
+      "service_day": "2026-01-30",
+      "created_day": "2026-01-30",
+      "serviceDate": "2026-01-30 20:01:20",
+      "createdAt": "2026-01-30 21:14:57"
+    },
+    {
+      "id": "1440006",
+      "tableId": "5",
+      "total": "48.50",
+      "paymentMethod": "card",
+      "service_day": "2026-01-30",
+      "created_day": "2026-01-30",
+      "serviceDate": "2026-01-30 19:56:29",
+      "createdAt": "2026-01-30 20:47:57"
+    },
+    {
+      "id": "1440009",
+      "tableId": "3",
+      "total": "62.50",
+      "paymentMethod": "card",
+      "service_day": "2026-01-30",
+      "created_day": "2026-01-30",
+      "serviceDate": "2026-01-30 19:37:58",
+      "createdAt": "2026-01-30 21:16:25"
+    },
+    {
+      "id": "1440004",
+      "tableId": "1",
+      "total": "71.40",
+      "paymentMethod": "card",
+      "service_day": "2026-01-30",
+      "created_day": "2026-01-30",
+      "serviceDate": "2026-01-30 13:55:31",
+      "createdAt": "2026-01-30 15:18:50"
+    },
+    {
+      "id": "1440005",
+      "tableId": "0+",
+      "total": "53.40",
+      "paymentMethod": "card",
+      "service_day": "2026-01-30",
+      "created_day": "2026-01-30",
+      "serviceDate": "2026-01-30 13:31:34",
+      "createdAt": "2026-01-30 18:30:08"
+    },
+    {
+      "id": "1440003",
+      "tableId": "2",
+      "total": "43.70",
+      "paymentMethod": "card",
+      "service_day": "2026-01-30",
+      "created_day": "2026-01-30",
+      "serviceDate": "2026-01-30 13:23:23",
+      "createdAt": "2026-01-30 13:57:37"
+    },
+    {
+      "id": "1440002",
+      "tableId": "3",
+      "total": "41.90",
+      "paymentMethod": "card",
+      "service_day": "2026-01-30",
+      "created_day": "2026-01-30",
+      "serviceDate": "2026-01-30 13:21:31",
+      "createdAt": "2026-01-30 13:57:30"
+    },
+    {
+      "id": "1440001",
+      "tableId": "0+",
+      "total": "31.70",
+      "paymentMethod": "card",
+      "service_day": "2026-01-30",
+      "created_day": "2026-01-30",
+      "serviceDate": "2026-01-30 12:43:35",
+      "createdAt": "2026-01-30 12:55:10"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttableId\ttotal\tpaymentMethod\tservice_day\tcreated_day\tserviceDate\tcreatedAt\n1440010\tTAKEAWAY\t15.90\tcash\t2026-01-30\t2026-01-30\t2026-01-30 21:50:42\t2026-01-30 21:52:42\n1470002\t6\t162.00\tmixed\t2026-01-30\t2026-01-30\t2026-01-30 21:37:30\t2026-01-30 23:12:32\n1470001\t5\t86.60\tmixed\t2026-01-30\t2026-01-30\t2026-01-30 21:16:58\t2026-01-30 23:09:41\n1440007\tTAKEAWAY\t10.00\tcash\t2026-01-30\t2026-01-30\t2026-01-30 20:58:08\t2026-01-30 20:58:08\n1440011\t4\t52.60\tcard\t2026-01-30\t2026-01-30\t2026-01-30 20:28:52\t2026-01-30 22:02:16\n1440012\t2\t98.60\tcard\t2026-01-30\t2026-01-30\t2026-01-30 20:27:26\t2026-01-30 22:11:47\n1440008\t7\t40.50\tcash\t2026-01-30\t2026-01-30\t2026-01-30 20:01:20\t2026-01-30 21:14:57\n1440006\t5\t48.50\tcard\t2026-01-30\t2026-01-30\t2026-01-30 19:56:29\t2026-01-30 20:47:57\n1440009\t3\t62.50\tcard\t2026-01-30\t2026-01-30\t2026-01-30 19:37:58\t2026-01-30 21:16:25\n1440004\t1\t71.40\tcard\t2026-01-30\t2026-01-30\t2026-01-30 13:55:31\t2026-01-30 15:18:50\n1440005\t0+\t53.40\tcard\t2026-01-30\t2026-01-30\t2026-01-30 13:31:34\t2026-01-30 18:30:08\n1440003\t2\t43.70\tcard\t2026-01-30\t2026-01-30\t2026-01-30 13:23:23\t2026-01-30 13:57:37\n1440002\t3\t41.90\tcard\t2026-01-30\t2026-01-30\t2026-01-30 13:21:31\t2026-01-30 13:57:30\n1440001\t0+\t31.70\tcard\t2026-01-30\t2026-01-30\t2026-01-30 12:43:35\t2026-01-30 12:55:10\n",
+  "stderr": "",
+  "execution_time_ms": 351
+}

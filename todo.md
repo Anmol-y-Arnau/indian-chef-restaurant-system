@@ -1015,3 +1015,15 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Añadir vibración suave al confirmar personalización de items
 - [x] Detectar soporte de Vibration API y manejar gracefully si no está disponible
 - [x] Actualizar versión a v9.3 (haptic feedback +0.1)
+
+
+## Bug: No se muestran ventas del día 30 en contabilidad (v9.3.1)
+- [x] El menú de contabilidad no muestra el día 30 del mes pasado
+- [x] Solo aparecen ventas desde el día 31 en adelante
+- [x] Verificar si las ventas del día 30 se guardaron en la base de datos (SÍ, 14 ventas encontradas)
+- [x] Revisar filtro de fechas en el componente de historial
+- [x] Problema encontrado: conversión a ISO string causaba cambio de zona horaria
+- [x] Solución: Pasar objeto Date directamente sin convertir a string
+- [x] Cambiar tipo de OrderHistoryItem.date de string a string | Date
+- [x] Actualizar RestaurantContext para pasar Date en lugar de toISOString()
+- [x] Actualizar versión a v9.3.1 (fix accounting date filter +0.01)
