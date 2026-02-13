@@ -400,9 +400,18 @@ export default function KitchenView() {
             {order.notes && (
               <div className="flex items-start gap-2 bg-blue-600/20 px-3 py-1.5 rounded-md border border-blue-500/30">
                 <span className="text-xl flex-shrink-0">📝</span>
-                <span className="text-sm text-blue-300 italic break-words">
-                  {order.notes}
-                </span>
+                <div className="text-sm text-blue-300 italic break-words">
+                  {/* Si las notas contienen "|" (formato menú del día), mostrar en líneas separadas */}
+                  {order.notes.includes('|') ? (
+                    order.notes.split('|').map((note: string, idx: number) => (
+                      <div key={idx} className="mb-0.5 last:mb-0">
+                        {note.trim()}
+                      </div>
+                    ))
+                  ) : (
+                    order.notes
+                  )}
+                </div>
               </div>
             )}
           </div>

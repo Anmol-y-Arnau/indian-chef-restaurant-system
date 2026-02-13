@@ -110,12 +110,13 @@ export default function Home() {
   };
 
   // Función para confirmar el menú del día
-  const handleConfirmMenuDelDia = (item: MenuItem, customName: string) => {
+  const handleConfirmMenuDelDia = (item: MenuItem, customName: string, notes?: string) => {
     if (activeTableId !== null) {
-      // Crear una copia del item con el nombre personalizado
+      // Crear una copia del item con el nombre y notas
       const customizedItem = {
         ...item,
-        name: customName
+        name: customName,
+        notes: notes || ''
       };
       addOrderToTable(activeTableId, customizedItem);
     }
@@ -193,7 +194,7 @@ export default function Home() {
                   </div>
                   <div className="flex flex-col">
                     <h2 className="font-heading text-xl gradient-text">Indian Chef</h2>
-                    <span className="text-xs text-muted-foreground font-mono">v9.3.1</span>
+                    <span className="text-xs text-muted-foreground">v9.3.2</span>
                   </div>
                 </div>
                 <ScrollArea className="flex-1 -mx-2 px-2">

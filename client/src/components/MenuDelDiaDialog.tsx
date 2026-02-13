@@ -8,7 +8,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 interface MenuDelDiaDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (item: MenuItem, customName: string) => void;
+  onConfirm: (item: MenuItem, customName: string, notes?: string) => void;
   menuItem: MenuItem;
 }
 
@@ -37,10 +37,11 @@ export function MenuDelDiaDialog({ isOpen, onClose, onConfirm, menuItem }: MenuD
     const entranteName = language === 'en' ? entranteObj?.name_en : entranteObj?.name;
     const bebidaName = language === 'en' ? bebidaObj?.name_en : bebidaObj?.name;
     
-    // Crear nombre personalizado que se mostrará en el pedido
-    const customName = `${menuItem.name} - ${t('entrante')}: ${entranteName}, ${t('bebida')}: ${bebidaName}`;
+    // Guardar opciones estructuradas en notes para que se vean en cocina
+    const notes = `Entrante: ${entranteName} | Bebida: ${bebidaName}`;
     
-    onConfirm(menuItem, customName);
+    // El customName ahora es solo el nombre del menú, los detalles van en notes
+    onConfirm(menuItem, menuItem.name, notes);
     onClose();
   };
 

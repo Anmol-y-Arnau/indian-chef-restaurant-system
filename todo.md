@@ -1027,3 +1027,16 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Cambiar tipo de OrderHistoryItem.date de string a string | Date
 - [x] Actualizar RestaurantContext para pasar Date en lugar de toISOString()
 - [x] Actualizar versión a v9.3.1 (fix accounting date filter +0.01)
+
+
+## Bug: Menú del día no muestra detalles en modo cocina (v9.3.2)
+- [x] Cuando se añade "Menú del día" con opciones personalizadas (entrante, bebida, postre/café)
+- [x] En modo cocina solo aparece "Menú del día" sin detalles
+- [x] Debe mostrar qué entrante escogió el cliente
+- [x] Debe mostrar qué bebida escogió
+- [x] Debe mostrar si escogió postre o café (nota informativa en el modal)
+- [x] Revisar cómo se guardan las notas del menú del día en MenuDelDiaDialog
+- [x] Modificado para guardar opciones en campo notes con formato "Entrante: X | Bebida: Y"
+- [x] Modificar KitchenView para parsear y mostrar detalles estructurados
+- [x] KitchenView ahora divide notas con "|" en líneas separadas para mejor legibilidad
+- [x] Actualizar versión a v9.3.2 (fix menu details in kitchen +0.01)
