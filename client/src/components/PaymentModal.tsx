@@ -36,6 +36,7 @@ export default function PaymentModal({ isOpen, onClose, total, orders, onConfirm
   const [cardPayers, setCardPayers] = useState(0);
   const [isCustomSplit, setIsCustomSplit] = useState(false);
   const [customSplitData, setCustomSplitData] = useState<PersonPayment[]>([]);
+  const [amountReceived, setAmountReceived] = useState<string>('');
 
   if (!isOpen) return null;
 
@@ -266,6 +267,35 @@ export default function PaymentModal({ isOpen, onClose, total, orders, onConfirm
             <span className="text-orange-500">{total.toFixed(2)}€</span>
           </div>
         </div>
+
+        {/* Change Calculator - Only for cash or mixed with cash */}
+        {((method === 'cash' || method === 'mixed') && cashAmount > 0) && (
+          <div className="bg-green-500/10 border-2 border-green-500/30 p-4 rounded-lg space-y-3">
+            <label className="text-green-400 text-sm font-medium">💵 Cantidad Recibida</label>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              value={amountReceived}
+              onChange={(e) => setAmountReceived(e.target.value)}
+              placeholder={`Mínimo ${cashAmount.toFixed(2)}€`}
+              className="w-full bg-slate-700 text-white text-center text-2xl font-bold py-3 rounded-lg border-2 border-slate-600 focus:border-green-500 focus:outline-none"
+            />
+            {amountReceived && parseFloat(amountReceived) >= cashAmount && (
+              <div className="bg-green-500/20 p-4 rounded-lg border-2 border-green-500">
+                <div className="text-slate-300 text-sm mb-1">Cambio a devolver:</div>
+                <div className="text-4xl font-bold text-green-400">
+                  {(parseFloat(amountReceived) - cashAmount).toFixed(2)}€
+                </div>
+              </div>
+            )}
+            {amountReceived && parseFloat(amountReceived) < cashAmount && (
+              <div className="text-red-400 text-sm text-center">
+                ⚠️ La cantidad recibida es menor que el total en efectivo ({cashAmount.toFixed(2)}€)
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Actions */}
         <div className="flex gap-3">

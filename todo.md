@@ -1040,3 +1040,14 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Modificar KitchenView para parsear y mostrar detalles estructurados
 - [x] KitchenView ahora divide notas con "|" en líneas separadas para mejor legibilidad
 - [x] Actualizar versión a v9.3.2 (fix menu details in kitchen +0.01)
+
+
+## Nueva Funcionalidad: Calculadora de cambio en pago efectivo (v9.4.0)
+- [x] Añadir campo "Cantidad recibida" en modal de pago en efectivo
+- [x] Calcular automáticamente el cambio a devolver
+- [x] Mostrar cambio en grande y destacado (texto 4xl en verde: "41.50€")
+- [x] Aplicar también a pago mixto cuando la parte en efectivo necesita cambio
+- [x] Validar que la cantidad recibida sea mayor o igual al total en efectivo
+- [x] Mostrar alerta si la cantidad es insuficiente
+- [x] Diseño con fondo verde y borde destacado para visibilidad
+- [x] Actualizar versión a v9.4.0 (calculadora de cambio +0.1)
