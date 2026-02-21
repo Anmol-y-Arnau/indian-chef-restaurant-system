@@ -76,3 +76,19 @@ export const sales = mysqlTable("sales", {
 
 export type Sale = typeof sales.$inferSelect;
 export type InsertSale = typeof sales.$inferInsert;
+
+/**
+ * Frequent customers (clientes frecuentes para facturación)
+ */
+export const frequentCustomers = mysqlTable("frequent_customers", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  nif: varchar("nif", { length: 20 }).notNull(),
+  address: text("address").notNull(),
+  city: varchar("city", { length: 100 }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type FrequentCustomer = typeof frequentCustomers.$inferSelect;
+export type InsertFrequentCustomer = typeof frequentCustomers.$inferInsert;

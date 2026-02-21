@@ -213,6 +213,55 @@ export const appRouter = router({
         await restaurantDb.initializeTables(input.tableIds);
         return { success: true };
       }),
+
+    // ========== FREQUENT CUSTOMERS ==========
+
+    // Get all frequent customers
+    getFrequentCustomers: publicProcedure.query(async () => {
+      return await restaurantDb.getAllFrequentCustomers();
+    }),
+
+    // Get a specific customer by ID
+    getFrequentCustomer: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        return await restaurantDb.getFrequentCustomerById(input.id);
+      }),
+
+    // Add a new frequent customer
+    addFrequentCustomer: publicProcedure
+      .input(z.object({
+        name: z.string(),
+        nif: z.string(),
+        address: z.string(),
+        city: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        return await restaurantDb.addFrequentCustomer(input);
+      }),
+
+    // Update an existing customer
+    updateFrequentCustomer: publicProcedure
+      .input(z.object({
+        id: z.number(),
+        name: z.string(),
+        nif: z.string(),
+        address: z.string(),
+        city: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        const { id, ...customer } = input;
+        await restaurantDb.updateFrequentCustomer(id, customer);
+        return { success: true };
+      }),
+
+    // Delete a customer
+    deleteFrequentCustomer: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await restaurantDb.deleteFrequentCustomer(input.id);
+        return { success: true };
+      }),
   }),
 });
 

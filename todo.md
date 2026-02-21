@@ -1051,3 +1051,19 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Mostrar alerta si la cantidad es insuficiente
 - [x] Diseño con fondo verde y borde destacado para visibilidad
 - [x] Actualizar versión a v9.4.0 (calculadora de cambio +0.1)
+
+## Sistema de Clientes Frecuentes para Facturación
+
+- [x] Crear tabla en base de datos para clientes frecuentes (nombre, NIF, dirección, ciudad)
+- [x] Añadir botón "Clientes" en el menú principal (junto a Historial)
+- [x] Crear modal/página de gestión de clientes con lista de clientes guardados
+- [x] Implementar formulario para añadir nuevo cliente
+- [x] Implementar edición de clientes existentes
+- [x] Implementar eliminación de clientes
+- [ ] En modal de factura, añadir selector de cliente frecuente
+- [ ] Al seleccionar cliente frecuente, auto-rellenar campos de factura
+- [ ] Permitir edición manual de datos aunque se seleccione cliente frecuente
+
+## Factura Pendiente
+
+- [x] Generar factura para STAR PROP PATRIMONIAL, S.L. (NIF: B05380993) con pedido del 21/2/2026

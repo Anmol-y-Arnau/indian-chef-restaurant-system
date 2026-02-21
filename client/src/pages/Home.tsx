@@ -1,6 +1,7 @@
 import { CustomItemDialog } from "@/components/CustomItemDialog";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { HistoryDialog } from "@/components/HistoryDialog";
+import { FrequentCustomersDialog } from "@/components/FrequentCustomersDialog";
 import { QuickOrderDialog } from "@/components/QuickOrderDialog";
 import { MenuCardMemo } from "@/components/MenuCardMemo";
 import { OrderPanel } from "@/components/OrderPanel";
@@ -194,7 +195,7 @@ export default function Home() {
                   </div>
                   <div className="flex flex-col">
                     <h2 className="font-heading text-xl gradient-text">Indian Chef</h2>
-                    <span className="text-xs text-muted-foreground">v9.4.0</span>
+                    <span className="text-xs text-muted-foreground">v9.5.0</span>
                   </div>
                 </div>
                 <ScrollArea className="flex-1 -mx-2 px-2">
@@ -281,6 +282,7 @@ export default function Home() {
             <BarChart3 className="w-5 h-5" />
           </Button>
           <HistoryDialog />
+          <FrequentCustomersDialog />
           <LanguageSwitcher />
         </div>
       </div>
@@ -395,6 +397,7 @@ export default function Home() {
                 <BarChart3 className="w-5 h-5" />
               </Button>
               <HistoryDialog />
+              <FrequentCustomersDialog />
               <div className="relative w-80">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <input 

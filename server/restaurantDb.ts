@@ -156,3 +156,46 @@ export async function deleteSale(saleId: number) {
   if (!db) return;
   await db.delete(sales).where(eq(sales.id, saleId));
 }
+
+// ========== FREQUENT CUSTOMERS ==========
+
+export async function getAllFrequentCustomers() {
+  const db = await getDb();
+  if (!db) return [];
+  const { frequentCustomers } = await import("../drizzle/schema");
+  return await db.select().from(frequentCustomers).orderBy(frequentCustomers.name);
+}
+
+export async function getFrequentCustomerById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const { frequentCustomers } = await import("../drizzle/schema");
+  const result = await db.select().from(frequentCustomers).where(eq(frequentCustomers.id, id));
+  return result[0] || null;
+}
+
+export async function addFrequentCustomer(customer: { name: string; nif: string; address: string; city: string }) {
+  const db = await getDb();
+  if (!db) return null;
+  const { frequentCustomers } = await import("../drizzle/schema");
+  await db.insert(frequentCustomers).values(customer);
+  // Return the newly created customer
+  const result = await db.select().from(frequentCustomers).where(eq(frequentCustomers.nif, customer.nif)).orderBy(frequentCustomers.createdAt).limit(1);
+  return result[0] || null;
+}
+
+export async function updateFrequentCustomer(id: number, customer: { name: string; nif: string; address: string; city: string }) {
+  const db = await getDb();
+  if (!db) return;
+  const { frequentCustomers } = await import("../drizzle/schema");
+  await db.update(frequentCustomers)
+    .set({ ...customer, updatedAt: new Date() })
+    .where(eq(frequentCustomers.id, id));
+}
+
+export async function deleteFrequentCustomer(id: number) {
+  const db = await getDb();
+  if (!db) return;
+  const { frequentCustomers } = await import("../drizzle/schema");
+  await db.delete(frequentCustomers).where(eq(frequentCustomers.id, id));
+}
