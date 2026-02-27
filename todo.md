@@ -1122,3 +1122,7 @@ Nueva sección con gráficos y análisis de ventas.
 ## Schweppes Tónica y Sprite (v9.6.8)
 
 - [x] Añadir Schweppes Tónica y Sprite a 3.50€ en Bebidas
+
+## Jarra de cerveza (v9.6.9)
+
+- [x] Añadir Jarra (50cl barril) a 5.50€ en sección Cervezas, junto a Caña
