@@ -195,6 +195,16 @@ export const MENU_ITEMS: MenuItem[] = [
     isVeg: false,
     image: '/images/menu/prawn_tandoori.jpg'
   },
+  {
+    id: 'td7',
+    number: 16.1,
+    name: 'Tandoori Pulpo',
+    description: 'Pulpo marinado con especias indias y cocinado en horno tandoor.',
+    price: 22.90,
+    category: 'tandoor',
+    isVeg: false,
+    image: '/images/menu/prawn_tandoori.jpg'
+  },
 
   // VEG AND VEGAN CURRY
   {
@@ -813,6 +823,16 @@ export const MENU_ITEMS: MenuItem[] = [
     isVeg: true,
     image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=2070&auto=format&fit=crop'
   },
+  {
+    id: 'wn_copa',
+    number: 84,
+    name: 'Copa de Vino',
+    description: 'Vino de la casa (Tinto/Blanco/Rosado)',
+    price: 3.50,
+    category: 'wines',
+    isVeg: true,
+    image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=2070&auto=format&fit=crop'
+  },
 ];
 
 export const INITIAL_TABLES: Table[] = [
@@ -884,15 +904,7 @@ MENU_ITEMS.push(
     category: 'drinks',
     image: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?q=80&w=1888&auto=format&fit=crop'
   },
-  {
-    id: 'dr7',
-    number: 84,
-    name: 'Copa de Vino',
-    description: 'Vino de la casa (Tinto/Blanco/Rosado)',
-    price: 3.50,
-    category: 'drinks',
-    image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=2070&auto=format&fit=crop'
-  },
+
   {
     id: 'dr8',
     number: 85,

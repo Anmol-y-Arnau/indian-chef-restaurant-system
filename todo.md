@@ -1067,3 +1067,8 @@ Nueva sección con gráficos y análisis de ventas.
 ## Factura Pendiente
 
 - [x] Generar factura para STAR PROP PATRIMONIAL, S.L. (NIF: B05380993) con pedido del 21/2/2026
+
+## Cambios en el Menú
+
+- [x] Añadir "Tandoori Pulpo" (22.90€) en sección Tandoori
+- [x] Mover "Copa de Vino" de categoría Bebidas a categoría Vinos
