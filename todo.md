@@ -1109,3 +1109,8 @@ Nueva sección con gráficos y análisis de ventas.
 ## Fix traducción categoría Copas (v9.6.5)
 
 - [x] Añadir clave "categories.spirits" en el archivo de traducciones
+
+## Nueva sección Cervezas (v9.6.6)
+
+- [x] Crear categoría "beers" en data.ts, types.ts y translations.ts
+- [x] Mover Caña, Estrella Botella, Free Damm, Damm Lemon, Voll Damm y Cobra a la nueva sección

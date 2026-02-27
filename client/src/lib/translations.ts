@@ -62,6 +62,7 @@ export const TRANSLATIONS = {
       sides: 'Guarniciones',
       wines: 'Vinos',
       drinks: 'Bebidas',
+      beers: 'Cervezas',
       spirits: 'Copas',
       coffees: 'Cafés',
       desserts: 'Postres'
@@ -128,6 +129,7 @@ export const TRANSLATIONS = {
       sides: 'Sides (Rice/Bread)',
       wines: 'Wines',
       drinks: 'Drinks',
+      beers: 'Beers',
       spirits: 'Spirits & Cocktails',
       coffees: 'Coffees',
       desserts: 'Desserts'
@@ -182,6 +184,7 @@ export const TRANSLATIONS = {
       sides: 'Accompagnements',
       wines: 'Vins',
       drinks: 'Boissons',
+      beers: 'Bières',
       spirits: 'Spiritueux & Cocktails',
       coffees: 'Cafés',
       desserts: 'Desserts'

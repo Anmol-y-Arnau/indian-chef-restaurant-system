@@ -13,6 +13,7 @@ export const CATEGORIES: Category[] = [
   { id: 'sides', label: 'Guarniciones (Arroz/Pan)', icon: '🫓' },
   { id: 'wines', label: 'Vinos', icon: '🍷' },
   { id: 'drinks', label: 'Bebidas', icon: '🥤' },
+  { id: 'beers', label: 'Cervezas', icon: '🍺' },
   { id: 'spirits', label: 'Copas', icon: '🥃' },
   { id: 'coffees', label: 'Cafés', icon: '☕' },
   { id: 'desserts', label: 'Postres', icon: '🍰' },
@@ -866,7 +867,7 @@ MENU_ITEMS.push(
     name: 'Caña',
     description: 'Cerveza de barril',
     price: 3.00,
-    category: 'drinks',
+    category: 'beers',
     image: 'https://images.unsplash.com/photo-1535958636474-b021ee887b13?q=80&w=2070&auto=format&fit=crop'
   },
   {
@@ -875,7 +876,7 @@ MENU_ITEMS.push(
     name: 'Estrella (Botella)',
     description: 'Cerveza Estrella Galicia',
     price: 3.50,
-    category: 'drinks',
+    category: 'beers',
     image: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?q=80&w=2070&auto=format&fit=crop'
   },
   {
@@ -884,7 +885,7 @@ MENU_ITEMS.push(
     name: 'Free Damm',
     description: 'Cerveza sin alcohol tostada',
     price: 3.50,
-    category: 'drinks',
+    category: 'beers',
     image: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?q=80&w=2070&auto=format&fit=crop'
   },
   {
@@ -893,7 +894,7 @@ MENU_ITEMS.push(
     name: 'Damm Lemon',
     description: 'Clara con limón',
     price: 3.50,
-    category: 'drinks',
+    category: 'beers',
     image: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?q=80&w=2070&auto=format&fit=crop'
   },
   {
@@ -902,7 +903,7 @@ MENU_ITEMS.push(
     name: 'Voll Damm',
     description: 'Cerveza doble malta',
     price: 3.50,
-    category: 'drinks',
+    category: 'beers',
     image: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?q=80&w=2070&auto=format&fit=crop'
   },
   {
@@ -911,7 +912,7 @@ MENU_ITEMS.push(
     name: 'Cobra',
     description: 'Cerveza India Premium',
     price: 4.00,
-    category: 'drinks',
+    category: 'beers',
     image: '/images/menu/uC7Dx3XnvFWj.jpg'
   },
   {
