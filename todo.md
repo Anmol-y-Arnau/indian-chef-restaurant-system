@@ -1126,3 +1126,7 @@ Nueva sección con gráficos y análisis de ventas.
 ## Jarra de cerveza (v9.6.9)
 
 - [x] Añadir Jarra (50cl barril) a 5.50€ en sección Cervezas, junto a Caña
+
+## Auditoría y corrección de imágenes (v9.7.0)
+
+- [x] Generar imágenes IA para 27 platos con fotos genéricas/repetidas (refrescos, cervezas, arroces, naans, curry, cafés, postres)

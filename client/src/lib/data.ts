@@ -300,7 +300,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: 'chicken_curry',
     isVeg: false,
     isSpicy: true,
-    image: '/images/menu/dt4omQQMmAaG.jpg'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/BKhusaIKMITJSoHX.png'
   },
   {
     id: 'cc2',
@@ -519,7 +519,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 4.90,
     category: 'sides',
     isVeg: true,
-    image: '/images/menu/kMSjnBlbuR3p.jpg'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/sKDzYwWgGEvOUSiz.png'
   },
   {
     id: 'sd3',
@@ -529,7 +529,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 4.90,
     category: 'sides',
     isVeg: true,
-    image: '/images/menu/kMSjnBlbuR3p.jpg'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/zJhqszzuFWFYZHTI.png'
   },
   {
     id: 'sd4',
@@ -539,7 +539,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 5.90,
     category: 'sides',
     isVeg: false,
-    image: '/images/menu/kMSjnBlbuR3p.jpg'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/glQeiuShEhXEkKHW.png'
   },
   {
     id: 'sd5',
@@ -571,7 +571,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 4.90,
     category: 'sides',
     isVeg: true,
-    image: '/images/menu/CUgKMafxMSwp.jpg'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/tpdKlcxlBMCdsYNj.png'
   },
   {
     id: 'pn3',
@@ -591,7 +591,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 4.90,
     category: 'sides',
     isVeg: true,
-    image: '/images/menu/CUgKMafxMSwp.jpg'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/zoqoeexOMMVvBDfa.png'
   },
   {
     id: 'pn5',
@@ -601,7 +601,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 4.90,
     category: 'sides',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?q=80&w=1976&auto=format&fit=crop'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/SBGPHAubJkvudtOO.png'
   },
   {
     id: 'pn6',
@@ -611,7 +611,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 4.90,
     category: 'sides',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?q=80&w=1976&auto=format&fit=crop'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/fWyTpXkYigWaueZr.png'
   },
   {
     id: 'pn7',
@@ -621,7 +621,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 4.90,
     category: 'sides',
     isVeg: true,
-    image: '/images/menu/CUgKMafxMSwp.jpg'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/NRuplGeVsNKipCqw.png'
   },
   {
     id: 'pn8',
@@ -631,7 +631,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 4.90,
     category: 'sides',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?q=80&w=1976&auto=format&fit=crop'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/zPMwjzBNWMIecdaV.png'
   },
 
   // VINOS
@@ -877,7 +877,7 @@ MENU_ITEMS.push(
     description: 'Refresco de cola',
     price: 3.50,
     category: 'drinks',
-    image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=2070&auto=format&fit=crop'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/hXcLyxFbamSPXGZv.png'
   },
   {
     id: 'dr17',
@@ -886,7 +886,7 @@ MENU_ITEMS.push(
     description: 'Refresco de cola sin azúcar',
     price: 3.50,
     category: 'drinks',
-    image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=2070&auto=format&fit=crop'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/hXcLyxFbamSPXGZv.png'
   },
   {
     id: 'dr18',
@@ -895,7 +895,7 @@ MENU_ITEMS.push(
     description: 'Té helado con limón',
     price: 3.50,
     category: 'drinks',
-    image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=2070&auto=format&fit=crop'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/hXcLyxFbamSPXGZv.png'
   },
   {
     id: 'dr19',
@@ -904,7 +904,7 @@ MENU_ITEMS.push(
     description: 'Refresco de naranja',
     price: 3.50,
     category: 'drinks',
-    image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=2070&auto=format&fit=crop'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/hXcLyxFbamSPXGZv.png'
   },
   {
     id: 'dr20',
@@ -913,7 +913,7 @@ MENU_ITEMS.push(
     description: 'Refresco de limón',
     price: 3.50,
     category: 'drinks',
-    image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=2070&auto=format&fit=crop'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/hXcLyxFbamSPXGZv.png'
   },
   {
     id: 'dr21',
@@ -922,7 +922,7 @@ MENU_ITEMS.push(
     description: 'Bebida isotónica de naranja',
     price: 3.50,
     category: 'drinks',
-    image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=2070&auto=format&fit=crop'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/hXcLyxFbamSPXGZv.png'
   },
   {
     id: 'dr22',
@@ -931,7 +931,7 @@ MENU_ITEMS.push(
     description: 'Bebida isotónica de limón',
     price: 3.50,
     category: 'drinks',
-    image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=2070&auto=format&fit=crop'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/KOVqamOZikCGxGhN.png'
   },
   {
     id: 'dr23',
@@ -940,7 +940,7 @@ MENU_ITEMS.push(
     description: 'Tónica Schweppes',
     price: 3.50,
     category: 'drinks',
-    image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=2070&auto=format&fit=crop'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/lYwmRRVZdJIaiAww.png'
   },
   {
     id: 'dr24',
@@ -949,7 +949,7 @@ MENU_ITEMS.push(
     description: 'Refresco de limón y lima',
     price: 3.50,
     category: 'drinks',
-    image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=2070&auto=format&fit=crop'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/lvAgSdKKUKGhRjiU.png'
   },
   {
     id: 'dr2',
@@ -967,7 +967,7 @@ MENU_ITEMS.push(
     description: 'Cerveza de barril 50cl',
     price: 5.50,
     category: 'beers',
-    image: 'https://images.unsplash.com/photo-1535958636474-b021ee887b13?q=80&w=2070&auto=format&fit=crop'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/tPEFRmluOHGeNWrU.png'
   },
   {
     id: 'dr3',
@@ -985,7 +985,7 @@ MENU_ITEMS.push(
     description: 'Cerveza sin alcohol tostada',
     price: 3.50,
     category: 'beers',
-    image: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?q=80&w=2070&auto=format&fit=crop'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/SEXdlwDjlJXDnEJs.png'
   },
   {
     id: 'dr13',
@@ -994,7 +994,7 @@ MENU_ITEMS.push(
     description: 'Clara con limón',
     price: 3.50,
     category: 'beers',
-    image: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?q=80&w=2070&auto=format&fit=crop'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/rgdIdTsclbpPXSHd.png'
   },
   {
     id: 'dr14',
@@ -1003,7 +1003,7 @@ MENU_ITEMS.push(
     description: 'Cerveza doble malta',
     price: 3.50,
     category: 'beers',
-    image: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?q=80&w=2070&auto=format&fit=crop'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/aCXUbCUPPmOAyfJP.png'
   },
   {
     id: 'dr4',
@@ -1146,7 +1146,7 @@ MENU_ITEMS.push(
     description: 'Café con leche grande',
     price: 2.50,
     category: 'coffees',
-    image: '/images/menu/NdmVjKVEDhZc.jpg'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/fQCDMXgQZfdzyemW.png'
   },
   {
     id: 'cf4',
@@ -1155,7 +1155,7 @@ MENU_ITEMS.push(
     description: 'Café con licor (Brandy/Whisky/Ron)',
     price: 4.50,
     category: 'coffees',
-    image: '/images/menu/NdmVjKVEDhZc.jpg'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/NkZLJjwYGFfCqyQu.png'
   },
   {
     id: 'cf5',
@@ -1204,7 +1204,7 @@ MENU_ITEMS.push(
     description: 'Gulab jamun caliente.',
     price: 4.90,
     category: 'desserts',
-    image: 'https://images.unsplash.com/photo-1589119908995-c6837fa14848?q=80&w=2080&auto=format&fit=crop'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/NUmaucLVQhFQRjJZ.png'
   },
   {
     id: 'ds4',
@@ -1213,7 +1213,7 @@ MENU_ITEMS.push(
     description: 'Postre de leche requesón natural indio, en almíbar de azúcar.',
     price: 5.90,
     category: 'desserts',
-    image: 'https://images.unsplash.com/photo-1589119908995-c6837fa14848?q=80&w=2080&auto=format&fit=crop'
+    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/99644924/BInFKpOgrqrDcPFr.png'
   },
   {
     id: 'ds5',
