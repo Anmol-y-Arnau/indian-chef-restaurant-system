@@ -13,6 +13,7 @@ export const CATEGORIES: Category[] = [
   { id: 'sides', label: 'Guarniciones (Arroz/Pan)', icon: '🫓' },
   { id: 'wines', label: 'Vinos', icon: '🍷' },
   { id: 'drinks', label: 'Bebidas', icon: '🥤' },
+  { id: 'spirits', label: 'Copas', icon: '🥃' },
   { id: 'coffees', label: 'Cafés', icon: '☕' },
   { id: 'desserts', label: 'Postres', icon: '🍰' },
 ];
@@ -929,7 +930,7 @@ MENU_ITEMS.push(
     name: 'Chupito',
     description: 'Licor de hierbas, crema, etc.',
     price: 2.50,
-    category: 'drinks',
+    category: 'spirits',
     image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=1974&auto=format&fit=crop'
   },
   {
@@ -980,6 +981,73 @@ MENU_ITEMS.push(
     price: 4.50,
     category: 'coffees',
     image: '/images/menu/NdmVjKVEDhZc.jpg'
+  },
+  {
+    id: 'cf5',
+    number: 91.1,
+    name: 'Café Solo con Hielo',
+    description: 'Espresso servido con hielo',
+    price: 2.20,
+    category: 'coffees',
+    image: '/images/menu/NdmVjKVEDhZc.jpg'
+  },
+  {
+    id: 'cf6',
+    number: 91.2,
+    name: 'Cortado con Hielo',
+    description: 'Cortado servido con hielo',
+    price: 2.20,
+    category: 'coffees',
+    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=1887&auto=format&fit=crop'
+  }
+);
+
+// COPAS
+MENU_ITEMS.push(
+  {
+    id: 'sp1',
+    number: 97,
+    name: 'Copa de Baileys',
+    description: 'Licor de crema irlandesa',
+    price: 5.00,
+    category: 'spirits',
+    image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=1974&auto=format&fit=crop'
+  },
+  {
+    id: 'sp2',
+    number: 98,
+    name: 'Copa de Ratafia',
+    description: 'Licor de hierbas catalán',
+    price: 4.50,
+    category: 'spirits',
+    image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=1974&auto=format&fit=crop'
+  },
+  {
+    id: 'sp3',
+    number: 99,
+    name: 'Copa de Licor',
+    description: 'Licor a elegir (Brandy, Whisky, Ron, etc.)',
+    price: 4.50,
+    category: 'spirits',
+    image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=1974&auto=format&fit=crop'
+  },
+  {
+    id: 'sp4',
+    number: 100,
+    name: 'Cubata',
+    description: 'Combinado a elegir (Gin, Ron, Vodka, Whisky...)',
+    price: 7.00,
+    category: 'spirits',
+    image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=1974&auto=format&fit=crop'
+  },
+  {
+    id: 'sp5',
+    number: 101,
+    name: 'Copa de Cava',
+    description: 'Cava brut o semiseco',
+    price: 4.00,
+    category: 'spirits',
+    image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=2070&auto=format&fit=crop'
   }
 );
 

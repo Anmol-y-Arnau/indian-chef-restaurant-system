@@ -7,7 +7,7 @@ export interface MenuItem {
   description_en?: string;
   description_fr?: string;
   price: number;
-  category: 'menu_del_dia' | 'starters' | 'salads' | 'tandoor' | 'veg_curry' | 'chicken_curry' | 'fish_prawn_curry' | 'lamb_curry' | 'biryani' | 'sides' | 'wines' | 'drinks' | 'coffees' | 'desserts';
+  category: 'menu_del_dia' | 'starters' | 'salads' | 'tandoor' | 'veg_curry' | 'chicken_curry' | 'fish_prawn_curry' | 'lamb_curry' | 'biryani' | 'sides' | 'wines' | 'drinks' | 'spirits' | 'coffees' | 'desserts';
   image?: string;
   isSpicy?: boolean;
   isVeg?: boolean;

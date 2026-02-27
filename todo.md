@@ -1076,3 +1076,10 @@ Nueva sección con gráficos y análisis de ventas.
 ## Cambios en el Menú (v9.5.2)
 
 - [x] Añadir "Infusiones" (2.50€) en sección Bebidas
+
+## Cambios en el Menú (v9.5.3)
+
+- [x] Crear nueva sección "Copas" (licores y cócteles)
+- [x] Mover Chupito de Bebidas a Copas
+- [x] Añadir Copa de Baileys (5.00€), Copa de Ratafia (4.50€), Copa de Licor (4.50€), Cubata (7.00€), Copa de Cava (4.00€) en sección Copas
+- [x] Añadir Café Solo con Hielo (2.20€) y Cortado con Hielo (2.20€) en sección Cafés
