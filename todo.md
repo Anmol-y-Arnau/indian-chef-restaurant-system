@@ -1105,3 +1105,7 @@ Nueva sección con gráficos y análisis de ventas.
 ## Nuevas cervezas en Bebidas (v9.6.4)
 
 - [x] Añadir Free Damm, Damm Lemon y Voll Damm al mismo precio que Estrella Botella
+
+## Fix traducción categoría Copas (v9.6.5)
+
+- [x] Añadir clave "categories.spirits" en el archivo de traducciones
