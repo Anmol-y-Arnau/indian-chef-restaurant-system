@@ -1114,3 +1114,7 @@ Nueva sección con gráficos y análisis de ventas.
 
 - [x] Crear categoría "beers" en data.ts, types.ts y translations.ts
 - [x] Mover Caña, Estrella Botella, Free Damm, Damm Lemon, Voll Damm y Cobra a la nueva sección
+
+## Nuevos refrescos en Bebidas (v9.6.7)
+
+- [x] Añadir Agua con Gas, Coca-Cola, Coca-Cola Zero, Nestea, Fanta Naranja, Fanta Limón, Aquarius Naranja y Aquarius Limón a 3.50€
