@@ -931,6 +931,15 @@ MENU_ITEMS.push(
     price: 2.50,
     category: 'drinks',
     image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=1974&auto=format&fit=crop'
+  },
+  {
+    id: 'dr11',
+    number: 87.1,
+    name: 'Infusiones',
+    description: 'Manzanilla, menta, tila, etc.',
+    price: 2.50,
+    category: 'drinks',
+    image: 'https://images.unsplash.com/photo-1597481499666-5a2e5e9c9b6b?q=80&w=2070&auto=format&fit=crop'
   }
 );
 

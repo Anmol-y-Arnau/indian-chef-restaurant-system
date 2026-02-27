@@ -1072,3 +1072,7 @@ Nueva sección con gráficos y análisis de ventas.
 
 - [x] Añadir "Tandoori Pulpo" (22.90€) en sección Tandoori
 - [x] Mover "Copa de Vino" de categoría Bebidas a categoría Vinos
+
+## Cambios en el Menú (v9.5.2)
+
+- [x] Añadir "Infusiones" (2.50€) en sección Bebidas
