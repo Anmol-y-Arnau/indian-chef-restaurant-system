@@ -1083,3 +1083,8 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Mover Chupito de Bebidas a Copas
 - [x] Añadir Copa de Baileys (5.00€), Copa de Ratafia (4.50€), Copa de Licor (4.50€), Cubata (7.00€), Copa de Cava (4.00€) en sección Copas
 - [x] Añadir Café Solo con Hielo (2.20€) y Cortado con Hielo (2.20€) en sección Cafés
+
+## Revisión numeración e imágenes (v9.6.0)
+
+- [x] Corregir numeración completa del menú (secuencial, sin decimales ni saltos)
+- [x] Generar imágenes IA para: Tandoori Pulpo, Infusiones, Copa de Baileys, Copa de Ratafia, Copa de Licor, Cubata, Copa de Cava, Café Solo con Hielo, Cortado con Hielo, Chupito
