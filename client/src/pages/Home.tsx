@@ -206,7 +206,7 @@ export default function Home() {
                   </div>
                   <div className="flex flex-col">
                     <h2 className="font-heading text-xl gradient-text">Indian Chef</h2>
-                    <span className="text-xs text-muted-foreground">v9.6.2</span>
+                    <span className="text-xs text-muted-foreground">v9.6.3</span>
                   </div>
                 </div>
                 <ScrollArea className="flex-1 -mx-2 px-2">

@@ -1097,3 +1097,7 @@ Nueva sección con gráficos y análisis de ventas.
 
 - [x] Al pulsar el Menú del Día directamente (sin lápiz) abrir el selector de entrante y bebida
 - [x] En modo cocina mostrar el detalle completo: "Menú del Día - Entrante: X / Bebida: Y"
+
+## Imagen Menú del Día (v9.6.3)
+
+- [x] Generar y añadir imagen al Menú del Día

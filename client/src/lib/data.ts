@@ -28,7 +28,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 15.90,
     category: 'menu_del_dia',
     isVeg: false,
-    image: '/images/menu/menu_del_dia.jpg'
+    image: 'https://d2xsxph8kpxj0f.cloudfront.net/99644924/WzNUPpTsWu5Uc4xnu9Kr5J/menu-del-dia-GNhXB6JfXghk6xKhYa3yZ3.webp'
   },
 
   // VEGETARIAN STARTERS AND CHAATS
