@@ -934,8 +934,26 @@ MENU_ITEMS.push(
     image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=2070&auto=format&fit=crop'
   },
   {
+    id: 'dr23',
+    number: 88,
+    name: 'Schweppes Tónica',
+    description: 'Tónica Schweppes',
+    price: 3.50,
+    category: 'drinks',
+    image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=2070&auto=format&fit=crop'
+  },
+  {
+    id: 'dr24',
+    number: 89,
+    name: 'Sprite',
+    description: 'Refresco de limón y lima',
+    price: 3.50,
+    category: 'drinks',
+    image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=2070&auto=format&fit=crop'
+  },
+  {
     id: 'dr2',
-    number: 96,
+    number: 98,
     name: 'Caña',
     description: 'Cerveza de barril',
     price: 3.00,
@@ -944,7 +962,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'dr3',
-    number: 97,
+    number: 99,
     name: 'Estrella (Botella)',
     description: 'Cerveza Estrella Galicia',
     price: 3.50,
@@ -953,7 +971,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'dr12',
-    number: 98,
+    number: 100,
     name: 'Free Damm',
     description: 'Cerveza sin alcohol tostada',
     price: 3.50,
@@ -962,7 +980,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'dr13',
-    number: 99,
+    number: 101,
     name: 'Damm Lemon',
     description: 'Clara con limón',
     price: 3.50,
@@ -971,7 +989,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'dr14',
-    number: 100,
+    number: 102,
     name: 'Voll Damm',
     description: 'Cerveza doble malta',
     price: 3.50,
@@ -980,7 +998,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'dr4',
-    number: 101,
+    number: 103,
     name: 'Cobra',
     description: 'Cerveza India Premium',
     price: 4.00,
@@ -989,7 +1007,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'dr5',
-    number: 102,
+    number: 104,
     name: 'Agua Pequeña',
     description: 'Agua mineral 33cl',
     price: 3.00,
@@ -998,7 +1016,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'dr6',
-    number: 103,
+    number: 105,
     name: 'Agua Grande',
     description: 'Agua mineral 1L',
     price: 4.00,
@@ -1007,7 +1025,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'dr8',
-    number: 104,
+    number: 106,
     name: 'Mango Lassi',
     description: 'Bebida tradicional de yogur y mango',
     price: 4.50,
@@ -1016,7 +1034,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'dr9',
-    number: 105,
+    number: 107,
     name: 'Indian Chai',
     description: 'Té indio con especias y leche',
     price: 2.50,
@@ -1025,7 +1043,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'dr11',
-    number: 106,
+    number: 108,
     name: 'Infusiones',
     description: 'Manzanilla, menta, tila, etc.',
     price: 2.50,
@@ -1038,7 +1056,7 @@ MENU_ITEMS.push(
 MENU_ITEMS.push(
   {
     id: 'dr10',
-    number: 107,
+    number: 109,
     name: 'Chupito',
     description: 'Licor de hierbas, crema, etc.',
     price: 2.50,
@@ -1047,7 +1065,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'sp1',
-    number: 108,
+    number: 110,
     name: 'Copa de Baileys',
     description: 'Licor de crema irlandesa',
     price: 5.00,
@@ -1056,7 +1074,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'sp2',
-    number: 109,
+    number: 111,
     name: 'Copa de Ratafia',
     description: 'Licor de hierbas catalán',
     price: 4.50,
@@ -1065,7 +1083,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'sp3',
-    number: 110,
+    number: 112,
     name: 'Copa de Licor',
     description: 'Licor a elegir (Brandy, Whisky, Ron, etc.)',
     price: 4.50,
@@ -1074,7 +1092,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'sp4',
-    number: 111,
+    number: 113,
     name: 'Cubata',
     description: 'Combinado a elegir (Gin, Ron, Vodka, Whisky...)',
     price: 7.00,
@@ -1083,7 +1101,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'sp5',
-    number: 112,
+    number: 114,
     name: 'Copa de Cava',
     description: 'Cava brut o semiseco',
     price: 4.00,
@@ -1096,7 +1114,7 @@ MENU_ITEMS.push(
 MENU_ITEMS.push(
   {
     id: 'cf1',
-    number: 113,
+    number: 115,
     name: 'Café Solo',
     description: 'Espresso',
     price: 1.80,
@@ -1105,7 +1123,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'cf2',
-    number: 114,
+    number: 116,
     name: 'Cortado',
     description: 'Espresso con un poco de leche',
     price: 2.00,
@@ -1114,7 +1132,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'cf3',
-    number: 115,
+    number: 117,
     name: 'Café con Leche',
     description: 'Café con leche grande',
     price: 2.50,
@@ -1123,7 +1141,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'cf4',
-    number: 116,
+    number: 118,
     name: 'Carajillo',
     description: 'Café con licor (Brandy/Whisky/Ron)',
     price: 4.50,
@@ -1132,7 +1150,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'cf5',
-    number: 117,
+    number: 119,
     name: 'Café Solo con Hielo',
     description: 'Espresso servido con hielo',
     price: 2.20,
@@ -1141,7 +1159,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'cf6',
-    number: 118,
+    number: 120,
     name: 'Cortado con Hielo',
     description: 'Cortado servido con hielo',
     price: 2.20,
@@ -1154,7 +1172,7 @@ MENU_ITEMS.push(
 MENU_ITEMS.push(
   {
     id: 'ds1',
-    number: 119,
+    number: 121,
     name: 'Kesar Kheer',
     description: 'Arroz cocinado con leche y azafrán, servido con helado de vainilla.',
     price: 4.90,
@@ -1163,7 +1181,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'ds2',
-    number: 120,
+    number: 122,
     name: 'Mix Indian Sweet',
     description: 'Surtido de pasteles de la india, cocinado especialmente por el chef.',
     price: 8.90,
@@ -1172,7 +1190,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'ds3',
-    number: 121,
+    number: 123,
     name: 'Haridwari Gulab jamun',
     description: 'Gulab jamun caliente.',
     price: 4.90,
@@ -1181,7 +1199,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'ds4',
-    number: 122,
+    number: 124,
     name: 'Bikaneri Sponge Rashgula',
     description: 'Postre de leche requesón natural indio, en almíbar de azúcar.',
     price: 5.90,
@@ -1190,7 +1208,7 @@ MENU_ITEMS.push(
   },
   {
     id: 'ds5',
-    number: 123,
+    number: 125,
     name: 'JTH Badami Halwa',
     description: 'Es una rica receta clásica de postre de zanahoria india hecha con harina de almendras, leche y azúcar.',
     price: 5.90,

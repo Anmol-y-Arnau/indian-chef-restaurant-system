@@ -1118,3 +1118,7 @@ Nueva sección con gráficos y análisis de ventas.
 ## Nuevos refrescos en Bebidas (v9.6.7)
 
 - [x] Añadir Agua con Gas, Coca-Cola, Coca-Cola Zero, Nestea, Fanta Naranja, Fanta Limón, Aquarius Naranja y Aquarius Limón a 3.50€
+
+## Schweppes Tónica y Sprite (v9.6.8)
+
+- [x] Añadir Schweppes Tónica y Sprite a 3.50€ en Bebidas
