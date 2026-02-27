@@ -1101,3 +1101,7 @@ Nueva sección con gráficos y análisis de ventas.
 ## Imagen Menú del Día (v9.6.3)
 
 - [x] Generar y añadir imagen al Menú del Día
+
+## Nuevas cervezas en Bebidas (v9.6.4)
+
+- [x] Añadir Free Damm, Damm Lemon y Voll Damm al mismo precio que Estrella Botella
