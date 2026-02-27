@@ -99,11 +99,15 @@ export default function Home() {
   };
 
   // Función para confirmar la personalización
-  const handleConfirmCustomization = (spiceLevel: string, notes: string, quantity: number) => {
+  const handleConfirmCustomization = (spiceLevel: string, notes: string, quantity: number, customPrice?: number) => {
     if (customizationItem && activeTableId !== null) {
+      // Si hay precio personalizado, crear copia del item con nuevo precio
+      const itemToAdd = customPrice !== undefined
+        ? { ...customizationItem, price: customPrice }
+        : customizationItem;
       // Añadir la cantidad especificada
       for (let i = 0; i < quantity; i++) {
-        addOrderToTable(activeTableId, customizationItem, { spiceLevel, notes });
+        addOrderToTable(activeTableId, itemToAdd, { spiceLevel, notes });
       }
     }
     setIsCustomizationOpen(false);
@@ -195,7 +199,7 @@ export default function Home() {
                   </div>
                   <div className="flex flex-col">
                     <h2 className="font-heading text-xl gradient-text">Indian Chef</h2>
-                    <span className="text-xs text-muted-foreground">v9.6.0</span>
+                    <span className="text-xs text-muted-foreground">v9.6.1</span>
                   </div>
                 </div>
                 <ScrollArea className="flex-1 -mx-2 px-2">
@@ -514,6 +518,7 @@ export default function Home() {
           }}
           onConfirm={handleConfirmCustomization}
           itemName={customizationItem.name}
+          itemPrice={customizationItem.price}
         />
       )}
 

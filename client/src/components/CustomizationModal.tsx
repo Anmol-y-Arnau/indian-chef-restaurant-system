@@ -1,15 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Flame, Plus, Minus } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Flame, Plus, Minus, Euro } from 'lucide-react';
 import { useHaptic } from '@/hooks/useHaptic';
 
 interface CustomizationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (spiceLevel: string, notes: string, quantity: number) => void;
+  onConfirm: (spiceLevel: string, notes: string, quantity: number, customPrice?: number) => void;
   itemName: string;
+  itemPrice?: number;
 }
 
 const SPICE_LEVELS = [
@@ -20,28 +22,43 @@ const SPICE_LEVELS = [
   { value: '++', label: 'Muy Picante', icon: '++', color: 'bg-red-500 hover:bg-red-600' },
 ];
 
-export function CustomizationModal({ isOpen, onClose, onConfirm, itemName }: CustomizationModalProps) {
-  const [spiceLevel, setSpiceLevel] = useState<string>(''); // Default: Sin especificar
+export function CustomizationModal({ isOpen, onClose, onConfirm, itemName, itemPrice }: CustomizationModalProps) {
+  const [spiceLevel, setSpiceLevel] = useState<string>('');
   const [notes, setNotes] = useState<string>('');
   const [quantity, setQuantity] = useState<number>(1);
+  const [priceInput, setPriceInput] = useState<string>('');
   const haptic = useHaptic();
 
+  // Reset price input when modal opens with a new item
+  useEffect(() => {
+    if (isOpen) {
+      setPriceInput(itemPrice !== undefined ? itemPrice.toFixed(2) : '');
+    }
+  }, [isOpen, itemPrice]);
+
   const handleConfirm = () => {
-    onConfirm(spiceLevel, notes, quantity);
-    haptic.light(); // Vibración al confirmar personalización
+    const parsedPrice = parseFloat(priceInput.replace(',', '.'));
+    const customPrice = !isNaN(parsedPrice) && parsedPrice >= 0 ? parsedPrice : undefined;
+    onConfirm(spiceLevel, notes, quantity, customPrice);
+    haptic.light();
     // Reset state
-    setSpiceLevel(''); // Reset to "Sin especificar"
+    setSpiceLevel('');
     setNotes('');
     setQuantity(1);
+    setPriceInput('');
   };
 
   const handleCancel = () => {
     onClose();
     // Reset state
-    setSpiceLevel(''); // Reset to "Sin especificar"
+    setSpiceLevel('');
     setNotes('');
     setQuantity(1);
+    setPriceInput('');
   };
+
+  const parsedPrice = parseFloat(priceInput.replace(',', '.'));
+  const isPriceModified = itemPrice !== undefined && !isNaN(parsedPrice) && parsedPrice !== itemPrice;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleCancel()}>
@@ -82,6 +99,51 @@ export function CustomizationModal({ isOpen, onClose, onConfirm, itemName }: Cus
                 <Plus className="w-3 h-3" />
               </Button>
             </div>
+          </div>
+
+          {/* Price Editor */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium flex items-center gap-1.5">
+              <Euro className="w-3.5 h-3.5 text-primary" />
+              Precio unitario
+              {isPriceModified && (
+                <span className="text-[10px] bg-orange-500/20 text-orange-400 border border-orange-500/30 px-1.5 py-0.5 rounded-full font-semibold">
+                  Modificado
+                </span>
+              )}
+            </label>
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.10"
+                  value={priceInput}
+                  onChange={(e) => setPriceInput(e.target.value)}
+                  className="pr-8 text-lg font-bold text-primary"
+                  placeholder="0.00"
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">€</span>
+              </div>
+              {isPriceModified && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="text-xs shrink-0"
+                  onClick={() => setPriceInput(itemPrice!.toFixed(2))}
+                >
+                  Restablecer
+                </Button>
+              )}
+            </div>
+            {isPriceModified && itemPrice !== undefined && (
+              <p className="text-xs text-muted-foreground">
+                Precio original: <span className="line-through">{itemPrice.toFixed(2)}€</span>
+                {' → '}
+                <span className="text-primary font-semibold">{parsedPrice.toFixed(2)}€</span>
+              </p>
+            )}
           </div>
 
           {/* Spice Level Selector */}

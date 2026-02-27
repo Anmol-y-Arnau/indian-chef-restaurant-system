@@ -1088,3 +1088,7 @@ Nueva sección con gráficos y análisis de ventas.
 
 - [x] Corregir numeración completa del menú (secuencial, sin decimales ni saltos)
 - [x] Generar imágenes IA para: Tandoori Pulpo, Infusiones, Copa de Baileys, Copa de Ratafia, Copa de Licor, Cubata, Copa de Cava, Café Solo con Hielo, Cortado con Hielo, Chupito
+
+## Edición de precio en platos (v9.6.1)
+
+- [x] Añadir campo de edición de precio en el modal del lápiz de cada plato
