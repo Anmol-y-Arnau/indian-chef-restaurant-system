@@ -1092,3 +1092,8 @@ Nueva sección con gráficos y análisis de ventas.
 ## Edición de precio en platos (v9.6.1)
 
 - [x] Añadir campo de edición de precio en el modal del lápiz de cada plato
+
+## Menú del Día mejorado (v9.6.2)
+
+- [x] Al pulsar el Menú del Día directamente (sin lápiz) abrir el selector de entrante y bebida
+- [x] En modo cocina mostrar el detalle completo: "Menú del Día - Entrante: X / Bebida: Y"

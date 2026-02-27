@@ -398,21 +398,46 @@ export default function KitchenView() {
               </div>
             )}
             {order.notes && (
-              <div className="flex items-start gap-2 bg-blue-600/20 px-3 py-1.5 rounded-md border border-blue-500/30">
-                <span className="text-xl flex-shrink-0">📝</span>
-                <div className="text-sm text-blue-300 italic break-words">
-                  {/* Si las notas contienen "|" (formato menú del día), mostrar en líneas separadas */}
-                  {order.notes.includes('|') ? (
-                    order.notes.split('|').map((note: string, idx: number) => (
-                      <div key={idx} className="mb-0.5 last:mb-0">
-                        {note.trim()}
+              order.notes.includes('Entrante:') ? (
+                // Formato especial para Menú del Día: destacar entrante y bebida claramente
+                <div className="flex flex-col gap-1 bg-amber-600/20 px-3 py-2 rounded-md border border-amber-500/40">
+                  <span className="text-xs font-bold text-amber-400 uppercase tracking-wide">🍽️ Menú del Día</span>
+                  {order.notes.split('|').map((note: string, idx: number) => {
+                    const trimmed = note.trim();
+                    const isEntrante = trimmed.startsWith('Entrante:');
+                    const isBebida = trimmed.startsWith('Bebida:');
+                    return (
+                      <div key={idx} className={`flex items-center gap-2 px-2 py-1 rounded ${
+                        isEntrante ? 'bg-green-700/30 border border-green-600/40' :
+                        isBebida ? 'bg-blue-700/30 border border-blue-600/40' :
+                        'bg-slate-700/30'
+                      }`}>
+                        <span className="text-base">{isEntrante ? '🥗' : isBebida ? '🥤' : '📝'}</span>
+                        <span className={`font-semibold text-sm ${
+                          isEntrante ? 'text-green-300' :
+                          isBebida ? 'text-blue-300' :
+                          'text-slate-300'
+                        }`}>{trimmed}</span>
                       </div>
-                    ))
-                  ) : (
-                    order.notes
-                  )}
+                    );
+                  })}
                 </div>
-              </div>
+              ) : (
+                <div className="flex items-start gap-2 bg-blue-600/20 px-3 py-1.5 rounded-md border border-blue-500/30">
+                  <span className="text-xl flex-shrink-0">📝</span>
+                  <div className="text-sm text-blue-300 italic break-words">
+                    {order.notes.includes('|') ? (
+                      order.notes.split('|').map((note: string, idx: number) => (
+                        <div key={idx} className="mb-0.5 last:mb-0">
+                          {note.trim()}
+                        </div>
+                      ))
+                    ) : (
+                      order.notes
+                    )}
+                  </div>
+                </div>
+              )
             )}
           </div>
           <div className="flex items-center gap-3">
