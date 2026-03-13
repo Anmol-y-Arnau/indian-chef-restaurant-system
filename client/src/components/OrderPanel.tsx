@@ -130,13 +130,24 @@ export function OrderPanel() {
   const getTicketText = () => {
     const date = new Date().toLocaleString();
     const sortedOrders = sortOrdersByCategory(table.orders);
-    const items = sortedOrders.map(o => {
-      let line = `${o.quantity}x ${o.menuItem.name} (${(o.menuItem.price * o.quantity).toFixed(2)}€)`;
-      // Removed spiceLevel from printed ticket
-      if (o.notes) line += `\n   📝 ${o.notes}`;
+    
+    // Agrupar items iguales para evitar líneas duplicadas
+    const grouped = new Map<string, { name: string; quantity: number; price: number; notes?: string }>();
+    for (const o of sortedOrders) {
+      const key = `${o.menuItem.name}||${o.notes || ''}`;
+      if (grouped.has(key)) {
+        grouped.get(key)!.quantity += o.quantity;
+      } else {
+        grouped.set(key, { name: o.menuItem.name, quantity: o.quantity, price: o.menuItem.price, notes: o.notes });
+      }
+    }
+    
+    const items = Array.from(grouped.values()).map(o => {
+      let line = `${o.quantity}x ${o.name} (${(o.price * o.quantity).toFixed(2)}\u20ac)`;
+      if (o.notes) line += `\n   \ud83d\udcdd ${o.notes}`;
       return line;
     }).join('\n');
-    return `*INDIAN CHEF RESTAURANT*\n----------------------\nMesa: ${table.name}\nFecha: ${date}\n----------------------\n${items}\n----------------------\n*TOTAL: ${total.toFixed(2)}€*\n----------------------\n¡Gracias por su visita!`;
+    return `*INDIAN CHEF RESTAURANT*\n----------------------\nMesa: ${table.name}\nFecha: ${date}\n----------------------\n${items}\n----------------------\n*TOTAL: ${total.toFixed(2)}\u20ac*\n----------------------\n\u00a1Gracias por su visita!`;
   };
 
   const handleCopyTicket = () => {

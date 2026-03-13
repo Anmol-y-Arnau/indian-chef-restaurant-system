@@ -302,12 +302,42 @@ function formatPrice(price: number): string {
 }
 
 /**
+ * Normaliza caracteres especiales que las impresoras térmicas no soportan.
+ * Convierte ñ, tildes y otros caracteres latinos a ASCII básico.
+ */
+function normalizeText(text: string): string {
+  return text
+    .replace(/á/g, 'a').replace(/Á/g, 'A')
+    .replace(/é/g, 'e').replace(/É/g, 'E')
+    .replace(/í/g, 'i').replace(/Í/g, 'I')
+    .replace(/ó/g, 'o').replace(/Ó/g, 'O')
+    .replace(/ú/g, 'u').replace(/Ú/g, 'U')
+    .replace(/ü/g, 'u').replace(/Ü/g, 'U')
+    .replace(/ñ/g, 'n').replace(/Ñ/g, 'N')
+    .replace(/ç/g, 'c').replace(/Ç/g, 'C')
+    .replace(/¡/g, '!').replace(/¿/g, '?')
+    .replace(/€/g, 'EUR');
+}
+
+/**
+ * Trunca un texto para que quepa en el ancho dado.
+ * Si es más largo, añade '...' al final.
+ */
+function truncate(text: string, maxLen: number): string {
+  if (text.length <= maxLen) return text;
+  return text.substring(0, maxLen - 3) + '...';
+}
+
+/**
  * Pad string to align text
  */
 function padLine(left: string, right: string, width: number = 32): string {
-  const totalLength = left.length + right.length;
+  // Asegurarse de que left no supera el espacio disponible
+  const maxLeftLen = width - right.length - 1;
+  const safeLeft = truncate(left, maxLeftLen);
+  const totalLength = safeLeft.length + right.length;
   const spaces = width - totalLength;
-  return left + ' '.repeat(Math.max(0, spaces)) + right;
+  return safeLeft + ' '.repeat(Math.max(1, spaces)) + right;
 }
 
 /**
@@ -315,6 +345,23 @@ function padLine(left: string, right: string, width: number = 32): string {
  */
 function separator(char: string = '-', width: number = 32): string {
   return char.repeat(width);
+}
+
+/**
+ * Agrupa items por nombre+notas+picante para evitar líneas duplicadas.
+ */
+function groupItems(items: TicketData['items']): TicketData['items'] {
+  const grouped = new Map<string, TicketData['items'][0]>();
+  for (const item of items) {
+    const key = `${item.name}||${item.spiceLevel || ''}||${item.notes || ''}`;
+    if (grouped.has(key)) {
+      const existing = grouped.get(key)!;
+      grouped.set(key, { ...existing, quantity: existing.quantity + item.quantity });
+    } else {
+      grouped.set(key, { ...item });
+    }
+  }
+  return Array.from(grouped.values());
 }
 
 export interface TicketData {
@@ -387,25 +434,35 @@ export async function printTicket(data: TicketData): Promise<boolean> {
     await sendToPrinter(section2);
     await new Promise(resolve => setTimeout(resolve, 200)); // Pause between sections
     
-    // SECTION 3: Items (send in batches of 3 items to avoid overflow)
+    // SECTION 3: Items agrupados (send in batches of 3 items to avoid overflow)
+    const groupedItems = groupItems(data.items);
     const itemsPerBatch = 3;
-    for (let i = 0; i < data.items.length; i += itemsPerBatch) {
+    for (let i = 0; i < groupedItems.length; i += itemsPerBatch) {
       let itemsBatch = '';
-      const batch = data.items.slice(i, i + itemsPerBatch);
+      const batch = groupedItems.slice(i, i + itemsPerBatch);
       
       for (const item of batch) {
-        const itemName = `${item.quantity}x ${item.name}`;
+        const normalizedName = normalizeText(item.name);
+        const itemName = `${item.quantity}x ${normalizedName}`;
         const itemPrice = formatPrice(item.price * item.quantity);
         itemsBatch += padLine(itemName, itemPrice);
         itemsBatch += Commands.LINE_FEED;
         
         // Spice level and notes (if any)
         if (item.spiceLevel && item.spiceLevel !== 'none') {
-          itemsBatch += `   Picante: ${item.spiceLevel}`;
+          const spiceLabels: Record<string, string> = {
+            'mild': 'Picante: -',
+            'medium': 'Picante: +-',
+            'hot': 'Picante: +',
+            'extra_hot': 'Picante: ++'
+          };
+          itemsBatch += `   ${spiceLabels[item.spiceLevel] || item.spiceLevel}`;
           itemsBatch += Commands.LINE_FEED;
         }
         if (item.notes) {
-          itemsBatch += `   ${item.notes}`;
+          // Truncar notas largas para que quepan en el tiquet
+          const normalizedNotes = normalizeText(item.notes);
+          itemsBatch += `   ${truncate(normalizedNotes, 28)}`;
           itemsBatch += Commands.LINE_FEED;
         }
       }
@@ -429,7 +486,7 @@ export async function printTicket(data: TicketData): Promise<boolean> {
     section4 += Commands.LINE_FEED;
     section4 += Commands.ALIGN_CENTER;
     section4 += Commands.LINE_FEED;
-    section4 += 'Gracias por su visita!';
+    section4 += 'Gracias por su visita!'; // Sin ¡ para compatibilidad con impresoras
     section4 += Commands.LINE_FEED;
     section4 += Commands.LINE_FEED;
     section4 += Commands.LINE_FEED;

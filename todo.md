@@ -1145,3 +1145,9 @@ Nueva sección con gráficos y análisis de ventas.
 
 - [x] Añadir botón "Vista Tandoor" en el header del modo cocina
 - [x] Añadir enlace a Vista Tandoor en el sidebar móvil (menú de las 3 rayas)
+
+## Corrección de tiquets (v9.7.3)
+
+- [x] Corregir agrupación de items duplicados (que siempre se unan correctamente)
+- [x] Arreglar codificación de caracteres especiales (ñ, tildes, acentos)
+- [x] Solucionar desbordamiento de texto largo (nombres que superan el ancho del tiquet)
