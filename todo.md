@@ -1130,3 +1130,13 @@ Nueva sección con gráficos y análisis de ventas.
 ## Auditoría y corrección de imágenes (v9.7.0)
 
 - [x] Generar imágenes IA para 27 platos con fotos genéricas/repetidas (refrescos, cervezas, arroces, naans, curry, cafés, postres)
+
+## Vista Tandoor /cocina-tandoor (v9.7.1)
+
+- [x] Crear página TandoorView en /cocina-tandoor
+- [x] Agrupar platos por categoría (entrantes, tandoori, naans, ensaladas, postres, bebidas indias)
+- [x] Dentro de cada categoría, separar por mesa ordenada por hora del pedido (más antigua arriba)
+- [x] Mostrar total por tipo de plato y desglose por mesa con tiempo transcurrido
+- [x] Botón para marcar cada lote de mesa como hecho (con persistencia en BD)
+- [x] Diseño compacto, visual, optimizado para móvil
+- [x] Registrar ruta /cocina-tandoor en App.tsx
