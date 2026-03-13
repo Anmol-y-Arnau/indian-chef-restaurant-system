@@ -1140,3 +1140,8 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Botón para marcar cada lote de mesa como hecho (con persistencia en BD)
 - [x] Diseño compacto, visual, optimizado para móvil
 - [x] Registrar ruta /cocina-tandoor en App.tsx
+
+## Acceso rápido Vista Tandoor (v9.7.2)
+
+- [x] Añadir botón "Vista Tandoor" en el header del modo cocina
+- [x] Añadir enlace a Vista Tandoor en el sidebar móvil (menú de las 3 rayas)

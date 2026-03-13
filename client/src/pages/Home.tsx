@@ -13,7 +13,7 @@ import { useRestaurant } from "@/contexts/RestaurantContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { CATEGORIES, MENU_ITEMS } from "@/lib/data";
 import { cn } from "@/lib/utils";
-import { Menu, Search, ShoppingBag, ChefHat, BarChart3 } from "lucide-react";
+import { Menu, Search, ShoppingBag, ChefHat, BarChart3, Flame } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useHaptic } from "@/hooks/useHaptic";
 import { useLocation } from "wouter";
@@ -181,6 +181,14 @@ export default function Home() {
           <Menu className="w-3 h-3" />
           <span className="hidden sm:inline">Menú</span>
         </button>
+        <button
+          onClick={() => window.open('/cocina-tandoor', '_blank')}
+          className="fixed top-2 right-20 z-[60] bg-orange-800/70 hover:bg-orange-700/90 text-orange-200 hover:text-white px-2 py-1 rounded text-xs flex items-center gap-1 transition-all backdrop-blur-sm"
+          title="Vista Tandoor"
+        >
+          <Flame className="w-3 h-3" />
+          <span>Tandoor</span>
+        </button>
         <KitchenView />
       </div>
     );
@@ -206,7 +214,7 @@ export default function Home() {
                   </div>
                   <div className="flex flex-col">
                     <h2 className="font-heading text-xl gradient-text">Indian Chef</h2>
-                    <span className="text-xs text-muted-foreground">v9.7.1</span>
+                    <span className="text-xs text-muted-foreground">v9.7.2</span>
                   </div>
                 </div>
                 <ScrollArea className="flex-1 -mx-2 px-2">
@@ -251,8 +259,8 @@ export default function Home() {
                   </div>
                 </ScrollArea>
                 
-                {/* Botón Modo Cocina */}
-                <div className="mt-auto pt-4 border-t border-border">
+                {/* Botones Cocina */}
+                <div className="mt-auto pt-4 border-t border-border flex flex-col gap-2">
                   <button
                     onClick={() => {
                       setIsKitchenMode(true);
@@ -262,6 +270,16 @@ export default function Home() {
                   >
                     <ChefHat className="w-6 h-6" />
                     <span className="font-bold text-lg">Modo Cocina</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsTablesOpen(false);
+                      window.open('/cocina-tandoor', '_blank');
+                    }}
+                    className="w-full bg-orange-900/70 hover:bg-orange-800 text-orange-200 hover:text-white rounded-lg py-3 px-4 flex items-center justify-center gap-3 transition-all active:scale-95 border border-orange-700/50"
+                  >
+                    <Flame className="w-5 h-5" />
+                    <span className="font-bold">Vista Tandoor</span>
                   </button>
                 </div>
               </div>
@@ -379,7 +397,7 @@ export default function Home() {
                   <h1 className="text-2xl md:text-5xl font-heading gradient-text drop-shadow-lg">
                     {t('app_title')}
                   </h1>
-                  <span className="text-xs md:text-sm text-muted-foreground font-mono mt-1 md:mt-2">v9.7.1</span>
+                  <span className="text-xs md:text-sm text-muted-foreground font-mono mt-1 md:mt-2">v9.7.2</span>
                 </div>
                 <p className="text-muted-foreground text-xs md:text-lg max-w-md hidden md:block">
                   {t('subtitle')}
@@ -397,6 +415,15 @@ export default function Home() {
               >
                 <ChefHat className="w-4 h-4 mr-2" />
                 {t('kitchen_mode') || 'Modo Cocina'}
+              </Button>
+              <Button
+                onClick={() => window.open('/cocina-tandoor', '_blank')}
+                variant="outline"
+                size="sm"
+                className="bg-orange-900/60 hover:bg-orange-800 text-orange-200 hover:text-white border-orange-700/50 backdrop-blur-md transition-all"
+              >
+                <Flame className="w-4 h-4 mr-2" />
+                Tandoor
               </Button>
               <LanguageSwitcher />
               <Button
