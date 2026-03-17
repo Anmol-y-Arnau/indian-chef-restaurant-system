@@ -1179,3 +1179,12 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] La tarjeta del Menú del Día muestra la descripción completa del plato debajo del nombre
 - [x] El contador "0" aparece en la esquina superior izquierda de la imagen
 - [x] Solución: Diseño especial para Menú del Día con chips visuales (Entrante/Principal/Bebida) y badge naranja
+
+## Nueva Funcionalidad - IA en Pedido Rápido (v9.8.0)
+
+- [x] Añadir modo IA al diálogo de Pedido Rápido
+- [x] El camarero escribe texto libre (ej: "2 butter chicken, 1 naan, 1 cerveza") y la IA lo convierte en pedidos
+- [x] Endpoint tRPC que usa LLM con el catálogo completo del menú para hacer el matching
+- [x] Mostrar preview de los items reconocidos antes de confirmar
+- [x] Manejar errores cuando la IA no reconoce un plato
+- [x] 5 tests pasando para el endpoint de IA

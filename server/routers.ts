@@ -280,6 +280,116 @@ export const appRouter = router({
         await restaurantDb.deleteFrequentCustomer(input.id);
         return { success: true };
       }),
+
+    // ========== IA - PARSE ORDER FROM FREE TEXT ==========
+    parseOrderWithAI: publicProcedure
+      .input(z.object({
+        text: z.string().min(1).max(2000),
+        menuCatalog: z.array(z.object({
+          id: z.string(),
+          number: z.number().optional(),
+          name: z.string(),
+          price: z.number(),
+          category: z.string(),
+        })),
+      }))
+      .mutation(async ({ input }) => {
+        const { invokeLLM } = await import("./_core/llm");
+
+        const catalogText = input.menuCatalog
+          .map(item => `- id:${item.id} | número:${item.number ?? '-'} | nombre:"${item.name}" | precio:${item.price}€ | categoría:${item.category}`)
+          .join('\n');
+
+        const systemPrompt = `Eres un asistente de restaurante indio. Tu tarea es interpretar el texto libre que escribe un camarero y convertirlo en una lista de pedidos.
+
+Catálogo del menú:
+${catalogText}
+
+Reglas:
+1. Identifica cada plato mencionado y búscalo en el catálogo por nombre (búsqueda flexible, ignora mayúsculas, tildes y pequeños errores ortográficos)
+2. Si el camarero escribe un número de plato (ej: "el 25", "número 12"), úsalo para identificar el plato
+3. Extrae la cantidad (si no se especifica, asume 1)
+4. Si hay nivel de picante mencionado (sin picante, poco, normal, picante, muy picante), inclúyeloresponde SOLO con JSON válido, sin texto adicional, sin markdown, sin bloques de código.`;
+
+        const userPrompt = `Texto del camarero: "${input.text}"
+
+Responde con este JSON exacto:
+{
+  "items": [
+    {
+      "itemId": "string (id del catálogo)",
+      "itemName": "string (nombre del plato)",
+      "quantity": number,
+      "spiceLevel": "string o null (-, +-, +, ++)",
+      "confidence": "high|medium|low",
+      "originalText": "string (texto original que identificó este plato)"
+    }
+  ],
+  "unrecognized": ["string"] 
+}`;
+
+        const response = await invokeLLM({
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt },
+          ],
+          response_format: {
+            type: 'json_schema',
+            json_schema: {
+              name: 'order_parse_result',
+              strict: true,
+              schema: {
+                type: 'object',
+                properties: {
+                  items: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        itemId: { type: 'string' },
+                        itemName: { type: 'string' },
+                        quantity: { type: 'integer' },
+                        spiceLevel: { type: ['string', 'null'] },
+                        confidence: { type: 'string', enum: ['high', 'medium', 'low'] },
+                        originalText: { type: 'string' },
+                      },
+                      required: ['itemId', 'itemName', 'quantity', 'spiceLevel', 'confidence', 'originalText'],
+                      additionalProperties: false,
+                    },
+                  },
+                  unrecognized: {
+                    type: 'array',
+                    items: { type: 'string' },
+                  },
+                },
+                required: ['items', 'unrecognized'],
+                additionalProperties: false,
+              },
+            },
+          },
+        });
+
+        const rawContent = response.choices[0]?.message?.content;
+        if (!rawContent) throw new Error('No response from AI');
+        const content = typeof rawContent === 'string' ? rawContent : JSON.stringify(rawContent);
+
+        try {
+          const parsed = JSON.parse(content);
+          return parsed as {
+            items: Array<{
+              itemId: string;
+              itemName: string;
+              quantity: number;
+              spiceLevel: string | null;
+              confidence: 'high' | 'medium' | 'low';
+              originalText: string;
+            }>;
+            unrecognized: string[];
+          };
+        } catch {
+          throw new Error('AI returned invalid JSON');
+        }
+      }),
   }),
 });
 
