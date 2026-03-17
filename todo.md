@@ -1156,3 +1156,7 @@ Nueva sección con gráficos y análisis de ventas.
 
 - [x] Corregir botón anidado dentro de botón en MenuCard (lápiz de personalizar cambiado a div role=button)
 - [x] Añadir SheetTitle oculto (sr-only) a los SheetContent sin título en Home.tsx
+
+## Bug z-index tarjetas menú (v9.7.5)
+
+- [x] Corregir z-index: badges de número y lápiz de personalizar pasan por encima de la barra sticky de categorías al hacer scroll
