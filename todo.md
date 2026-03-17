@@ -1167,3 +1167,9 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Imposible ver bebidas/postres al final de pedidos largos porque la vista vuelve arriba
 - [x] El botón "Delivered Todo" marca items uno a uno, cada marcado causa un re-render que resetea scroll
 - [x] Solución: Optimistic updates + batch delivery endpoint + structuralSharing en React Query
+
+## Bug REABIERTO - Scroll modo cocina sigue reseteándose (v9.7.7)
+
+- [x] El scroll sigue volviendo arriba cada ~2 segundos a pesar de las correcciones anteriores
+- [x] Causa real: TableCard definido DENTRO del componente KitchenView → se recrea como nueva función en cada render → React lo desmonta y remonta completamente
+- [x] Solución: Mover TableCard y OrderItemRow FUERA de KitchenView como componentes estáticos de nivel módulo
