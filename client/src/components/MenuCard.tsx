@@ -1,6 +1,5 @@
 import { MenuItem } from "@/lib/types";
-import { cn } from "@/lib/utils";
-import { Flame, Leaf, Edit3 } from "lucide-react";
+import { Flame, Leaf, Edit3, UtensilsCrossed } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface MenuCardProps {
@@ -28,8 +27,78 @@ export function MenuCard({ item, onAdd, onCustomize, showCustomizeButton = false
     }
   };
 
+  const isMenuDelDia = item.category === 'menu_del_dia';
+
+  // Tarjeta especial para el Menú del Día
+  if (isMenuDelDia) {
+    return (
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={onAdd}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onAdd(); } }}
+        className="group relative flex flex-col overflow-hidden rounded-xl border-2 border-primary/60 bg-card transition-all hover:border-primary hover:shadow-xl hover:glow-magenta text-left h-full cursor-pointer"
+      >
+        {/* Imagen con overlay especial */}
+        <div className="relative h-36 w-full overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10" />
+          
+          {/* Badge especial "Menú del Día" */}
+          <div className="absolute top-2 left-2 z-20 bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded-md shadow-md flex items-center gap-1">
+            <UtensilsCrossed className="w-3 h-3" />
+            <span>MENÚ DEL DÍA</span>
+          </div>
+
+          {/* Botón personalizar */}
+          {showCustomizeButton && onCustomize && (
+            <button
+              onClick={handleCustomizeClick}
+              className="absolute top-2 right-2 z-20 gradient-accent hover:glow-orange backdrop-blur-sm p-1.5 rounded-md shadow-md transition-all hover:scale-110"
+              title="Personalizar"
+            >
+              <Edit3 className="w-3.5 h-3.5 text-white" />
+            </button>
+          )}
+
+          <img 
+            src={item.image} 
+            alt={item.name}
+            loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+          />
+
+          {/* Precio en la imagen */}
+          <div className="absolute bottom-2 left-2 right-2 z-10 flex justify-between items-end">
+            <span className="font-bold text-white text-xl drop-shadow-md">{item.price.toFixed(2)}€</span>
+          </div>
+        </div>
+        
+        {/* Contenido: nombre y descripción resumida */}
+        <div className="p-3 flex flex-col gap-2 flex-grow">
+          <h4 className="font-heading text-lg leading-tight group-hover:gradient-text transition-colors">
+            {displayName}
+          </h4>
+          {/* Descripción en chips visuales */}
+          <div className="flex flex-wrap gap-1.5 mt-auto">
+            <span className="bg-green-700/30 border border-green-600/40 text-green-300 text-[10px] font-semibold px-2 py-0.5 rounded-full">
+              🥗 Entrante a elegir
+            </span>
+            <span className="bg-orange-700/30 border border-orange-600/40 text-orange-300 text-[10px] font-semibold px-2 py-0.5 rounded-full">
+              🍛 Principal + Arroz + Naan
+            </span>
+            <span className="bg-blue-700/30 border border-blue-600/40 text-blue-300 text-[10px] font-semibold px-2 py-0.5 rounded-full">
+              🥤 Bebida a elegir
+            </span>
+          </div>
+        </div>
+        
+        <div className="absolute inset-0 gradient-primary opacity-0 group-active:opacity-20 transition-opacity pointer-events-none" />
+      </div>
+    );
+  }
+
+  // Tarjeta estándar para el resto de productos
   return (
-    // Cambiado de <button> a <div role="button"> para evitar botón anidado dentro de botón
     <div
       role="button"
       tabIndex={0}
@@ -41,13 +110,13 @@ export function MenuCard({ item, onAdd, onCustomize, showCustomizeButton = false
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
         
         {/* Item Number Badge */}
-        {item.number && (
+        {item.number != null && item.number !== 0 && (
           <div className="absolute top-2 left-2 z-10 bg-black/60 backdrop-blur-sm border border-white/20 text-white text-xs font-bold px-2 py-1 rounded-md shadow-sm">
             {item.number}
           </div>
         )}
 
-        {/* Customize Button (Pencil Icon) - ahora es el único <button> dentro del div */}
+        {/* Customize Button (Pencil Icon) */}
         {showCustomizeButton && onCustomize && (
           <button
             onClick={handleCustomizeClick}
@@ -90,7 +159,6 @@ export function MenuCard({ item, onAdd, onCustomize, showCustomizeButton = false
         </p>
       </div>
       
-      {/* Ripple effect overlay on click could be added here */}
       <div className="absolute inset-0 gradient-primary opacity-0 group-active:opacity-20 transition-opacity pointer-events-none" />
     </div>
   );

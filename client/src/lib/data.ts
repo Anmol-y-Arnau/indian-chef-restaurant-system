@@ -23,7 +23,6 @@ export const MENU_ITEMS: MenuItem[] = [
   // MENÚ DEL DÍA
   {
     id: 'menu1',
-    number: 0,
     name: 'Menú del Día',
     description: 'Entrante a elegir + Butter Chicken, Dal Makhni, Jeera Rice, Garlic Naan y ensalada + Bebida a elegir. (Postre o café se añade después)',
     price: 15.90,

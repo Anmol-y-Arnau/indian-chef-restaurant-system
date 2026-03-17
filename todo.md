@@ -1173,3 +1173,9 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] El scroll sigue volviendo arriba cada ~2 segundos a pesar de las correcciones anteriores
 - [x] Causa real: TableCard definido DENTRO del componente KitchenView → se recrea como nueva función en cada render → React lo desmonta y remonta completamente
 - [x] Solución: Mover TableCard y OrderItemRow FUERA de KitchenView como componentes estáticos de nivel módulo
+
+## Bug - Tarjeta Menú del Día se ve rara (v9.7.8)
+
+- [x] La tarjeta del Menú del Día muestra la descripción completa del plato debajo del nombre
+- [x] El contador "0" aparece en la esquina superior izquierda de la imagen
+- [x] Solución: Diseño especial para Menú del Día con chips visuales (Entrante/Principal/Bebida) y badge naranja
