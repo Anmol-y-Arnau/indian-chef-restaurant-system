@@ -29,9 +29,13 @@ export function MenuCard({ item, onAdd, onCustomize, showCustomizeButton = false
   };
 
   return (
-    <button
+    // Cambiado de <button> a <div role="button"> para evitar botón anidado dentro de botón
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onAdd}
-      className="group relative flex flex-col overflow-hidden rounded-xl border-2 border-border bg-card transition-all hover:border-primary hover:shadow-xl hover:glow-magenta text-left h-full"
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onAdd(); } }}
+      className="group relative flex flex-col overflow-hidden rounded-xl border-2 border-border bg-card transition-all hover:border-primary hover:shadow-xl hover:glow-magenta text-left h-full cursor-pointer"
     >
       <div className="relative h-32 w-full overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
@@ -43,7 +47,7 @@ export function MenuCard({ item, onAdd, onCustomize, showCustomizeButton = false
           </div>
         )}
 
-        {/* Customize Button (Pencil Icon) */}
+        {/* Customize Button (Pencil Icon) - ahora es el único <button> dentro del div */}
         {showCustomizeButton && onCustomize && (
           <button
             onClick={handleCustomizeClick}
@@ -88,6 +92,6 @@ export function MenuCard({ item, onAdd, onCustomize, showCustomizeButton = false
       
       {/* Ripple effect overlay on click could be added here */}
       <div className="absolute inset-0 gradient-primary opacity-0 group-active:opacity-20 transition-opacity pointer-events-none" />
-    </button>
+    </div>
   );
 }

@@ -1151,3 +1151,8 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Corregir agrupación de items duplicados (que siempre se unan correctamente)
 - [x] Arreglar codificación de caracteres especiales (ñ, tildes, acentos)
 - [x] Solucionar desbordamiento de texto largo (nombres que superan el ancho del tiquet)
+
+## Correcciones de accesibilidad (v9.7.4)
+
+- [x] Corregir botón anidado dentro de botón en MenuCard (lápiz de personalizar cambiado a div role=button)
+- [x] Añadir SheetTitle oculto (sr-only) a los SheetContent sin título en Home.tsx

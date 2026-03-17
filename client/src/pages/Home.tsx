@@ -7,7 +7,7 @@ import { MenuCardMemo } from "@/components/MenuCardMemo";
 import { OrderPanel } from "@/components/OrderPanel";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRestaurant } from "@/contexts/RestaurantContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -207,6 +207,7 @@ export default function Home() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[300px] p-0 bg-sidebar border-r border-border">
+              <SheetTitle className="sr-only">Menú de mesas</SheetTitle>
               <div className="p-6 flex flex-col h-full">
                 <div className="flex items-center gap-3 mb-8">
                   <div className="w-14 h-14 rounded-xl gradient-primary flex items-center justify-center p-2 glow-magenta">
@@ -214,7 +215,7 @@ export default function Home() {
                   </div>
                   <div className="flex flex-col">
                     <h2 className="font-heading text-xl gradient-text">Indian Chef</h2>
-                    <span className="text-xs text-muted-foreground">v9.7.3</span>
+                    <span className="text-xs text-muted-foreground">v9.7.4</span>
                   </div>
                 </div>
                 <ScrollArea className="flex-1 -mx-2 px-2">
@@ -397,7 +398,7 @@ export default function Home() {
                   <h1 className="text-2xl md:text-5xl font-heading gradient-text drop-shadow-lg">
                     {t('app_title')}
                   </h1>
-                  <span className="text-xs md:text-sm text-muted-foreground font-mono mt-1 md:mt-2">v9.7.3</span>
+                  <span className="text-xs md:text-sm text-muted-foreground font-mono mt-1 md:mt-2">v9.7.4</span>
                 </div>
                 <p className="text-muted-foreground text-xs md:text-lg max-w-md hidden md:block">
                   {t('subtitle')}
@@ -528,6 +529,7 @@ export default function Home() {
               </Button>
             </SheetTrigger>
           <SheetContent side="bottom" className="h-[85vh] p-0 rounded-t-[2rem]">
+            <SheetTitle className="sr-only">Panel de pedido</SheetTitle>
             <div className="h-full pt-4">
               <div className="w-12 h-1.5 bg-muted rounded-full mx-auto mb-4" />
               <button 
