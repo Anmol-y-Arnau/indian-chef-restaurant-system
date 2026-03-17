@@ -98,6 +98,20 @@ export async function updateOrderDeliveryStatus(orderId: number, isDelivered: bo
   console.log('[updateOrderDeliveryStatus] Update result:', result);
 }
 
+export async function updateOrderDeliveryStatusBatch(orderIds: number[], isDelivered: boolean) {
+  const db = await getDb();
+  if (!db) {
+    console.error('[updateOrderDeliveryStatusBatch] No database connection');
+    return;
+  }
+  if (orderIds.length === 0) return;
+  console.log(`[updateOrderDeliveryStatusBatch] Updating ${orderIds.length} orders to isDelivered=${isDelivered ? 1 : 0}`);
+  // Use inArray for batch update in a single query
+  const { inArray } = await import('drizzle-orm');
+  await db.update(orders).set({ isDelivered: isDelivered ? 1 : 0, updatedAt: new Date() }).where(inArray(orders.id, orderIds));
+  console.log('[updateOrderDeliveryStatusBatch] Batch update complete');
+}
+
 export async function deleteOrder(orderId: number) {
   const db = await getDb();
   if (!db) return;

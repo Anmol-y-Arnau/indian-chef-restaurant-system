@@ -93,6 +93,24 @@ export const appRouter = router({
         }
       }),
 
+    // Batch update delivery status (mark multiple orders at once)
+    batchUpdateDeliveryStatus: publicProcedure
+      .input(z.object({
+        orderIds: z.array(z.number()),
+        isDelivered: z.boolean(),
+      }))
+      .mutation(async ({ input }) => {
+        console.log('[batchUpdateDeliveryStatus] Received:', input.orderIds.length, 'orders');
+        try {
+          await restaurantDb.updateOrderDeliveryStatusBatch(input.orderIds, input.isDelivered);
+          console.log('[batchUpdateDeliveryStatus] Success');
+          return { success: true };
+        } catch (error) {
+          console.error('[batchUpdateDeliveryStatus] Error:', error);
+          throw error;
+        }
+      }),
+
     // Complete a table (move to sales and clear orders)
     completeTable: publicProcedure
       .input(z.object({

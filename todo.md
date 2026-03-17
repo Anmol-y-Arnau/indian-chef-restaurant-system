@@ -1160,3 +1160,10 @@ Nueva sección con gráficos y análisis de ventas.
 ## Bug z-index tarjetas menú (v9.7.5)
 
 - [x] Corregir z-index: badges de número y lápiz de personalizar pasan por encima de la barra sticky de categorías al hacer scroll
+
+## Bug crítico scroll modo cocina (v9.7.6)
+
+- [x] Scroll se reinicia al principio cada vez que los datos se actualizan (polling cada 3s o delivered)
+- [x] Imposible ver bebidas/postres al final de pedidos largos porque la vista vuelve arriba
+- [x] El botón "Delivered Todo" marca items uno a uno, cada marcado causa un re-render que resetea scroll
+- [x] Solución: Optimistic updates + batch delivery endpoint + structuralSharing en React Query
