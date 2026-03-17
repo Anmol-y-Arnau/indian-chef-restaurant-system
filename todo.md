@@ -1188,3 +1188,20 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Mostrar preview de los items reconocidos antes de confirmar
 - [x] Manejar errores cuando la IA no reconoce un plato
 - [x] 5 tests pasando para el endpoint de IA
+
+## Nueva Funcionalidad - Voz en Pedido Rápido (v9.8.1)
+
+- [ ] Añadir botón de micrófono en el modo IA del Pedido Rápido
+- [ ] Usar Web Speech API (SpeechRecognition) para transcripción en tiempo real en el navegador
+- [ ] Mostrar indicador visual mientras escucha (animación pulsante)
+- [ ] Al terminar de hablar, el texto transcrito se pone en el textarea automáticamente
+- [ ] Soporte para español (lang: es-ES)
+
+## Nueva Funcionalidad - Foto de pedido escrito a mano (v9.8.1)
+
+- [x] Añadir modo "Foto" en el Pedido Rápido: el camarero hace foto al papel con el pedido escrito a mano
+- [x] Captura de imagen desde cámara del móvil o galería (input type=file accept=image/*)
+- [x] Subir imagen a S3 y obtener URL pública
+- [x] Llamar al LLM con visión (image_url) para que lea la escritura a mano y extraiga los platos
+- [x] Mostrar preview de la foto tomada antes de procesar
+- [x] Resultado pasa por el mismo flujo de confirmación que el modo texto IA

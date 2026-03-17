@@ -390,6 +390,122 @@ Responde con este JSON exacto:
           throw new Error('AI returned invalid JSON');
         }
       }),
+
+    // ========== IA - PARSE ORDER FROM HANDWRITTEN PHOTO ==========
+    parseOrderFromImage: publicProcedure
+      .input(z.object({
+        imageBase64: z.string(), // base64 data URL (data:image/jpeg;base64,...)
+        menuCatalog: z.array(z.object({
+          id: z.string(),
+          number: z.number().optional(),
+          name: z.string(),
+          price: z.number(),
+          category: z.string(),
+        })),
+      }))
+      .mutation(async ({ input }) => {
+        const { invokeLLM } = await import("./_core/llm");
+        const { storagePut } = await import("./storage");
+
+        // Upload image to S3 to get a public URL for the LLM
+        const base64Data = input.imageBase64.replace(/^data:image\/[a-z]+;base64,/, '');
+        const mimeMatch = input.imageBase64.match(/^data:(image\/[a-z]+);base64,/);
+        const mimeType = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+        const imageBuffer = Buffer.from(base64Data, 'base64');
+        const ext = mimeType.split('/')[1] ?? 'jpg';
+        const fileName = `handwritten-orders/${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`;
+        const { url: imageUrl } = await storagePut(fileName, imageBuffer, mimeType);
+
+        const catalogText = input.menuCatalog
+          .map(item => `- id:${item.id} | número:${item.number ?? '-'} | nombre:"${item.name}" | precio:${item.price}€`)
+          .join('\n');
+
+        const systemPrompt = `Eres un asistente de restaurante indio. Analiza la imagen de un papel con un pedido escrito a mano por un camarero y convíertelo en una lista de platos del menú.
+
+Catálogo del menú:
+${catalogText}
+
+Reglas:
+1. Lee toda la escritura a mano visible en la imagen
+2. Identifica platos, cantidades y nivel de picante mencionados
+3. Haz matching flexible con el catálogo (ignora mayúsculas, tildes, abreviaturas)
+4. Si ves un número de plato (ej: "25", "n12"), úsalo para identificar el plato
+5. Responde SOLO con JSON válido, sin texto adicional`;
+
+        const response = await invokeLLM({
+          messages: [
+            { role: 'system', content: systemPrompt },
+            {
+              role: 'user',
+              content: [
+                {
+                  type: 'image_url',
+                  image_url: { url: imageUrl, detail: 'high' },
+                },
+                {
+                  type: 'text',
+                  text: 'Lee el pedido escrito a mano en esta imagen y convíertelo al formato JSON solicitado.',
+                },
+              ],
+            },
+          ],
+          response_format: {
+            type: 'json_schema',
+            json_schema: {
+              name: 'order_parse_result',
+              strict: true,
+              schema: {
+                type: 'object',
+                properties: {
+                  items: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        itemId: { type: 'string' },
+                        itemName: { type: 'string' },
+                        quantity: { type: 'integer' },
+                        spiceLevel: { type: ['string', 'null'] },
+                        confidence: { type: 'string', enum: ['high', 'medium', 'low'] },
+                        originalText: { type: 'string' },
+                      },
+                      required: ['itemId', 'itemName', 'quantity', 'spiceLevel', 'confidence', 'originalText'],
+                      additionalProperties: false,
+                    },
+                  },
+                  unrecognized: {
+                    type: 'array',
+                    items: { type: 'string' },
+                  },
+                },
+                required: ['items', 'unrecognized'],
+                additionalProperties: false,
+              },
+            },
+          },
+        });
+
+        const rawContent = response.choices[0]?.message?.content;
+        if (!rawContent) throw new Error('No response from AI');
+        const content = typeof rawContent === 'string' ? rawContent : JSON.stringify(rawContent);
+
+        try {
+          const parsed = JSON.parse(content);
+          return parsed as {
+            items: Array<{
+              itemId: string;
+              itemName: string;
+              quantity: number;
+              spiceLevel: string | null;
+              confidence: 'high' | 'medium' | 'low';
+              originalText: string;
+            }>;
+            unrecognized: string[];
+          };
+        } catch {
+          throw new Error('AI returned invalid JSON');
+        }
+      }),
   }),
 });
 
