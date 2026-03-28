@@ -330,7 +330,7 @@ export function OrderPanel() {
             }}
           >
             <Trash2 className="w-3 h-3 mr-2" />
-            {t('cancel_release')}
+            {t('release_table')}
           </Button>
         )}
       </div>

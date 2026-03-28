@@ -1205,3 +1205,8 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Llamar al LLM con visión (image_url) para que lea la escritura a mano y extraiga los platos
 - [x] Mostrar preview de la foto tomada antes de procesar
 - [x] Resultado pasa por el mismo flujo de confirmación que el modo texto IA
+
+## Bug - "cancel_release" en modal de pago (v9.8.2)
+
+- [x] El modal de Método de Pago muestra el texto "cancel_release" en la parte inferior derecha en lugar de un botón de cancelar correcto
+- [x] Causa: clave de traducción incorrecta (cancel_release no existe, la correcta es release_table)
