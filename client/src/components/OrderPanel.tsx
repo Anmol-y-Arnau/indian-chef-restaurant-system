@@ -43,7 +43,7 @@ export function OrderPanel() {
           <img src="/images/chef-icon.png" alt="Chef" className="w-16 h-16 opacity-50" />
         </div>
         <h3 className="font-heading text-xl mb-2">{t('welcome_title')}</h3>
-        <p>{t('welcome_message')}</p>
+        <p>{t('welcome_desc')}</p>
         <Button 
           className="mt-6 md:hidden" 
           onClick={() => document.getElementById('mobile-menu-trigger')?.click()}

@@ -1,9 +1,15 @@
 import { useState } from 'react';
-import { X, Plus, Trash2, CreditCard, Banknote, Check } from 'lucide-react';
+import { Plus, Trash2, CreditCard, Banknote, Check } from 'lucide-react';
 import { OrderItem } from '@/lib/types';
 import { PersonPayment } from './PaymentModal';
 import { ScrollArea } from './ui/scroll-area';
 import { Button } from './ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface CustomSplitModalProps {
   isOpen: boolean;
@@ -101,21 +107,13 @@ export default function CustomSplitModal({ isOpen, onClose, orders, onConfirm }:
   const selectedPersonData = persons.find(p => p.personId === selectedPerson);
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[110] p-2 md:p-4">
-      <div className="bg-slate-800 rounded-lg max-w-4xl w-full h-[95vh] flex flex-col">
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
+      <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-4xl w-full h-[95vh] flex flex-col p-0 gap-0 overflow-hidden">
         {/* Header */}
-        <div className="p-4 border-b border-slate-700 flex items-center justify-between shrink-0">
-          <div>
-            <h2 className="text-xl md:text-2xl font-bold text-orange-500">División Personalizada</h2>
-            <p className="text-slate-400 text-xs md:text-sm">Asigna cada plato a quien lo paga</p>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-slate-400 hover:text-white transition-colors"
-          >
-            <X className="w-6 h-6" />
-          </button>
-        </div>
+        <DialogHeader className="p-4 border-b border-slate-700 shrink-0">
+          <DialogTitle className="text-xl md:text-2xl font-bold text-orange-500">División Personalizada</DialogTitle>
+          <p className="text-slate-400 text-xs md:text-sm">Asigna cada plato a quien lo paga</p>
+        </DialogHeader>
 
         {/* Content */}
         <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
@@ -304,7 +302,7 @@ export default function CustomSplitModal({ isOpen, onClose, orders, onConfirm }:
             </Button>
           </div>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

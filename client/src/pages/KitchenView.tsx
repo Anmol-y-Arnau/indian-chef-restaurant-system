@@ -598,7 +598,7 @@ export default function KitchenView() {
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       {/* Header fijo */}
-      <div className="sticky top-0 z-50 bg-gradient-to-r from-orange-600 to-orange-700 shadow-lg">
+      <div className="sticky top-0 z-10 bg-gradient-to-r from-orange-600 to-orange-700 shadow-lg">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -648,7 +648,7 @@ export default function KitchenView() {
       {/* Botón de configuración de sonido */}
       <button
         onClick={() => setIsSoundSettingsOpen(true)}
-        className="fixed bottom-4 left-4 bg-slate-700/80 hover:bg-slate-600 text-slate-300 p-3 rounded-full shadow-lg transition-all active:scale-95 z-50"
+        className="fixed bottom-4 left-4 bg-slate-700/80 hover:bg-slate-600 text-slate-300 p-3 rounded-full shadow-lg transition-all active:scale-95 z-20"
         title="Configurar notificaciones de sonido"
       >
         <Settings className="w-5 h-5" />

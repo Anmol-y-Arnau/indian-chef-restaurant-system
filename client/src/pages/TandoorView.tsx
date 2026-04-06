@@ -159,7 +159,7 @@ export default function TandoorView() {
   return (
     <div className="min-h-screen bg-gray-950 text-white">
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-gray-900 border-b border-orange-900/50 px-3 py-2 flex items-center justify-between shadow-lg">
+      <div className="sticky top-0 z-10 bg-gray-900 border-b border-orange-900/50 px-3 py-2 flex items-center justify-between shadow-lg">
         <div className="flex items-center gap-2">
           <Flame className="w-5 h-5 text-orange-400" />
           <span className="font-bold text-orange-300 text-base tracking-wide">TANDOOR</span>

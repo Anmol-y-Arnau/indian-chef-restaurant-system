@@ -1210,3 +1210,8 @@ Nueva sección con gráficos y análisis de ventas.
 
 - [x] El modal de Método de Pago muestra el texto "cancel_release" en la parte inferior derecha en lugar de un botón de cancelar correcto
 - [x] Causa: clave de traducción incorrecta (cancel_release no existe, la correcta es release_table)
+
+## Bug crítico z-index (v9.8.3)
+
+- [ ] La barra de categorías sticky tapa modales de pago, diálogos y menús desplegables
+- [ ] Auditar y corregir todos los z-index del proyecto de una vez con jerarquía correcta
