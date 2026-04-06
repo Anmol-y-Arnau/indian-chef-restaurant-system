@@ -379,7 +379,7 @@ export default function KitchenView() {
     refetchIntervalInBackground: true,
     structuralSharing: true,
   });
-  const { data: dbOrders = [] } = trpc.restaurant.getAllOrders.useQuery(undefined, {
+  const { data: dbOrders = [] } = trpc.restaurant.getActiveOrders.useQuery(undefined, {
     refetchInterval: 3000,
     refetchIntervalInBackground: true,
     structuralSharing: true,
@@ -426,10 +426,10 @@ export default function KitchenView() {
   // Mutation individual con optimistic update
   const updateDeliveryMutation = trpc.restaurant.updateOrderDeliveryStatus.useMutation({
     onMutate: async ({ orderId, isDelivered }) => {
-      await utils.restaurant.getAllOrders.cancel();
-      const previousOrders = utils.restaurant.getAllOrders.getData();
+      await utils.restaurant.getActiveOrders.cancel();
+      const previousOrders = utils.restaurant.getActiveOrders.getData();
       
-      utils.restaurant.getAllOrders.setData(undefined, (old) => {
+      utils.restaurant.getActiveOrders.setData(undefined, (old) => {
         if (!old) return old;
         return old.map(order => 
           order.id === orderId 
@@ -442,7 +442,7 @@ export default function KitchenView() {
     },
     onError: (_err, _vars, context) => {
       if (context?.previousOrders) {
-        utils.restaurant.getAllOrders.setData(undefined, context.previousOrders);
+        utils.restaurant.getActiveOrders.setData(undefined, context.previousOrders);
       }
     },
   });
@@ -450,11 +450,11 @@ export default function KitchenView() {
   // Mutation batch con optimistic update
   const batchDeliveryMutation = trpc.restaurant.batchUpdateDeliveryStatus.useMutation({
     onMutate: async ({ orderIds, isDelivered }) => {
-      await utils.restaurant.getAllOrders.cancel();
-      const previousOrders = utils.restaurant.getAllOrders.getData();
+      await utils.restaurant.getActiveOrders.cancel();
+      const previousOrders = utils.restaurant.getActiveOrders.getData();
       
       const orderIdSet = new Set(orderIds);
-      utils.restaurant.getAllOrders.setData(undefined, (old) => {
+      utils.restaurant.getActiveOrders.setData(undefined, (old) => {
         if (!old) return old;
         return old.map(order => 
           orderIdSet.has(order.id)
@@ -467,7 +467,7 @@ export default function KitchenView() {
     },
     onError: (_err, _vars, context) => {
       if (context?.previousOrders) {
-        utils.restaurant.getAllOrders.setData(undefined, context.previousOrders);
+        utils.restaurant.getActiveOrders.setData(undefined, context.previousOrders);
       }
     },
   });

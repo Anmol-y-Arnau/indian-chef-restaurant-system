@@ -1,4 +1,4 @@
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, inArray } from "drizzle-orm";
 import { restaurantTables, orders, sales, type InsertOrder, type InsertSale, type InsertRestaurantTable } from "../drizzle/schema";
 import { getDb } from "./db";
 
@@ -42,6 +42,48 @@ export async function getAllOrders() {
   const db = await getDb();
   if (!db) return [];
   return await db.select().from(orders);
+}
+
+export async function getActiveOrders() {
+  // Returns only orders from currently OCCUPIED tables (filters out orphaned/old orders)
+  const db = await getDb();
+  if (!db) return [];
+
+  const occupiedTables = await db
+    .select({ tableId: restaurantTables.tableId })
+    .from(restaurantTables)
+    .where(eq(restaurantTables.status, 'occupied'));
+
+  if (occupiedTables.length === 0) return [];
+
+  const occupiedTableIds = occupiedTables.map(t => t.tableId);
+  return await db.select().from(orders).where(inArray(orders.tableId, occupiedTableIds));
+}
+
+export async function cleanOrphanedOrders() {
+  // Deletes orders from tables that are NOT occupied (orphaned orders from old sessions)
+  const db = await getDb();
+  if (!db) return 0;
+
+  const occupiedTables = await db
+    .select({ tableId: restaurantTables.tableId })
+    .from(restaurantTables)
+    .where(eq(restaurantTables.status, 'occupied'));
+
+  const allOrders = await db.select({ id: orders.id, tableId: orders.tableId }).from(orders);
+
+  if (allOrders.length === 0) return 0;
+
+  const occupiedTableIds = new Set(occupiedTables.map(t => t.tableId));
+  const orphanedIds = allOrders
+    .filter(o => !occupiedTableIds.has(o.tableId))
+    .map(o => o.id);
+
+  if (orphanedIds.length === 0) return 0;
+
+  await db.delete(orders).where(inArray(orders.id, orphanedIds));
+  console.log(`[cleanOrphanedOrders] Deleted ${orphanedIds.length} orphaned orders`);
+  return orphanedIds.length;
 }
 
 export async function addOrder(order: InsertOrder) {

@@ -1215,3 +1215,12 @@ Nueva sección con gráficos y análisis de ventas.
 
 - [ ] La barra de categorías sticky tapa modales de pago, diálogos y menús desplegables
 - [ ] Auditar y corregir todos los z-index del proyecto de una vez con jerarquía correcta
+
+## Bug Resuelto - Modo Tandoor muestra pedidos antiguos (v9.8.4)
+
+- [x] El modo Tandoor mostraba pedidos de días anteriores y sesiones antiguas
+- [x] Causa: getAllOrders devuelve TODOS los pedidos de la BD sin filtrar por estado de mesa
+- [x] Solución: Nuevo endpoint getActiveOrders que filtra por mesas en estado 'occupied'
+- [x] Nueva función cleanOrphanedOrders que elimina pedidos de mesas libres
+- [x] TandoorView y KitchenView actualizados para usar getActiveOrders
+- [x] Limpieza automática de pedidos huérfanos al abrir el modo Tandoor

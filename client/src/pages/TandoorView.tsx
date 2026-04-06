@@ -44,21 +44,28 @@ export default function TandoorView() {
   const haptic = useHaptic();
   const utils = trpc.useUtils();
 
-  const { data: dbOrders = [] } = trpc.restaurant.getAllOrders.useQuery(undefined, {
+  const cleanOrphanedMutation = trpc.restaurant.cleanOrphanedOrders.useMutation();
+
+  const { data: dbOrders = [] } = trpc.restaurant.getActiveOrders.useQuery(undefined, {
     refetchInterval: false,
   });
 
-  // Polling manual cada 3 segundos
+  // Limpiar pedidos huérfanos al montar y luego polling cada 3 segundos
   useEffect(() => {
+    // Clean orphaned orders on mount (orders from old sessions/free tables)
+    cleanOrphanedMutation.mutate(undefined, {
+      onSuccess: () => utils.restaurant.getActiveOrders.invalidate(),
+    });
+
     const id = setInterval(() => {
-      utils.restaurant.getAllOrders.invalidate();
+      utils.restaurant.getActiveOrders.invalidate();
     }, 3000);
     return () => clearInterval(id);
-  }, [utils]);
+  }, [utils]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateDeliveryMutation = trpc.restaurant.updateOrderDeliveryStatus.useMutation({
     onSuccess: () => {
-      utils.restaurant.getAllOrders.invalidate();
+      utils.restaurant.getActiveOrders.invalidate();
     },
   });
 

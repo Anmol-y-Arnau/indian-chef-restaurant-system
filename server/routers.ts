@@ -32,6 +32,17 @@ export const appRouter = router({
       return await restaurantDb.getAllOrders();
     }),
 
+    // Get only orders from currently occupied tables (no orphaned/old orders)
+    getActiveOrders: publicProcedure.query(async () => {
+      return await restaurantDb.getActiveOrders();
+    }),
+
+    // Clean orphaned orders (orders from tables that are no longer occupied)
+    cleanOrphanedOrders: publicProcedure.mutation(async () => {
+      const deleted = await restaurantDb.cleanOrphanedOrders();
+      return { deleted };
+    }),
+
     // Get orders for a specific table
     getTableOrders: publicProcedure
       .input(z.object({ tableId: z.string() }))
