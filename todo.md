@@ -1224,3 +1224,9 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Nueva función cleanOrphanedOrders que elimina pedidos de mesas libres
 - [x] TandoorView y KitchenView actualizados para usar getActiveOrders
 - [x] Limpieza automática de pedidos huérfanos al abrir el modo Tandoor
+
+## Bug - Scroll en División Personalizada (v9.8.5)
+
+- [x] El modal de División Personalizada no tiene scroll: con 5+ personas o muchos platos no se puede bajar para ver el resto del contenido
+- [x] La columna izquierda (personas) y la columna derecha (platos) deben tener scroll independiente
+- [x] Solución: max-h-[45%] en móvil para la columna de personas + min-h-0 en ambas columnas para que ScrollArea funcione

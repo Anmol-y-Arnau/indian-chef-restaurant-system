@@ -116,9 +116,9 @@ export default function CustomSplitModal({ isOpen, onClose, orders, onConfirm }:
         </DialogHeader>
 
         {/* Content */}
-        <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-          {/* Left: Person List */}
-          <div className="w-full md:w-64 border-b md:border-b-0 md:border-r border-slate-700 flex flex-col shrink-0">
+        <div className="flex-1 flex flex-col md:flex-row overflow-hidden min-h-0">
+          {/* Left: Person List — fixed height on mobile so right column stays visible */}
+          <div className="w-full md:w-64 border-b md:border-b-0 md:border-r border-slate-700 flex flex-col shrink-0 max-h-[45%] md:max-h-none">
             <div className="p-3 border-b border-slate-700">
               <Button
                 onClick={addPerson}
@@ -210,7 +210,7 @@ export default function CustomSplitModal({ isOpen, onClose, orders, onConfirm }:
           </div>
 
           {/* Right: Order Items */}
-          <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex-1 flex flex-col overflow-hidden min-h-0">
             <div className="p-3 border-b border-slate-700 bg-slate-700/50">
               <div className="text-sm text-slate-300">
                 Selecciona los platos para <span className="font-bold text-orange-500">{selectedPersonData?.name}</span>
