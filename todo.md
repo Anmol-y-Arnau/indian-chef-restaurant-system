@@ -1230,3 +1230,9 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] El modal de División Personalizada no tiene scroll: con 5+ personas o muchos platos no se puede bajar para ver el resto del contenido
 - [x] La columna izquierda (personas) y la columna derecha (platos) deben tener scroll independiente
 - [x] Solución: max-h-[45%] en móvil para la columna de personas + min-h-0 en ambas columnas para que ScrollArea funcione
+
+## Bug REABIERTO - Scroll bloqueado División Personalizada (v9.8.6)
+
+- [x] El scroll sigue bloqueado en el modal de División Personalizada después del fix anterior
+- [x] Reemplazado ScrollArea de Radix por overflow-y-auto nativo con flex: 1 1 0 y minHeight: 0
+- [x] Modal con height: 90vh explícito y columnas con scroll independiente vía inline styles
