@@ -86,9 +86,32 @@ export const frequentCustomers = mysqlTable("frequent_customers", {
   nif: varchar("nif", { length: 20 }).notNull(),
   address: text("address").notNull(),
   city: varchar("city", { length: 100 }).notNull(),
+  email: varchar("email", { length: 320 }),
+  phone: varchar("phone", { length: 30 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
 
 export type FrequentCustomer = typeof frequentCustomers.$inferSelect;
 export type InsertFrequentCustomer = typeof frequentCustomers.$inferInsert;
+
+/**
+ * Invoices (facturas generadas)
+ */
+export const invoices = mysqlTable("invoices", {
+  id: int("id").autoincrement().primaryKey(),
+  invoiceNumber: varchar("invoiceNumber", { length: 30 }).notNull().unique(), // e.g. "FAC-2026-0001"
+  customerId: int("customerId").notNull(), // Reference to frequentCustomers.id
+  customerSnapshot: json("customerSnapshot").notNull(), // Snapshot of customer data at invoice time
+  items: json("items").notNull(), // Array of { name, quantity, unitPrice, total }
+  subtotal: decimal("subtotal", { precision: 10, scale: 2 }).notNull(),
+  taxRate: decimal("taxRate", { precision: 5, scale: 2 }).notNull().default("10.00"), // IVA %
+  taxAmount: decimal("taxAmount", { precision: 10, scale: 2 }).notNull(),
+  total: decimal("total", { precision: 10, scale: 2 }).notNull(),
+  tableId: varchar("tableId", { length: 20 }),
+  notes: text("notes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type Invoice = typeof invoices.$inferSelect;
+export type InsertInvoice = typeof invoices.$inferInsert;

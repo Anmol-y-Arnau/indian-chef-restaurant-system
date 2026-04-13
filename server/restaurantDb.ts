@@ -230,7 +230,7 @@ export async function getFrequentCustomerById(id: number) {
   return result[0] || null;
 }
 
-export async function addFrequentCustomer(customer: { name: string; nif: string; address: string; city: string }) {
+export async function addFrequentCustomer(customer: { name: string; nif: string; address: string; city: string; email?: string; phone?: string }) {
   const db = await getDb();
   if (!db) return null;
   const { frequentCustomers } = await import("../drizzle/schema");
@@ -240,7 +240,7 @@ export async function addFrequentCustomer(customer: { name: string; nif: string;
   return result[0] || null;
 }
 
-export async function updateFrequentCustomer(id: number, customer: { name: string; nif: string; address: string; city: string }) {
+export async function updateFrequentCustomer(id: number, customer: { name: string; nif: string; address: string; city: string; email?: string; phone?: string }) {
   const db = await getDb();
   if (!db) return;
   const { frequentCustomers } = await import("../drizzle/schema");
@@ -254,4 +254,68 @@ export async function deleteFrequentCustomer(id: number) {
   if (!db) return;
   const { frequentCustomers } = await import("../drizzle/schema");
   await db.delete(frequentCustomers).where(eq(frequentCustomers.id, id));
+}
+
+// ========== INVOICES ==========
+
+export async function getNextInvoiceNumber(): Promise<string> {
+  const db = await getDb();
+  if (!db) return 'FAC-2026-0001';
+  const { invoices } = await import("../drizzle/schema");
+  const year = new Date().getFullYear();
+  const result = await db.select().from(invoices)
+    .orderBy(desc(invoices.id))
+    .limit(1);
+  if (result.length === 0) return `FAC-${year}-0001`;
+  // Extract the numeric part from the last invoice number
+  const lastNum = result[0].invoiceNumber;
+  const match = lastNum.match(/(\d+)$/);
+  const nextNum = match ? parseInt(match[1]) + 1 : 1;
+  return `FAC-${year}-${String(nextNum).padStart(4, '0')}`;
+}
+
+export async function createInvoice(invoice: {
+  customerId: number;
+  customerSnapshot: object;
+  items: object;
+  subtotal: string;
+  taxRate: string;
+  taxAmount: string;
+  total: string;
+  tableId?: string;
+  notes?: string;
+}) {
+  const db = await getDb();
+  if (!db) return null;
+  const { invoices } = await import("../drizzle/schema");
+  const invoiceNumber = await getNextInvoiceNumber();
+  await db.insert(invoices).values({ ...invoice, invoiceNumber });
+  const result = await db.select().from(invoices)
+    .where(eq(invoices.invoiceNumber, invoiceNumber))
+    .limit(1);
+  return result[0] || null;
+}
+
+export async function getInvoicesByCustomer(customerId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  const { invoices } = await import("../drizzle/schema");
+  return await db.select().from(invoices)
+    .where(eq(invoices.customerId, customerId))
+    .orderBy(desc(invoices.createdAt));
+}
+
+export async function getAllInvoices() {
+  const db = await getDb();
+  if (!db) return [];
+  const { invoices } = await import("../drizzle/schema");
+  return await db.select().from(invoices).orderBy(desc(invoices.createdAt));
+}
+
+export async function getInvoiceById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const { invoices } = await import("../drizzle/schema");
+  const result = await db.select().from(invoices).where(eq(invoices.id, id)).limit(1);
+  return result[0] || null;
 }

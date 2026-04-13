@@ -1236,3 +1236,13 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] El scroll sigue bloqueado en el modal de División Personalizada después del fix anterior
 - [x] Reemplazado ScrollArea de Radix por overflow-y-auto nativo con flex: 1 1 0 y minHeight: 0
 - [x] Modal con height: 90vh explícito y columnas con scroll independiente vía inline styles
+
+## Nueva Funcionalidad - Sistema de Facturación con Clientes (v9.9.0)
+
+- [x] Schema BD: tabla `frequent_customers` (nombre, NIF/CIF, dirección, email, teléfono) y tabla `invoices` (número, fecha, cliente, items, total, mesa)
+- [x] Endpoints tRPC: CRUD clientes + crear factura + listar facturas por cliente
+- [x] Botón de factura en OrderPanel junto a copiar/imprimir/QR
+- [x] InvoiceDialog: selector de cliente existente o crear nuevo, vista previa de factura
+- [x] Factura con QR que el cliente puede escanear para ver/descargar
+- [x] Opción de descargar PDF y de imprimir
+- [x] Historial de facturas por cliente (últimas facturas al seleccionar un cliente)

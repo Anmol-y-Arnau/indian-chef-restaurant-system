@@ -264,6 +264,8 @@ export const appRouter = router({
         nif: z.string(),
         address: z.string(),
         city: z.string(),
+        email: z.string().optional(),
+        phone: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
         return await restaurantDb.addFrequentCustomer(input);
@@ -277,6 +279,8 @@ export const appRouter = router({
         nif: z.string(),
         address: z.string(),
         city: z.string(),
+        email: z.string().optional(),
+        phone: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
         const { id, ...customer } = input;
@@ -290,6 +294,103 @@ export const appRouter = router({
       .mutation(async ({ input }) => {
         await restaurantDb.deleteFrequentCustomer(input.id);
         return { success: true };
+      }),
+
+    // ========== INVOICES ==========
+
+    // Create an invoice
+    createInvoice: publicProcedure
+      .input(z.object({
+        customerId: z.number(),
+        items: z.array(z.object({
+          name: z.string(),
+          quantity: z.number(),
+          unitPrice: z.number(),
+          total: z.number(),
+        })),
+        subtotal: z.number(),
+        taxRate: z.number().default(10),
+        taxAmount: z.number(),
+        total: z.number(),
+        tableId: z.string().optional(),
+        notes: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        // Get customer data for snapshot
+        const customer = await restaurantDb.getFrequentCustomerById(input.customerId);
+        if (!customer) throw new Error('Customer not found');
+        
+        const invoice = await restaurantDb.createInvoice({
+          customerId: input.customerId,
+          customerSnapshot: customer,
+          items: input.items,
+          subtotal: input.subtotal.toFixed(2),
+          taxRate: input.taxRate.toFixed(2),
+          taxAmount: input.taxAmount.toFixed(2),
+          total: input.total.toFixed(2),
+          tableId: input.tableId,
+          notes: input.notes,
+        });
+        return invoice;
+      }),
+
+    // Get invoices for a specific customer
+    getInvoicesByCustomer: publicProcedure
+      .input(z.object({ customerId: z.number() }))
+      .query(async ({ input }) => {
+        return await restaurantDb.getInvoicesByCustomer(input.customerId);
+      }),
+
+    // Get all invoices
+    getAllInvoices: publicProcedure.query(async () => {
+      return await restaurantDb.getAllInvoices();
+    }),
+
+    // Get a single invoice by ID
+    getInvoice: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        return await restaurantDb.getInvoiceById(input.id);
+      }),
+
+    // Generate PDF for an invoice and upload to S3
+    generateInvoicePDF: publicProcedure
+      .input(z.object({
+        invoiceNumber: z.string(),
+        customer: z.object({
+          name: z.string(),
+          nif: z.string(),
+          address: z.string(),
+          city: z.string(),
+          email: z.string().optional().nullable(),
+          phone: z.string().optional().nullable(),
+        }),
+        items: z.array(z.object({
+          name: z.string(),
+          quantity: z.number(),
+          unitPrice: z.number(),
+          total: z.number(),
+        })),
+        subtotal: z.number(),
+        taxRate: z.number(),
+        taxAmount: z.number(),
+        total: z.number(),
+        tableId: z.string().optional(),
+        notes: z.string().optional(),
+        createdAt: z.date().optional(),
+        restaurantName: z.string().optional(),
+        restaurantAddress: z.string().optional(),
+        restaurantNif: z.string().optional(),
+        restaurantPhone: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { generateInvoicePDF } = await import('./invoicePdf');
+        const pdfBuffer = generateInvoicePDF(input);
+        const timestamp = Date.now();
+        const random = Math.random().toString(36).substring(7);
+        const fileName = `invoices/${input.invoiceNumber}_${timestamp}_${random}.pdf`;
+        const { url } = await storagePut(fileName, pdfBuffer, 'application/pdf');
+        return { url };
       }),
 
     // ========== IA - PARSE ORDER FROM FREE TEXT ==========

@@ -3,10 +3,11 @@ import { useRestaurant } from "@/contexts/RestaurantContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import { sortOrdersByCategory } from "@/lib/orderUtils";
-import { Copy, QrCode, Minus, Printer, Trash2, X, Bluetooth } from "lucide-react";
+import { Copy, QrCode, Minus, Printer, Trash2, X, Bluetooth, FileText } from "lucide-react";
 import { useHaptic } from "@/hooks/useHaptic";
 import PaymentModal, { type PaymentData } from "./PaymentModal";
 import { QRCodeModal } from "./QRCodeModal";
+import { InvoiceDialog } from "./InvoiceDialog";
 import { trpc } from "@/lib/trpc";
 import { MENU_ITEMS } from "@/lib/data";
 
@@ -30,6 +31,7 @@ export function OrderPanel() {
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
+  const [showInvoiceDialog, setShowInvoiceDialog] = useState(false);
   const [qrData, setQrData] = useState<{ url: string; ticketNumber: number } | null>(null);
   
   // MUST be called before any conditional returns (Rules of Hooks)
@@ -310,6 +312,15 @@ export function OrderPanel() {
             >
               <Printer className="w-4 h-4" />
             </Button>
+            <Button 
+              variant="outline" 
+              className="flex-1 border-amber-500/50 hover:bg-amber-500/10 hover:text-amber-600 hover:border-amber-500 px-2"
+              onClick={() => setShowInvoiceDialog(true)}
+              disabled={table.orders.length === 0}
+              title={t('generate_invoice')}
+            >
+              <FileText className="w-4 h-4" />
+            </Button>
           </div>
           <Button 
             variant="default" 
@@ -357,6 +368,16 @@ export function OrderPanel() {
           tableName={table.name}
         />
       )}
+
+      {/* Invoice Dialog */}
+      <InvoiceDialog
+        open={showInvoiceDialog}
+        onClose={() => setShowInvoiceDialog(false)}
+        tableId={String(table.id)}
+        tableName={table.name}
+        orders={table.orders}
+        total={total}
+      />
     </div>
   );
 }
