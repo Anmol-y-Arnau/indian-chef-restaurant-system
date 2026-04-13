@@ -137,7 +137,7 @@ export function FrequentCustomersDialog() {
                   id="name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="STAR PROP PATRIMONIAL, S.L."
+                  placeholder="Empresa S.L. / Juan García"
                 />
               </div>
               <div>
@@ -146,7 +146,7 @@ export function FrequentCustomersDialog() {
                   id="nif"
                   value={formData.nif}
                   onChange={(e) => setFormData({ ...formData, nif: e.target.value })}
-                  placeholder="B05380993"
+                  placeholder="B12345678 / 12345678A"
                 />
               </div>
               <div>
@@ -155,7 +155,7 @@ export function FrequentCustomersDialog() {
                   id="address"
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  placeholder="C/ CASTELLAR, 6, 17491"
+                  placeholder="Calle Mayor, 1"
                 />
               </div>
               <div>
@@ -164,7 +164,7 @@ export function FrequentCustomersDialog() {
                   id="city"
                   value={formData.city}
                   onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  placeholder="LLANÇA (GIRONA)"
+                  placeholder="Barcelona"
                 />
               </div>
               <div className="flex gap-2">
@@ -197,9 +197,9 @@ export function FrequentCustomersDialog() {
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold truncate">{customer.name}</p>
+                          <p className="font-semibold text-sm break-words leading-tight">{customer.name}</p>
                           <p className="text-sm text-muted-foreground">NIF: {customer.nif}</p>
-                          <p className="text-xs text-muted-foreground truncate">
+                          <p className="text-xs text-muted-foreground break-words">
                             {customer.address}
                           </p>
                           <p className="text-xs text-muted-foreground">{customer.city}</p>
