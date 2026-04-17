@@ -59,10 +59,12 @@ import { sortOrdersByCategory, getCategoryOrder } from '../client/src/lib/orderU
 
 describe('Order Sorting by Category', () => {
   it('should return correct category order index', () => {
-    expect(getCategoryOrder('starters')).toBe(0);
-    expect(getCategoryOrder('salads')).toBe(1);
-    expect(getCategoryOrder('tandoor')).toBe(2);
-    expect(getCategoryOrder('desserts')).toBe(12);
+    // Indices based on CATEGORIES array in data.ts:
+    // 0: menu_del_dia, 1: starters, 2: salads, 3: tandoor, ..., 15: desserts
+    expect(getCategoryOrder('starters')).toBe(1);
+    expect(getCategoryOrder('salads')).toBe(2);
+    expect(getCategoryOrder('tandoor')).toBe(3);
+    expect(getCategoryOrder('desserts')).toBe(15);
     expect(getCategoryOrder('unknown')).toBe(999);
   });
 

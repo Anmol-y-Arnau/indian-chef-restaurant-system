@@ -1260,3 +1260,11 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Detección de platos frecuentes en Varios con sugerencia de añadir al menú fijo
 - [x] Tabla custom_item_log en BD para registrar platos personalizados frecuentes
 - [x] Banner de sugerencia en el diálogo de Varios cuando un plato se repite 3+ veces
+
+## Bug Historial - Items aleatorios de prueba
+
+- [x] Identificado: tests de integración se conectaban a BD real y dejaban ventas de prueba (Samosa, Chicken Curry, Test Item, etc.)
+- [x] Limpiados 5 registros de ventas de prueba de la BD real
+- [x] Reescritos todos los tests de integración para usar tableIds únicos (__test_*__) que no conflictan con mesas reales
+- [x] Tests de addOrder.grouping ya no borran toda la tabla orders (solo su tableId de prueba)
+- [x] 73/73 tests pasan correctamente
