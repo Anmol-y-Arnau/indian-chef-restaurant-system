@@ -115,3 +115,21 @@ export const invoices = mysqlTable("invoices", {
 
 export type Invoice = typeof invoices.$inferSelect;
 export type InsertInvoice = typeof invoices.$inferInsert;
+
+/**
+ * Custom item suggestions (platos personalizados frecuentes para sugerir añadir al menú)
+ * Cada vez que se añade un plato 'Varios', se registra aquí.
+ * Cuando un nombre aparece 3+ veces, se sugiere añadirlo al menú fijo.
+ */
+export const customItemLog = mysqlTable("custom_item_log", {
+  id: int("id").autoincrement().primaryKey(),
+  itemName: varchar("itemName", { length: 255 }).notNull(), // Nombre normalizado (lowercase, trimmed)
+  originalName: varchar("originalName", { length: 255 }).notNull(), // Nombre original tal como se escribió
+  count: int("count").notNull().default(1), // Cuántas veces se ha pedido
+  addedToMenu: tinyint("addedToMenu").notNull().default(0), // 0 = no añadido, 1 = ya está en el menú
+  lastSeenAt: timestamp("lastSeenAt").defaultNow().onUpdateNow().notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type CustomItemLog = typeof customItemLog.$inferSelect;
+export type InsertCustomItemLog = typeof customItemLog.$inferInsert;

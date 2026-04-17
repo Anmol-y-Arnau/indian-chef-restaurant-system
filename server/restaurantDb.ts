@@ -319,3 +319,89 @@ export async function getInvoiceById(id: number) {
   const result = await db.select().from(invoices).where(eq(invoices.id, id)).limit(1);
   return result[0] || null;
 }
+
+// ========== CUSTOM ITEM LOG (platos frecuentes de Varios) ==========
+
+/**
+ * Normaliza un nombre de plato para comparación fuzzy:
+ * - Minusculas, sin acentos, sin espacios extra, sin caracteres especiales
+ */
+function normalizeItemName(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quitar acentos
+    .replace(/[^a-z0-9\s]/g, '') // solo letras, números y espacios
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
+ * Calcula similitud simple entre dos strings normalizados (0-1)
+ * Usa distancia de Levenshtein simplificada: si uno contiene al otro, alta similitud
+ */
+function areSimilar(a: string, b: string): boolean {
+  if (a === b) return true;
+  // Si uno contiene al otro (e.g. "pollo" vs "pollo tikka")
+  if (a.includes(b) || b.includes(a)) return true;
+  // Similitud por palabras comunes
+  const wordsA = new Set(a.split(' ').filter(w => w.length > 2));
+  const wordsB = new Set(b.split(' ').filter(w => w.length > 2));
+  if (wordsA.size === 0 || wordsB.size === 0) return false;
+  let common = 0;
+  wordsA.forEach(w => { if (wordsB.has(w)) common++; });
+  const similarity = common / Math.max(wordsA.size, wordsB.size);
+  return similarity >= 0.6; // 60% de palabras en común
+}
+
+export async function logCustomItem(originalName: string) {
+  const db = await getDb();
+  if (!db) return;
+  const { customItemLog } = await import("../drizzle/schema");
+  
+  const normalized = normalizeItemName(originalName);
+  if (!normalized || normalized.length < 2) return;
+  
+  // Buscar si ya existe un registro similar
+  const existing = await db.select().from(customItemLog)
+    .where(eq(customItemLog.addedToMenu, 0)); // Solo los que no están en el menú
+  
+  const similar = existing.find(e => areSimilar(e.itemName, normalized));
+  
+  if (similar) {
+    // Incrementar el contador del registro existente
+    await db.update(customItemLog)
+      .set({ 
+        count: similar.count + 1,
+        // Actualizar el nombre original al más reciente
+        originalName: originalName,
+        lastSeenAt: new Date()
+      })
+      .where(eq(customItemLog.id, similar.id));
+  } else {
+    // Crear nuevo registro
+    await db.insert(customItemLog).values({
+      itemName: normalized,
+      originalName: originalName,
+      count: 1,
+    });
+  }
+}
+
+export async function getFrequentCustomItems(minCount: number = 3) {
+  const db = await getDb();
+  if (!db) return [];
+  const { customItemLog } = await import("../drizzle/schema");
+  const { gte } = await import('drizzle-orm');
+  return await db.select().from(customItemLog)
+    .where(gte(customItemLog.count, minCount))
+    .orderBy(desc(customItemLog.count));
+}
+
+export async function markCustomItemAsAddedToMenu(id: number) {
+  const db = await getDb();
+  if (!db) return;
+  const { customItemLog } = await import("../drizzle/schema");
+  await db.update(customItemLog)
+    .set({ addedToMenu: 1 })
+    .where(eq(customItemLog.id, id));
+}

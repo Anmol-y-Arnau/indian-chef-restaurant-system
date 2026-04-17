@@ -125,23 +125,22 @@ interface TableCardProps {
   onMarkAllDelivered: (orderIds: number[]) => void;
 }
 
+// Categorías que son para el camarero/barista (no para cocina)
+const DRINK_CATEGORIES = new Set([
+  'drinks', 'coffees', 'coffee', 'tea', 'beers', 'wines', 'spirits'
+]);
+
 // Función de categorización fuera del componente (estable)
 function categorizeOrders(orders: any[]) {
   const starters = orders.filter(o => o.menuItem.category === 'starters');
   const desserts = orders.filter(o => o.menuItem.category === 'desserts');
-  const drinks = orders.filter(o => 
-    o.menuItem.category === 'drinks' || 
-    o.menuItem.category === 'coffees' ||
-    o.menuItem.category === 'coffee' ||
-    o.menuItem.category === 'tea'
-  );
+  const custom = orders.filter(o => o.menuItem.category === 'custom');  // Platos Varios
+  const drinks = orders.filter(o => DRINK_CATEGORIES.has(o.menuItem.category));
   const mains = orders.filter(o => 
     o.menuItem.category !== 'starters' && 
-    o.menuItem.category !== 'drinks' &&
     o.menuItem.category !== 'desserts' &&
-    o.menuItem.category !== 'coffees' &&
-    o.menuItem.category !== 'coffee' &&
-    o.menuItem.category !== 'tea'
+    o.menuItem.category !== 'custom' &&
+    !DRINK_CATEGORIES.has(o.menuItem.category)
   );
   
   const sortItems = (items: any[]) => [...items].sort((a, b) => {
@@ -157,7 +156,8 @@ function categorizeOrders(orders: any[]) {
     starters: sortItems(starters),
     mains: sortItems(mains),
     desserts: sortItems(desserts),
-    drinks: sortItems(drinks)
+    drinks: sortItems(drinks),
+    custom: sortItems(custom),  // Platos Varios/personalizados
   };
 }
 
@@ -289,6 +289,27 @@ const TableCard = memo(({ table, tableCount, onToggleItem, onMarkAllDelivered }:
           </div>
         )}
 
+        {/* VARIOS / ESPECIALES - Platos personalizados */}
+        {categorized.custom.length > 0 && (
+          <div className="mb-6">
+            <div className={`border-2 rounded-lg ${sizes.itemPadding} transition-all ${
+              categorized.custom.some((o: any) => !o.isDelivered)
+                ? 'bg-purple-900/30 border-purple-500' 
+                : 'bg-slate-700/20 border-slate-700'
+            }`}>
+              <div className={`text-purple-300 font-bold ${sizes.categoryTitle} mb-2 flex items-center gap-2`}>
+                <span>✨</span>
+                <span>VARIOS / ESPECIALES</span>
+              </div>
+              <div className="space-y-2">
+                {categorized.custom.map((order: any) => (
+                  <OrderItemRow key={`order-${order.id}`} order={order} sizes={sizes} onToggle={onToggleItem} />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* POSTRES - PARA CHEF */}
         {categorized.desserts.length > 0 && (
           <div className="mb-6">
@@ -403,7 +424,7 @@ export default function KitchenView() {
           id: dbOrder.itemId,
           name: dbOrder.itemName,
           price: parseFloat(dbOrder.itemPrice),
-          category: 'starters' as const,
+          category: 'custom' as any,  // Platos personalizados (Varios) → sección propia
           description: '',
           image: '',
         },

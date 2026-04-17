@@ -1246,3 +1246,17 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Factura con QR que el cliente puede escanear para ver/descargar
 - [x] Opción de descargar PDF y de imprimir
 - [x] Historial de facturas por cliente (últimas facturas al seleccionar un cliente)
+
+## Bug Cocina - Sección Varios y Categorización Incorrecta (v9.9.1)
+
+- [ ] Platos añadidos como "Varios" (personalizados) aparecen en Entrantes en cocina — deben ir en sección propia "Varios / Especiales"
+- [ ] Bebidas y productos de barista (cafés, tés, lassi, etc.) aparecen en Platos Principales en cocina — deben ir en su sección correcta (Bebidas/Barista)
+- [ ] Detectar platos que el usuario repite frecuentemente en Varios y sugerir añadirlos al menú fijo para no tener que escribirlos cada vez
+
+## Bug Cocina - Sección Varios y Bebidas
+
+- [x] Platos de Varios van a sección propia en cocina (no en Entrantes)
+- [x] Bebidas (vinos, cervezas, licores, cafés) van a sección de bebidas/camarero, no a platos principales
+- [x] Detección de platos frecuentes en Varios con sugerencia de añadir al menú fijo
+- [x] Tabla custom_item_log en BD para registrar platos personalizados frecuentes
+- [x] Banner de sugerencia en el diálogo de Varios cuando un plato se repite 3+ veces

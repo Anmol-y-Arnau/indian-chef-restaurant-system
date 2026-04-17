@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useRestaurant } from "@/contexts/RestaurantContext";
+import { FrequentCustomItemsSuggestions } from "@/components/FrequentCustomItemsSuggestions";
 import { Flame, Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -58,7 +59,7 @@ export function CustomItemDialog() {
       name: name,
       description: "Producto personalizado",
       price: priceNum,
-      category: 'drinks', // Default category for custom items
+      category: 'custom' as any, // Categoría especial para platos personalizados (sección Varios en cocina)
       image: 'https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?q=80&w=1974&auto=format&fit=crop'
     }, { quantity: quantityNum, spiceLevel, notes });
 
@@ -92,6 +93,8 @@ export function CustomItemDialog() {
             Introduce el nombre, precio y personalización del producto que quieres añadir a la mesa.
           </DialogDescription>
         </DialogHeader>
+        {/* Sugerencias de platos frecuentes */}
+        <FrequentCustomItemsSuggestions compact />
         <form onSubmit={handleSubmit} className="grid gap-3 py-2">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">

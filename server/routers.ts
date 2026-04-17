@@ -64,6 +64,10 @@ export const appRouter = router({
       .mutation(async ({ input }) => {
         await restaurantDb.addOrder(input);
         await restaurantDb.upsertTable(input.tableId, "occupied");
+        // Si es un plato personalizado (Varios), registrar para detección de frecuentes
+        if (input.itemId.startsWith('custom-') && input.itemName && input.itemName !== 'Varios') {
+          await restaurantDb.logCustomItem(input.itemName).catch(() => {}); // No bloquear si falla
+        }
         return { success: true };
       }),
 
@@ -617,6 +621,23 @@ Reglas:
         } catch {
           throw new Error('AI returned invalid JSON');
         }
+      }),
+
+    // ========== CUSTOM ITEM LOG (platos frecuentes de Varios) ==========
+
+    // Obtener platos frecuentes de Varios (aparecen 3+ veces)
+    getFrequentCustomItems: publicProcedure
+      .input(z.object({ minCount: z.number().default(3) }).optional())
+      .query(async ({ input }) => {
+        return await restaurantDb.getFrequentCustomItems(input?.minCount ?? 3);
+      }),
+
+    // Marcar un plato personalizado como ya añadido al menú
+    markCustomItemAsAddedToMenu: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await restaurantDb.markCustomItemAsAddedToMenu(input.id);
+        return { success: true };
       }),
   }),
 });
