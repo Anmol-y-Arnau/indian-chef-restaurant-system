@@ -8,6 +8,7 @@ import { RestaurantProvider } from "./contexts/RestaurantContext";
 import Home from "./pages/Home";
 import StatsView from "./pages/StatsView";
 import TandoorView from "./pages/TandoorView";
+import ReservationsView from "./pages/ReservationsView";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -16,6 +17,7 @@ function Router() {
       <Route path={"/"} component={Home} />
       <Route path={"/stats"} component={StatsView} />
       <Route path={"/cocina-tandoor"} component={TandoorView} />
+      <Route path={"/reservas"} component={ReservationsView} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

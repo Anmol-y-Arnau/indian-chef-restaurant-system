@@ -13,7 +13,7 @@ import { useRestaurant } from "@/contexts/RestaurantContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { CATEGORIES, MENU_ITEMS } from "@/lib/data";
 import { cn } from "@/lib/utils";
-import { Menu, Search, ShoppingBag, ChefHat, BarChart3, Flame } from "lucide-react";
+import { Menu, Search, ShoppingBag, ChefHat, BarChart3, Flame, CalendarDays } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useHaptic } from "@/hooks/useHaptic";
 import { useLocation } from "wouter";
@@ -306,6 +306,15 @@ export default function Home() {
           <Button
             variant="outline"
             size="icon"
+            onClick={() => window.location.href = "/reservas"}
+            title="Reservas"
+            className="rounded-full w-10 h-10 border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10"
+          >
+            <CalendarDays className="w-5 h-5" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
             onClick={() => window.location.href = "/stats"}
             className="rounded-full w-10 h-10 border-primary/50 text-primary hover:bg-primary/10"
           >
@@ -427,6 +436,15 @@ export default function Home() {
                 Tandoor
               </Button>
               <LanguageSwitcher />
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => window.location.href = "/reservas"}
+                title="Reservas"
+                className="rounded-full w-10 h-10 border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10"
+              >
+                <CalendarDays className="w-5 h-5" />
+              </Button>
               <Button
                 variant="outline"
                 size="icon"

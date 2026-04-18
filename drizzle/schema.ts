@@ -133,3 +133,33 @@ export const customItemLog = mysqlTable("custom_item_log", {
 
 export type CustomItemLog = typeof customItemLog.$inferSelect;
 export type InsertCustomItemLog = typeof customItemLog.$inferInsert;
+
+/**
+ * Reservations (reservas de mesa)
+ * Puede recibir reservas desde la web externa vía API pública o crearse manualmente.
+ */
+export const reservations = mysqlTable("reservations", {
+  id: int("id").autoincrement().primaryKey(),
+  // Datos del cliente
+  guestName: varchar("guestName", { length: 255 }).notNull(),
+  guestPhone: varchar("guestPhone", { length: 30 }).notNull(),
+  guestEmail: varchar("guestEmail", { length: 320 }),
+  // Datos de la reserva
+  date: varchar("date", { length: 10 }).notNull(),         // "YYYY-MM-DD"
+  time: varchar("time", { length: 5 }).notNull(),          // "HH:MM"
+  partySize: int("partySize").notNull().default(2),        // Número de comensales
+  tableId: varchar("tableId", { length: 20 }),             // Mesa asignada (opcional)
+  // Estado
+  status: mysqlEnum("status", ["pending", "confirmed", "seated", "cancelled", "no_show"])
+    .default("pending").notNull(),
+  // Información adicional
+  notes: text("notes"),                                    // Notas del cliente o del restaurante
+  origin: mysqlEnum("origin", ["manual", "web", "phone"])
+    .default("manual").notNull(),                          // Dónde se originó la reserva
+  // Timestamps
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Reservation = typeof reservations.$inferSelect;
+export type InsertReservation = typeof reservations.$inferInsert;

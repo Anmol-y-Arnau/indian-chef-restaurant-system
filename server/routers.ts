@@ -632,7 +632,7 @@ Reglas:
         return await restaurantDb.getFrequentCustomItems(input?.minCount ?? 3);
       }),
 
-    // Marcar un plato personalizado como ya añadido al menú
+     // Marcar un plato personalizado como ya añadido al menú
     markCustomItemAsAddedToMenu: publicProcedure
       .input(z.object({ id: z.number() }))
       .mutation(async ({ input }) => {
@@ -640,6 +640,92 @@ Reglas:
         return { success: true };
       }),
   }),
-});
 
+  // ========== RESERVATIONS ==========
+  reservations: router({
+    // Obtener todas las reservas
+    getAll: publicProcedure.query(async () => {
+      const { getAllReservations } = await import('./reservationDb');
+      return await getAllReservations();
+    }),
+
+    // Obtener reservas por fecha
+    getByDate: publicProcedure
+      .input(z.object({ date: z.string() })) // "YYYY-MM-DD"
+      .query(async ({ input }) => {
+        const { getReservationsByDate } = await import('./reservationDb');
+        return await getReservationsByDate(input.date);
+      }),
+
+    // Obtener reservas por rango de fechas
+    getByDateRange: publicProcedure
+      .input(z.object({ startDate: z.string(), endDate: z.string() }))
+      .query(async ({ input }) => {
+        const { getReservationsByDateRange } = await import('./reservationDb');
+        return await getReservationsByDateRange(input.startDate, input.endDate);
+      }),
+
+    // Crear una nueva reserva
+    create: publicProcedure
+      .input(z.object({
+        guestName: z.string().min(1),
+        guestPhone: z.string().min(1),
+        guestEmail: z.string().email().optional().nullable(),
+        date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        time: z.string().regex(/^\d{2}:\d{2}$/),
+        partySize: z.number().int().min(1).max(50),
+        tableId: z.string().optional().nullable(),
+        status: z.enum(["pending", "confirmed", "seated", "cancelled", "no_show"]).default("confirmed"),
+        notes: z.string().optional().nullable(),
+        origin: z.enum(["manual", "web", "phone"]).default("manual"),
+      }))
+      .mutation(async ({ input }) => {
+        const { createReservation } = await import('./reservationDb');
+        const reservation = await createReservation(input);
+        return reservation;
+      }),
+
+    // Actualizar una reserva
+    update: publicProcedure
+      .input(z.object({
+        id: z.number(),
+        guestName: z.string().min(1).optional(),
+        guestPhone: z.string().min(1).optional(),
+        guestEmail: z.string().email().optional().nullable(),
+        date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+        time: z.string().regex(/^\d{2}:\d{2}$/).optional(),
+        partySize: z.number().int().min(1).max(50).optional(),
+        tableId: z.string().optional().nullable(),
+        status: z.enum(["pending", "confirmed", "seated", "cancelled", "no_show"]).optional(),
+        notes: z.string().optional().nullable(),
+      }))
+      .mutation(async ({ input }) => {
+        const { updateReservation } = await import('./reservationDb');
+        const { id, ...data } = input;
+        const reservation = await updateReservation(id, data);
+        return reservation;
+      }),
+
+    // Cambiar solo el estado de una reserva
+    updateStatus: publicProcedure
+      .input(z.object({
+        id: z.number(),
+        status: z.enum(["pending", "confirmed", "seated", "cancelled", "no_show"]),
+      }))
+      .mutation(async ({ input }) => {
+        const { updateReservationStatus } = await import('./reservationDb');
+        const reservation = await updateReservationStatus(input.id, input.status);
+        return reservation;
+      }),
+
+    // Eliminar una reserva
+    delete: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        const { deleteReservation } = await import('./reservationDb');
+        await deleteReservation(input.id);
+        return { success: true };
+      }),
+  }),
+});
 export type AppRouter = typeof appRouter;

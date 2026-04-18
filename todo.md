@@ -1268,3 +1268,14 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Reescritos todos los tests de integración para usar tableIds únicos (__test_*__) que no conflictan con mesas reales
 - [x] Tests de addOrder.grouping ya no borran toda la tabla orders (solo su tableId de prueba)
 - [x] 73/73 tests pasan correctamente
+
+## Módulo de Reservas
+
+- [x] Schema BD: tabla `reservations` (fecha, hora, nombre, teléfono, email, comensales, mesa, estado, notas, origen)
+- [x] Endpoints tRPC: CRUD reservas + endpoint público API para web externa
+- [x] Página /reservas con vista de calendario (día/semana)
+- [x] Panel lateral con detalle de reserva seleccionada
+- [x] Formulario de nueva reserva / edición
+- [x] Botón de Reservas en el header de Home (icono calendario cian)
+- [x] API key para integración con web externa (endpoint público autenticado)
+- [x] Tests del módulo de reservas (10/10 pasan)
