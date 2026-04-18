@@ -1279,3 +1279,11 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Botón de Reservas en el header de Home (icono calendario cian)
 - [x] API key para integración con web externa (endpoint público autenticado)
 - [x] Tests del módulo de reservas (10/10 pasan)
+
+## Mejoras Módulo de Reservas
+
+- [x] Mapa visual de mesas del restaurante para asignar mesa al crear reserva
+- [x] Formulario simplificado: solo nombre, teléfono, personas, hora (quitar campos opcionales del flujo principal)
+- [x] Horarios correctos: miércoles-lunes 13:00-16:00 y 19:00-23:00, viernes/sábado hasta 23:30, martes cerrado
+- [x] Vista calendario muestra qué mesas están ocupadas/libres por franja horaria
+- [x] Al seleccionar hora en formulario, mostrar qué mesas están disponibles

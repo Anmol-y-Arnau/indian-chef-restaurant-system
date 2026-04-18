@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Dialog,
@@ -13,13 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   ChevronLeft,
   ChevronRight,
   Plus,
@@ -27,7 +19,6 @@ import {
   Clock,
   Users,
   Phone,
-  Mail,
   Utensils,
   X,
   Edit2,
@@ -45,16 +36,16 @@ import {
   startOfWeek,
   endOfWeek,
   isSameDay,
-  parseISO,
   addWeeks,
   subWeeks,
+  getDay,
 } from "date-fns";
 import { es } from "date-fns/locale";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useLocation } from "wouter";
 
-// ─── Types ───────────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 type ReservationStatus = "pending" | "confirmed" | "seated" | "cancelled" | "no_show";
 
@@ -74,39 +65,55 @@ interface Reservation {
   updatedAt: Date;
 }
 
-// ─── Constants ───────────────────────────────────────────────────────────────
-
-const STATUS_CONFIG: Record<ReservationStatus, { label: string; color: string; icon: React.ReactNode }> = {
-  pending:   { label: "Pendiente",   color: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",   icon: <AlertCircle className="w-3 h-3" /> },
-  confirmed: { label: "Confirmada",  color: "bg-green-500/20 text-green-400 border-green-500/30",      icon: <CheckCircle className="w-3 h-3" /> },
-  seated:    { label: "Sentada",     color: "bg-blue-500/20 text-blue-400 border-blue-500/30",         icon: <UserCheck className="w-3 h-3" /> },
-  cancelled: { label: "Cancelada",   color: "bg-red-500/20 text-red-400 border-red-500/30",            icon: <XCircle className="w-3 h-3" /> },
-  no_show:   { label: "No apareció", color: "bg-gray-500/20 text-gray-400 border-gray-500/30",         icon: <XCircle className="w-3 h-3" /> },
-};
-
-const ORIGIN_CONFIG = {
-  manual: { label: "Manual", color: "bg-purple-500/20 text-purple-400" },
-  web:    { label: "Web",    color: "bg-cyan-500/20 text-cyan-400" },
-  phone:  { label: "Teléfono", color: "bg-orange-500/20 text-orange-400" },
-};
-
-const TIME_SLOTS = [
-  "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
-  "15:00", "15:30", "19:00", "19:30", "20:00", "20:30",
-  "21:00", "21:30", "22:00", "22:30", "23:00",
+// ─── Restaurant layout ────────────────────────────────────────────────────────
+// Mesas del restaurante: 0+, 0-, 1-10 + TAKEAWAY
+// Layout visual aproximado del local (posiciones en grid 6x5)
+const RESTAURANT_TABLES = [
+  // Mesas especiales (barra/terraza)
+  { id: "0+",  label: "0+",  x: 0, y: 0, w: 1, h: 1, type: "special" },
+  { id: "0-",  label: "0-",  x: 1, y: 0, w: 1, h: 1, type: "special" },
+  // Mesas del comedor principal (2 filas de 5)
+  { id: "1",   label: "1",   x: 0, y: 2, w: 1, h: 1, type: "table" },
+  { id: "2",   label: "2",   x: 1, y: 2, w: 1, h: 1, type: "table" },
+  { id: "3",   label: "3",   x: 2, y: 2, w: 1, h: 1, type: "table" },
+  { id: "4",   label: "4",   x: 3, y: 2, w: 1, h: 1, type: "table" },
+  { id: "5",   label: "5",   x: 4, y: 2, w: 1, h: 1, type: "table" },
+  { id: "6",   label: "6",   x: 0, y: 4, w: 1, h: 1, type: "table" },
+  { id: "7",   label: "7",   x: 1, y: 4, w: 1, h: 1, type: "table" },
+  { id: "8",   label: "8",   x: 2, y: 4, w: 1, h: 1, type: "table" },
+  { id: "9",   label: "9",   x: 3, y: 4, w: 1, h: 1, type: "table" },
+  { id: "10",  label: "10",  x: 4, y: 4, w: 1, h: 1, type: "table" },
 ];
 
-const EMPTY_FORM = {
-  guestName: "",
-  guestPhone: "",
-  guestEmail: "",
-  date: format(new Date(), "yyyy-MM-dd"),
-  time: "20:00",
-  partySize: 2,
-  tableId: "",
-  status: "confirmed" as ReservationStatus,
-  notes: "",
-  origin: "manual" as "manual" | "web" | "phone",
+// ─── Opening hours ────────────────────────────────────────────────────────────
+// Wed–Mon: 13:00–16:00 and 19:00–23:00
+// Fri–Sat: 19:00–23:30
+// Tue: CLOSED
+
+function getTimeSlotsForDate(date: Date): string[] {
+  const dow = getDay(date); // 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
+  if (dow === 2) return []; // Tuesday = closed
+
+  const lunch = ["13:00", "13:30", "14:00", "14:30", "15:00", "15:30"];
+  const dinnerBase = ["19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00"];
+  const dinnerLate = [...dinnerBase, "23:30"]; // Fri & Sat
+
+  const dinner = (dow === 5 || dow === 6) ? dinnerLate : dinnerBase;
+  return [...lunch, ...dinner];
+}
+
+function isRestaurantOpen(date: Date): boolean {
+  return getDay(date) !== 2; // Not Tuesday
+}
+
+// ─── Status config ────────────────────────────────────────────────────────────
+
+const STATUS_CONFIG: Record<ReservationStatus, { label: string; color: string; icon: React.ReactNode }> = {
+  pending:   { label: "Pendiente",   color: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",  icon: <AlertCircle className="w-3 h-3" /> },
+  confirmed: { label: "Confirmada",  color: "bg-green-500/20 text-green-400 border-green-500/30",     icon: <CheckCircle className="w-3 h-3" /> },
+  seated:    { label: "Sentada",     color: "bg-blue-500/20 text-blue-400 border-blue-500/30",        icon: <UserCheck className="w-3 h-3" /> },
+  cancelled: { label: "Cancelada",   color: "bg-red-500/20 text-red-400 border-red-500/30",           icon: <XCircle className="w-3 h-3" /> },
+  no_show:   { label: "No apareció", color: "bg-gray-500/20 text-gray-400 border-gray-500/30",        icon: <XCircle className="w-3 h-3" /> },
 };
 
 // ─── Main Component ───────────────────────────────────────────────────────────
@@ -118,17 +125,23 @@ export default function ReservationsView() {
   const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingReservation, setEditingReservation] = useState<Reservation | null>(null);
-  const [form, setForm] = useState(EMPTY_FORM);
+  const [formDate, setFormDate] = useState(format(new Date(), "yyyy-MM-dd"));
+  const [formTime, setFormTime] = useState("20:00");
+  const [formName, setFormName] = useState("");
+  const [formPhone, setFormPhone] = useState("");
+  const [formPartySize, setFormPartySize] = useState(2);
+  const [formTableId, setFormTableId] = useState("");
+  const [formNotes, setFormNotes] = useState("");
+  const [formStatus, setFormStatus] = useState<ReservationStatus>("confirmed");
 
-  // ── Date range for current view ──
+  // ── Date range ──
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
   const weekEnd = endOfWeek(currentDate, { weekStartsOn: 1 });
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
-
   const startDate = format(viewMode === "week" ? weekStart : currentDate, "yyyy-MM-dd");
   const endDate = format(viewMode === "week" ? weekEnd : currentDate, "yyyy-MM-dd");
 
-  // ── Data fetching ──
+  // ── Data ──
   const { data: reservations = [], refetch } = trpc.reservations.getByDateRange.useQuery(
     { startDate, endDate },
     { refetchInterval: 30_000 }
@@ -136,23 +149,19 @@ export default function ReservationsView() {
 
   // ── Mutations ──
   const createMutation = trpc.reservations.create.useMutation({
-    onSuccess: () => { toast.success("Reserva creada"); refetch(); setIsFormOpen(false); setForm(EMPTY_FORM); },
+    onSuccess: () => { toast.success("Reserva creada"); refetch(); setIsFormOpen(false); resetForm(); },
     onError: (e) => toast.error("Error: " + e.message),
   });
   const updateMutation = trpc.reservations.update.useMutation({
     onSuccess: (updated) => {
-      toast.success("Reserva actualizada");
-      refetch();
-      setIsFormOpen(false);
-      setEditingReservation(null);
+      toast.success("Reserva actualizada"); refetch(); setIsFormOpen(false); setEditingReservation(null);
       if (updated) setSelectedReservation(updated as Reservation);
     },
     onError: (e) => toast.error("Error: " + e.message),
   });
   const statusMutation = trpc.reservations.updateStatus.useMutation({
     onSuccess: (updated) => {
-      toast.success("Estado actualizado");
-      refetch();
+      toast.success("Estado actualizado"); refetch();
       if (updated) setSelectedReservation(updated as Reservation);
     },
     onError: (e) => toast.error("Error: " + e.message),
@@ -163,38 +172,44 @@ export default function ReservationsView() {
   });
 
   // ── Helpers ──
-  const getReservationsForDay = (date: Date) =>
-    (reservations as Reservation[]).filter(r => r.date === format(date, "yyyy-MM-dd"));
+  const resetForm = () => {
+    setFormName(""); setFormPhone(""); setFormPartySize(2);
+    setFormTableId(""); setFormNotes(""); setFormStatus("confirmed");
+    setFormDate(format(new Date(), "yyyy-MM-dd")); setFormTime("20:00");
+  };
 
   const openNewForm = (date?: Date) => {
     setEditingReservation(null);
-    setForm({ ...EMPTY_FORM, date: format(date ?? currentDate, "yyyy-MM-dd") });
+    resetForm();
+    if (date) setFormDate(format(date, "yyyy-MM-dd"));
     setIsFormOpen(true);
   };
 
   const openEditForm = (r: Reservation) => {
     setEditingReservation(r);
-    setForm({
-      guestName: r.guestName,
-      guestPhone: r.guestPhone,
-      guestEmail: r.guestEmail ?? "",
-      date: r.date,
-      time: r.time,
-      partySize: r.partySize,
-      tableId: r.tableId ?? "",
-      status: r.status,
-      notes: r.notes ?? "",
-      origin: r.origin,
-    });
+    setFormName(r.guestName); setFormPhone(r.guestPhone);
+    setFormPartySize(r.partySize); setFormTableId(r.tableId ?? "");
+    setFormNotes(r.notes ?? ""); setFormStatus(r.status);
+    setFormDate(r.date); setFormTime(r.time);
     setIsFormOpen(true);
   };
 
   const handleSubmit = () => {
+    if (!formName.trim() || !formPhone.trim()) {
+      toast.error("Nombre y teléfono son obligatorios");
+      return;
+    }
     const payload = {
-      ...form,
-      guestEmail: form.guestEmail || null,
-      tableId: form.tableId || null,
-      notes: form.notes || null,
+      guestName: formName.trim(),
+      guestPhone: formPhone.trim(),
+      guestEmail: null,
+      date: formDate,
+      time: formTime,
+      partySize: formPartySize,
+      tableId: formTableId || null,
+      status: formStatus,
+      notes: formNotes || null,
+      origin: "manual" as const,
     };
     if (editingReservation) {
       updateMutation.mutate({ id: editingReservation.id, ...payload });
@@ -203,7 +218,7 @@ export default function ReservationsView() {
     }
   };
 
-  // ── Summary stats for current view ──
+  // ── Stats ──
   const stats = useMemo(() => {
     const all = reservations as Reservation[];
     return {
@@ -214,95 +229,82 @@ export default function ReservationsView() {
     };
   }, [reservations]);
 
+  // ── Table occupancy for selected day (day view) ──
+  const dayReservations = (reservations as Reservation[]).filter(
+    r => r.date === format(currentDate, "yyyy-MM-dd")
+  );
+  const occupiedTableIds = new Set(
+    dayReservations
+      .filter(r => ["confirmed", "seated", "pending"].includes(r.status) && r.tableId)
+      .map(r => r.tableId!)
+  );
+
   // ─────────────────────────────────────────────────────────────────────────────
   return (
     <div className="h-screen flex flex-col bg-background text-foreground overflow-hidden">
 
       {/* ── Top Bar ── */}
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-border bg-card shrink-0">
-        <Button variant="ghost" size="icon" onClick={() => navigate("/")} className="rounded-full">
+      <div className="flex items-center gap-3 px-4 py-3 border-b border-border bg-card shrink-0 flex-wrap">
+        <Button variant="ghost" size="icon" onClick={() => navigate("/")} className="rounded-full shrink-0">
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div className="flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-primary" />
+          <Calendar className="w-5 h-5 text-cyan-400" />
           <h1 className="font-bold text-lg">Reservas</h1>
         </div>
 
-        {/* Stats pills */}
-        <div className="hidden md:flex items-center gap-2 ml-2">
-          <span className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground">
-            {stats.total} reservas
-          </span>
-          <span className="text-xs px-2 py-1 rounded-full bg-green-500/20 text-green-400">
-            {stats.confirmed} confirmadas
-          </span>
-          {stats.pending > 0 && (
-            <span className="text-xs px-2 py-1 rounded-full bg-yellow-500/20 text-yellow-400">
-              {stats.pending} pendientes
-            </span>
-          )}
-          <span className="text-xs px-2 py-1 rounded-full bg-primary/20 text-primary">
-            {stats.covers} comensales
-          </span>
+        {/* Stats */}
+        <div className="flex items-center gap-2 ml-1 flex-wrap">
+          <span className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground">{stats.total} reservas</span>
+          {stats.confirmed > 0 && <span className="text-xs px-2 py-1 rounded-full bg-green-500/20 text-green-400">{stats.confirmed} confirmadas</span>}
+          {stats.pending > 0 && <span className="text-xs px-2 py-1 rounded-full bg-yellow-500/20 text-yellow-400">{stats.pending} pendientes</span>}
+          {stats.covers > 0 && <span className="text-xs px-2 py-1 rounded-full bg-cyan-500/20 text-cyan-400">{stats.covers} comensales</span>}
         </div>
 
         <div className="ml-auto flex items-center gap-2">
           {/* View toggle */}
           <div className="flex rounded-lg border border-border overflow-hidden">
-            <button
-              onClick={() => setViewMode("week")}
-              className={cn("px-3 py-1.5 text-xs font-medium transition-colors",
-                viewMode === "week" ? "bg-primary text-primary-foreground" : "hover:bg-muted")}
-            >Semana</button>
-            <button
-              onClick={() => setViewMode("day")}
-              className={cn("px-3 py-1.5 text-xs font-medium transition-colors",
-                viewMode === "day" ? "bg-primary text-primary-foreground" : "hover:bg-muted")}
-            >Día</button>
+            <button onClick={() => setViewMode("week")} className={cn("px-3 py-1.5 text-xs font-medium transition-colors", viewMode === "week" ? "bg-primary text-primary-foreground" : "hover:bg-muted")}>Semana</button>
+            <button onClick={() => setViewMode("day")} className={cn("px-3 py-1.5 text-xs font-medium transition-colors", viewMode === "day" ? "bg-primary text-primary-foreground" : "hover:bg-muted")}>Día</button>
           </div>
-
           {/* Navigation */}
           <Button variant="outline" size="icon" className="w-8 h-8 rounded-full"
             onClick={() => setCurrentDate(d => viewMode === "week" ? subWeeks(d, 1) : subDays(d, 1))}>
             <ChevronLeft className="w-4 h-4" />
           </Button>
-          <button
-            onClick={() => setCurrentDate(new Date())}
-            className="text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-muted transition-colors min-w-[120px] text-center"
-          >
+          <button onClick={() => setCurrentDate(new Date())}
+            className="text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-muted transition-colors min-w-[130px] text-center">
             {viewMode === "week"
               ? `${format(weekStart, "d MMM", { locale: es })} – ${format(weekEnd, "d MMM", { locale: es })}`
-              : format(currentDate, "EEEE d MMM", { locale: es })}
+              : format(currentDate, "EEE d MMM", { locale: es })}
           </button>
           <Button variant="outline" size="icon" className="w-8 h-8 rounded-full"
             onClick={() => setCurrentDate(d => viewMode === "week" ? addWeeks(d, 1) : addDays(d, 1))}>
             <ChevronRight className="w-4 h-4" />
           </Button>
-
-          <Button onClick={() => openNewForm()} className="gap-1.5 rounded-full px-4">
+          <Button onClick={() => openNewForm(viewMode === "day" ? currentDate : undefined)} className="gap-1.5 rounded-full px-4">
             <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">Nueva reserva</span>
+            <span className="hidden sm:inline">Nueva</span>
           </Button>
         </div>
       </div>
 
       {/* ── Main content ── */}
       <div className="flex flex-1 overflow-hidden">
-
-        {/* ── Calendar ── */}
         <div className="flex-1 overflow-auto">
           {viewMode === "week" ? (
             <WeekView
               days={weekDays}
               reservations={reservations as Reservation[]}
-              onSelectReservation={setSelectedReservation}
+              onSelectReservation={(r) => { setSelectedReservation(r); setCurrentDate(new Date(r.date + "T12:00:00")); }}
               onAddReservation={openNewForm}
               selectedId={selectedReservation?.id}
             />
           ) : (
             <DayView
               date={currentDate}
-              reservations={getReservationsForDay(currentDate)}
+              reservations={dayReservations}
+              occupiedTableIds={occupiedTableIds}
               onSelectReservation={setSelectedReservation}
               onAddReservation={() => openNewForm(currentDate)}
               selectedId={selectedReservation?.id}
@@ -316,9 +318,7 @@ export default function ReservationsView() {
             reservation={selectedReservation}
             onClose={() => setSelectedReservation(null)}
             onEdit={() => openEditForm(selectedReservation)}
-            onDelete={() => {
-              if (confirm("¿Eliminar esta reserva?")) deleteMutation.mutate({ id: selectedReservation.id });
-            }}
+            onDelete={() => { if (confirm("¿Eliminar esta reserva?")) deleteMutation.mutate({ id: selectedReservation.id }); }}
             onStatusChange={(status) => statusMutation.mutate({ id: selectedReservation.id, status })}
           />
         )}
@@ -328,11 +328,18 @@ export default function ReservationsView() {
       <ReservationFormDialog
         open={isFormOpen}
         onClose={() => { setIsFormOpen(false); setEditingReservation(null); }}
-        form={form}
-        setForm={setForm}
+        formName={formName} setFormName={setFormName}
+        formPhone={formPhone} setFormPhone={setFormPhone}
+        formPartySize={formPartySize} setFormPartySize={setFormPartySize}
+        formDate={formDate} setFormDate={setFormDate}
+        formTime={formTime} setFormTime={setFormTime}
+        formTableId={formTableId} setFormTableId={setFormTableId}
+        formNotes={formNotes} setFormNotes={setFormNotes}
+        formStatus={formStatus} setFormStatus={setFormStatus}
         onSubmit={handleSubmit}
         isEditing={!!editingReservation}
         isLoading={createMutation.isPending || updateMutation.isPending}
+        existingReservations={reservations as Reservation[]}
       />
     </div>
   );
@@ -351,17 +358,20 @@ function WeekView({ days, reservations, onSelectReservation, onAddReservation, s
   return (
     <div className="grid grid-cols-7 h-full min-h-[500px]">
       {days.map(day => {
-        const dayReservations = reservations.filter(r => r.date === format(day, "yyyy-MM-dd"));
+        const dayRes = reservations.filter(r => r.date === format(day, "yyyy-MM-dd"));
         const isToday = isSameDay(day, today);
+        const closed = !isRestaurantOpen(day);
         return (
           <div key={day.toISOString()} className={cn(
             "border-r border-border last:border-r-0 flex flex-col min-h-full",
-            isToday && "bg-primary/5"
+            isToday && "bg-primary/5",
+            closed && "bg-muted/30"
           )}>
             {/* Day header */}
             <div className={cn(
               "sticky top-0 z-10 px-2 py-2 border-b border-border text-center bg-card",
-              isToday && "bg-primary/10"
+              isToday && "bg-primary/10",
+              closed && "bg-muted/50"
             )}>
               <div className="text-xs text-muted-foreground uppercase tracking-wide">
                 {format(day, "EEE", { locale: es })}
@@ -372,38 +382,33 @@ function WeekView({ days, reservations, onSelectReservation, onAddReservation, s
               )}>
                 {format(day, "d")}
               </div>
-              {dayReservations.length > 0 && (
-                <div className="text-xs text-muted-foreground mt-1">
-                  {dayReservations.length} reserva{dayReservations.length !== 1 ? "s" : ""}
-                </div>
-              )}
+              {closed ? (
+                <div className="text-xs text-muted-foreground mt-1">Cerrado</div>
+              ) : dayRes.length > 0 ? (
+                <div className="text-xs text-cyan-400 mt-1">{dayRes.length} res.</div>
+              ) : null}
             </div>
 
             {/* Reservations */}
             <ScrollArea className="flex-1">
-              <div className="p-1.5 flex flex-col gap-1.5 pb-16">
-                {dayReservations
-                  .sort((a, b) => a.time.localeCompare(b.time))
-                  .map(r => (
-                    <ReservationCard
-                      key={r.id}
-                      reservation={r}
-                      compact
-                      selected={r.id === selectedId}
-                      onClick={() => onSelectReservation(r)}
-                    />
-                  ))}
+              <div className="p-1.5 flex flex-col gap-1.5 pb-12">
+                {closed ? (
+                  <div className="text-center py-4 text-xs text-muted-foreground/50">Martes<br/>cerrado</div>
+                ) : (
+                  dayRes.sort((a, b) => a.time.localeCompare(b.time)).map(r => (
+                    <ReservationCard key={r.id} reservation={r} compact selected={r.id === selectedId} onClick={() => onSelectReservation(r)} />
+                  ))
+                )}
               </div>
             </ScrollArea>
 
-            {/* Add button */}
-            <button
-              onClick={() => onAddReservation(day)}
-              className="shrink-0 m-1.5 p-1.5 rounded-lg border border-dashed border-border hover:border-primary hover:bg-primary/5 transition-colors text-muted-foreground hover:text-primary flex items-center justify-center gap-1 text-xs"
-            >
-              <Plus className="w-3 h-3" />
-              <span className="hidden lg:inline">Añadir</span>
-            </button>
+            {!closed && (
+              <button onClick={() => onAddReservation(day)}
+                className="shrink-0 m-1.5 p-1.5 rounded-lg border border-dashed border-border hover:border-cyan-400 hover:bg-cyan-500/5 transition-colors text-muted-foreground hover:text-cyan-400 flex items-center justify-center gap-1 text-xs">
+                <Plus className="w-3 h-3" />
+                <span className="hidden lg:inline">Añadir</span>
+              </button>
+            )}
           </div>
         );
       })}
@@ -413,45 +418,203 @@ function WeekView({ days, reservations, onSelectReservation, onAddReservation, s
 
 // ─── Day View ─────────────────────────────────────────────────────────────────
 
-function DayView({ date, reservations, onSelectReservation, onAddReservation, selectedId }: {
+function DayView({ date, reservations, occupiedTableIds, onSelectReservation, onAddReservation, selectedId }: {
   date: Date;
   reservations: Reservation[];
+  occupiedTableIds: Set<string>;
   onSelectReservation: (r: Reservation) => void;
   onAddReservation: () => void;
   selectedId?: number;
 }) {
-  const sorted = [...reservations].sort((a, b) => a.time.localeCompare(b.time));
+  const closed = !isRestaurantOpen(date);
+  const slots = getTimeSlotsForDate(date);
+  const lunchSlots = slots.filter(t => t < "17:00");
+  const dinnerSlots = slots.filter(t => t >= "17:00");
+
+  // Group reservations by time slot
+  const bySlot: Record<string, Reservation[]> = {};
+  for (const r of reservations) {
+    if (!bySlot[r.time]) bySlot[r.time] = [];
+    bySlot[r.time].push(r);
+  }
+
   return (
-    <div className="p-4 max-w-2xl mx-auto">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold capitalize">
-          {format(date, "EEEE d 'de' MMMM", { locale: es })}
-        </h2>
-        <Button onClick={onAddReservation} size="sm" className="gap-1.5 rounded-full">
-          <Plus className="w-4 h-4" /> Nueva reserva
-        </Button>
+    <div className="flex gap-4 p-4 h-full overflow-auto">
+      {/* ── Left: Timeline ── */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold capitalize">
+            {format(date, "EEEE d 'de' MMMM", { locale: es })}
+          </h2>
+          {!closed && (
+            <Button onClick={onAddReservation} size="sm" className="gap-1.5 rounded-full">
+              <Plus className="w-4 h-4" /> Nueva reserva
+            </Button>
+          )}
+        </div>
+
+        {closed ? (
+          <div className="text-center py-16 text-muted-foreground">
+            <div className="text-4xl mb-3">🔒</div>
+            <p className="font-medium">Cerrado los martes</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-6">
+            {/* Lunch */}
+            {lunchSlots.length > 0 && (
+              <div>
+                <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2 flex items-center gap-2">
+                  <span className="text-base">☀️</span> Mediodía (13:00 – 16:00)
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  {lunchSlots.map(slot => (
+                    <TimeSlotRow key={slot} slot={slot} reservations={bySlot[slot] || []}
+                      onSelect={onSelectReservation} selectedId={selectedId} />
+                  ))}
+                </div>
+              </div>
+            )}
+            {/* Dinner */}
+            {dinnerSlots.length > 0 && (
+              <div>
+                <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2 flex items-center gap-2">
+                  <span className="text-base">🌙</span> Noche (19:00 – {dinnerSlots[dinnerSlots.length - 1]})
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  {dinnerSlots.map(slot => (
+                    <TimeSlotRow key={slot} slot={slot} reservations={bySlot[slot] || []}
+                      onSelect={onSelectReservation} selectedId={selectedId} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
-      {sorted.length === 0 ? (
-        <div className="text-center py-16 text-muted-foreground">
-          <Calendar className="w-12 h-12 mx-auto mb-3 opacity-30" />
-          <p>No hay reservas para este día</p>
-          <Button variant="outline" onClick={onAddReservation} className="mt-4 rounded-full gap-1.5">
-            <Plus className="w-4 h-4" /> Añadir reserva
-          </Button>
+      {/* ── Right: Table map ── */}
+      <div className="w-64 shrink-0">
+        <div className="sticky top-0">
+          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">
+            Mapa de mesas
+          </div>
+          <TableMap occupiedTableIds={occupiedTableIds} reservations={reservations} />
+          <div className="mt-3 flex flex-col gap-1 text-xs text-muted-foreground">
+            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-green-500/30 border border-green-500/50 inline-block" /> Libre</div>
+            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-yellow-500/30 border border-yellow-500/50 inline-block" /> Con reserva</div>
+            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-muted border border-border inline-block" /> Sin asignar</div>
+          </div>
         </div>
-      ) : (
-        <div className="flex flex-col gap-3">
-          {sorted.map(r => (
-            <ReservationCard
-              key={r.id}
-              reservation={r}
-              selected={r.id === selectedId}
-              onClick={() => onSelectReservation(r)}
-            />
-          ))}
-        </div>
-      )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Time Slot Row ────────────────────────────────────────────────────────────
+
+function TimeSlotRow({ slot, reservations, onSelect, selectedId }: {
+  slot: string;
+  reservations: Reservation[];
+  onSelect: (r: Reservation) => void;
+  selectedId?: number;
+}) {
+  const totalCovers = reservations
+    .filter(r => !["cancelled", "no_show"].includes(r.status))
+    .reduce((s, r) => s + r.partySize, 0);
+
+  return (
+    <div className="flex gap-2 items-start">
+      <div className="w-14 shrink-0 text-right">
+        <span className="text-sm font-mono text-muted-foreground">{slot}</span>
+        {totalCovers > 0 && (
+          <div className="text-xs text-cyan-400">{totalCovers} pax</div>
+        )}
+      </div>
+      <div className="flex-1 min-h-[2.5rem] border-l-2 border-border pl-3 flex flex-col gap-1">
+        {reservations.length === 0 ? (
+          <div className="h-8 rounded border border-dashed border-border/50" />
+        ) : (
+          reservations.map(r => (
+            <ReservationCard key={r.id} reservation={r} compact selected={r.id === selectedId} onClick={() => onSelect(r)} />
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Table Map ────────────────────────────────────────────────────────────────
+
+function TableMap({ occupiedTableIds, reservations }: {
+  occupiedTableIds: Set<string>;
+  reservations: Reservation[];
+}) {
+  // Build a map of tableId -> reservation for tooltip
+  const tableReservations: Record<string, Reservation[]> = {};
+  for (const r of reservations) {
+    if (r.tableId && !["cancelled", "no_show"].includes(r.status)) {
+      if (!tableReservations[r.tableId]) tableReservations[r.tableId] = [];
+      tableReservations[r.tableId].push(r);
+    }
+  }
+
+  return (
+    <div className="bg-card border border-border rounded-xl p-3">
+      {/* Special tables row */}
+      <div className="text-xs text-muted-foreground mb-2">Terraza / Barra</div>
+      <div className="flex gap-2 mb-4">
+        {RESTAURANT_TABLES.filter(t => t.type === "special").map(table => {
+          const occupied = occupiedTableIds.has(table.id);
+          const res = tableReservations[table.id] || [];
+          return (
+            <div key={table.id} title={res.map(r => `${r.time} ${r.guestName} (${r.partySize})`).join("\n")}
+              className={cn(
+                "w-12 h-12 rounded-lg flex items-center justify-center text-sm font-bold border-2 transition-colors",
+                occupied
+                  ? "bg-yellow-500/20 border-yellow-500/60 text-yellow-300"
+                  : "bg-green-500/10 border-green-500/40 text-green-400"
+              )}>
+              {table.label}
+              {res.length > 0 && (
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-500 rounded-full text-[10px] text-black font-bold flex items-center justify-center">
+                  {res.length}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Main tables grid 2x5 */}
+      <div className="text-xs text-muted-foreground mb-2">Comedor</div>
+      <div className="grid grid-cols-5 gap-2">
+        {RESTAURANT_TABLES.filter(t => t.type === "table").map(table => {
+          const occupied = occupiedTableIds.has(table.id);
+          const res = tableReservations[table.id] || [];
+          return (
+            <div key={table.id}
+              title={res.map(r => `${r.time} ${r.guestName} (${r.partySize} pax)`).join("\n") || `Mesa ${table.label} libre`}
+              className={cn(
+                "relative aspect-square rounded-lg flex flex-col items-center justify-center text-sm font-bold border-2 transition-colors cursor-default",
+                occupied
+                  ? "bg-yellow-500/20 border-yellow-500/60 text-yellow-300"
+                  : "bg-green-500/10 border-green-500/40 text-green-400"
+              )}>
+              {table.label}
+              {res.length > 0 && (
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-500 rounded-full text-[10px] text-black font-bold flex items-center justify-center">
+                  {res.length}
+                </div>
+              )}
+              {res.length > 0 && (
+                <div className="text-[9px] text-yellow-400 mt-0.5">
+                  {res.reduce((s, r) => s + r.partySize, 0)} pax
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -466,34 +629,22 @@ function ReservationCard({ reservation: r, compact, selected, onClick }: {
 }) {
   const status = STATUS_CONFIG[r.status];
   return (
-    <button
-      onClick={onClick}
-      className={cn(
-        "w-full text-left rounded-lg border p-2 transition-all hover:scale-[1.02] active:scale-100",
-        selected ? "border-primary bg-primary/10 shadow-md" : "border-border bg-card hover:border-primary/50",
-        r.status === "cancelled" && "opacity-50"
-      )}
-    >
+    <button onClick={onClick} className={cn(
+      "w-full text-left rounded-lg border p-2 transition-all hover:scale-[1.02] active:scale-100",
+      selected ? "border-cyan-400 bg-cyan-500/10 shadow-md" : "border-border bg-card hover:border-cyan-400/50",
+      r.status === "cancelled" && "opacity-50"
+    )}>
       <div className="flex items-start gap-1.5">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="font-semibold text-sm truncate">{r.guestName}</span>
-            {!compact && (
-              <span className={cn("text-xs px-1.5 py-0.5 rounded-full border flex items-center gap-1", status.color)}>
-                {status.icon}{status.label}
-              </span>
-            )}
-          </div>
+          <div className="font-semibold text-sm truncate">{r.guestName}</div>
           <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground flex-wrap">
-            <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{r.time}</span>
+            {!compact && <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{r.time}</span>}
             <span className="flex items-center gap-1"><Users className="w-3 h-3" />{r.partySize} pax</span>
-            {r.tableId && <span className="flex items-center gap-1"><Utensils className="w-3 h-3" />Mesa {r.tableId}</span>}
+            {r.tableId && <span className="flex items-center gap-1"><Utensils className="w-3 h-3" />M.{r.tableId}</span>}
           </div>
-          {compact && (
-            <div className={cn("mt-1 text-xs px-1.5 py-0.5 rounded-full border inline-flex items-center gap-1 w-fit", status.color)}>
-              {status.icon}{status.label}
-            </div>
-          )}
+          <div className={cn("mt-1 text-xs px-1.5 py-0.5 rounded-full border inline-flex items-center gap-1 w-fit", status.color)}>
+            {status.icon}{status.label}
+          </div>
         </div>
       </div>
     </button>
@@ -510,99 +661,68 @@ function DetailPanel({ reservation: r, onClose, onEdit, onDelete, onStatusChange
   onStatusChange: (s: ReservationStatus) => void;
 }) {
   const status = STATUS_CONFIG[r.status];
-  const origin = ORIGIN_CONFIG[r.origin];
-  const dateObj = parseISO(r.date);
-
   return (
-    <div className="w-80 border-l border-border bg-card flex flex-col shrink-0">
-      {/* Header */}
+    <div className="w-72 border-l border-border bg-card flex flex-col shrink-0">
       <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-        <h3 className="font-bold">Detalle de reserva</h3>
+        <h3 className="font-bold">Detalle</h3>
         <Button variant="ghost" size="icon" className="w-7 h-7 rounded-full" onClick={onClose}>
           <X className="w-4 h-4" />
         </Button>
       </div>
-
       <ScrollArea className="flex-1">
         <div className="p-4 flex flex-col gap-4">
-          {/* Guest info */}
           <div>
             <div className="text-lg font-bold">{r.guestName}</div>
-            <div className="flex items-center gap-1.5 text-sm text-muted-foreground mt-1">
-              <Phone className="w-3.5 h-3.5" />
-              <a href={`tel:${r.guestPhone}`} className="hover:text-foreground transition-colors">{r.guestPhone}</a>
-            </div>
-            {r.guestEmail && (
-              <div className="flex items-center gap-1.5 text-sm text-muted-foreground mt-1">
-                <Mail className="w-3.5 h-3.5" />
-                <a href={`mailto:${r.guestEmail}`} className="hover:text-foreground transition-colors truncate">{r.guestEmail}</a>
-              </div>
-            )}
+            <a href={`tel:${r.guestPhone}`} className="flex items-center gap-1.5 text-sm text-cyan-400 hover:underline mt-1">
+              <Phone className="w-3.5 h-3.5" />{r.guestPhone}
+            </a>
           </div>
-
-          {/* Reservation details */}
           <div className="rounded-lg bg-muted/50 p-3 flex flex-col gap-2">
             <div className="flex items-center gap-2 text-sm">
-              <Calendar className="w-4 h-4 text-primary" />
-              <span className="capitalize font-medium">{format(dateObj, "EEEE d 'de' MMMM yyyy", { locale: es })}</span>
+              <Calendar className="w-4 h-4 text-cyan-400" />
+              <span className="capitalize font-medium">{format(new Date(r.date + "T12:00:00"), "EEEE d 'de' MMMM yyyy", { locale: es })}</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <Clock className="w-4 h-4 text-primary" />
-              <span className="font-medium">{r.time}</span>
+              <Clock className="w-4 h-4 text-cyan-400" />
+              <span className="font-bold text-base">{r.time}</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <Users className="w-4 h-4 text-primary" />
-              <span>{r.partySize} {r.partySize === 1 ? "comensal" : "comensales"}</span>
+              <Users className="w-4 h-4 text-cyan-400" />
+              <span className="font-bold">{r.partySize} {r.partySize === 1 ? "comensal" : "comensales"}</span>
             </div>
             {r.tableId && (
               <div className="flex items-center gap-2 text-sm">
-                <Utensils className="w-4 h-4 text-primary" />
+                <Utensils className="w-4 h-4 text-cyan-400" />
                 <span>Mesa {r.tableId}</span>
               </div>
             )}
           </div>
-
-          {/* Status */}
+          {/* Status buttons */}
           <div>
             <div className="text-xs text-muted-foreground mb-2 font-medium uppercase tracking-wide">Estado</div>
             <div className="grid grid-cols-2 gap-1.5">
               {(Object.entries(STATUS_CONFIG) as [ReservationStatus, typeof STATUS_CONFIG[ReservationStatus]][]).map(([key, cfg]) => (
-                <button
-                  key={key}
-                  onClick={() => onStatusChange(key)}
+                <button key={key} onClick={() => onStatusChange(key)}
                   className={cn(
                     "flex items-center gap-1.5 px-2 py-1.5 rounded-lg border text-xs font-medium transition-all",
                     r.status === key ? cfg.color + " scale-105 shadow-sm" : "border-border hover:border-primary/50 text-muted-foreground hover:text-foreground"
-                  )}
-                >
+                  )}>
                   {cfg.icon}{cfg.label}
                 </button>
               ))}
             </div>
           </div>
-
-          {/* Notes */}
           {r.notes && (
             <div>
               <div className="text-xs text-muted-foreground mb-1 font-medium uppercase tracking-wide">Notas</div>
               <p className="text-sm bg-muted/50 rounded-lg p-2">{r.notes}</p>
             </div>
           )}
-
-          {/* Origin */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">Origen:</span>
-            <span className={cn("text-xs px-2 py-0.5 rounded-full", origin.color)}>{origin.label}</span>
-          </div>
-
-          {/* Created at */}
           <div className="text-xs text-muted-foreground">
-            Creada el {format(new Date(r.createdAt), "d MMM yyyy 'a las' HH:mm", { locale: es })}
+            Origen: {r.origin === "web" ? "Web" : r.origin === "phone" ? "Teléfono" : "Manual"}
           </div>
         </div>
       </ScrollArea>
-
-      {/* Actions */}
       <div className="p-3 border-t border-border flex gap-2">
         <Button variant="outline" className="flex-1 gap-1.5 rounded-lg" onClick={onEdit}>
           <Edit2 className="w-4 h-4" /> Editar
@@ -617,17 +737,35 @@ function DetailPanel({ reservation: r, onClose, onEdit, onDelete, onStatusChange
 
 // ─── Form Dialog ──────────────────────────────────────────────────────────────
 
-function ReservationFormDialog({ open, onClose, form, setForm, onSubmit, isEditing, isLoading }: {
-  open: boolean;
-  onClose: () => void;
-  form: typeof EMPTY_FORM;
-  setForm: React.Dispatch<React.SetStateAction<typeof EMPTY_FORM>>;
-  onSubmit: () => void;
-  isEditing: boolean;
-  isLoading: boolean;
+function ReservationFormDialog({
+  open, onClose, formName, setFormName, formPhone, setFormPhone,
+  formPartySize, setFormPartySize, formDate, setFormDate, formTime, setFormTime,
+  formTableId, setFormTableId, formNotes, setFormNotes, formStatus, setFormStatus,
+  onSubmit, isEditing, isLoading, existingReservations,
+}: {
+  open: boolean; onClose: () => void;
+  formName: string; setFormName: (v: string) => void;
+  formPhone: string; setFormPhone: (v: string) => void;
+  formPartySize: number; setFormPartySize: (v: number) => void;
+  formDate: string; setFormDate: (v: string) => void;
+  formTime: string; setFormTime: (v: string) => void;
+  formTableId: string; setFormTableId: (v: string) => void;
+  formNotes: string; setFormNotes: (v: string) => void;
+  formStatus: ReservationStatus; setFormStatus: (v: ReservationStatus) => void;
+  onSubmit: () => void; isEditing: boolean; isLoading: boolean;
+  existingReservations: Reservation[];
 }) {
-  const set = (field: keyof typeof EMPTY_FORM) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setForm(f => ({ ...f, [field]: e.target.value }));
+  const selectedDate = formDate ? new Date(formDate + "T12:00:00") : new Date();
+  const slots = getTimeSlotsForDate(selectedDate);
+  const closed = !isRestaurantOpen(selectedDate);
+
+  // Which tables are already taken at the selected time
+  const takenTableIds = new Set(
+    existingReservations
+      .filter(r => r.date === formDate && r.time === formTime && !["cancelled", "no_show"].includes(r.status))
+      .map(r => r.tableId!)
+      .filter(Boolean)
+  );
 
   return (
     <Dialog open={open} onOpenChange={v => !v && onClose()}>
@@ -637,100 +775,107 @@ function ReservationFormDialog({ open, onClose, form, setForm, onSubmit, isEditi
         </DialogHeader>
 
         <div className="flex flex-col gap-4 mt-2">
-          {/* Guest name */}
+          {/* Name */}
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="guestName">Nombre *</Label>
-            <Input id="guestName" placeholder="Nombre del cliente" value={form.guestName} onChange={set("guestName")} />
+            <Input id="guestName" placeholder="Nombre del cliente" value={formName} onChange={e => setFormName(e.target.value)} autoFocus />
           </div>
 
           {/* Phone */}
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="guestPhone">Teléfono *</Label>
-            <Input id="guestPhone" type="tel" placeholder="+34 600 000 000" value={form.guestPhone} onChange={set("guestPhone")} />
+            <Input id="guestPhone" type="tel" placeholder="+34 600 000 000" value={formPhone} onChange={e => setFormPhone(e.target.value)} />
           </div>
 
-          {/* Email */}
+          {/* Party size */}
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="guestEmail">Email (opcional)</Label>
-            <Input id="guestEmail" type="email" placeholder="cliente@email.com" value={form.guestEmail} onChange={set("guestEmail")} />
+            <Label htmlFor="partySize">Número de personas *</Label>
+            <div className="flex items-center gap-3">
+              <button type="button" onClick={() => setFormPartySize(Math.max(1, formPartySize - 1))}
+                className="w-10 h-10 rounded-full border border-border hover:bg-muted flex items-center justify-center text-lg font-bold transition-colors">−</button>
+              <span className="text-2xl font-bold w-12 text-center">{formPartySize}</span>
+              <button type="button" onClick={() => setFormPartySize(Math.min(50, formPartySize + 1))}
+                className="w-10 h-10 rounded-full border border-border hover:bg-muted flex items-center justify-center text-lg font-bold transition-colors">+</button>
+              <span className="text-sm text-muted-foreground">{formPartySize === 1 ? "persona" : "personas"}</span>
+            </div>
           </div>
 
-          {/* Date + Time */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="date">Fecha *</Label>
-              <Input id="date" type="date" value={form.date} onChange={set("date")} />
-            </div>
+          {/* Date */}
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="date">Fecha *</Label>
+            <Input id="date" type="date" value={formDate} onChange={e => setFormDate(e.target.value)} />
+            {closed && (
+              <p className="text-xs text-red-400 flex items-center gap-1">
+                <XCircle className="w-3 h-3" /> El restaurante está cerrado los martes
+              </p>
+            )}
+          </div>
+
+          {/* Time slots */}
+          {!closed && (
             <div className="flex flex-col gap-1.5">
               <Label>Hora *</Label>
-              <Select value={form.time} onValueChange={v => setForm(f => ({ ...f, time: v }))}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {TIME_SLOTS.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              {slots.length === 0 ? (
+                <p className="text-xs text-muted-foreground">No hay horarios disponibles para este día</p>
+              ) : (
+                <div className="grid grid-cols-4 gap-1.5">
+                  {slots.map(slot => (
+                    <button key={slot} type="button" onClick={() => setFormTime(slot)}
+                      className={cn(
+                        "py-2 rounded-lg border text-sm font-medium transition-all",
+                        formTime === slot
+                          ? "bg-cyan-500/20 border-cyan-400 text-cyan-300"
+                          : "border-border hover:border-cyan-400/50 hover:bg-muted"
+                      )}>
+                      {slot}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
+          )}
 
-          {/* Party size + Table */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="partySize">Comensales *</Label>
-              <Input
-                id="partySize"
-                type="number"
-                min={1}
-                max={50}
-                value={form.partySize}
-                onChange={e => setForm(f => ({ ...f, partySize: parseInt(e.target.value) || 1 }))}
-              />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="tableId">Mesa (opcional)</Label>
-              <Input id="tableId" placeholder="Ej: 3" value={form.tableId} onChange={set("tableId")} />
-            </div>
-          </div>
-
-          {/* Status */}
+          {/* Table assignment */}
           <div className="flex flex-col gap-1.5">
-            <Label>Estado</Label>
-            <Select value={form.status} onValueChange={v => setForm(f => ({ ...f, status: v as ReservationStatus }))}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {(Object.entries(STATUS_CONFIG) as [ReservationStatus, typeof STATUS_CONFIG[ReservationStatus]][]).map(([key, cfg]) => (
-                  <SelectItem key={key} value={key}>{cfg.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Origin */}
-          <div className="flex flex-col gap-1.5">
-            <Label>Origen</Label>
-            <Select value={form.origin} onValueChange={v => setForm(f => ({ ...f, origin: v as "manual" | "web" | "phone" }))}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="manual">Manual (añadida aquí)</SelectItem>
-                <SelectItem value="phone">Teléfono</SelectItem>
-                <SelectItem value="web">Web (reserva online)</SelectItem>
-              </SelectContent>
-            </Select>
+            <Label>Mesa (opcional)</Label>
+            <div className="grid grid-cols-6 gap-1.5">
+              <button type="button" onClick={() => setFormTableId("")}
+                className={cn("py-2 rounded-lg border text-xs font-medium transition-all",
+                  !formTableId ? "bg-muted border-primary text-foreground" : "border-border hover:bg-muted")}>
+                Sin asignar
+              </button>
+              {RESTAURANT_TABLES.map(table => {
+                const taken = takenTableIds.has(table.id);
+                const selected = formTableId === table.id;
+                return (
+                  <button key={table.id} type="button"
+                    onClick={() => !taken && setFormTableId(table.id)}
+                    disabled={taken}
+                    className={cn(
+                      "aspect-square rounded-lg border text-sm font-bold transition-all",
+                      selected ? "bg-cyan-500/20 border-cyan-400 text-cyan-300 scale-105"
+                        : taken ? "bg-red-500/10 border-red-500/30 text-red-400/50 cursor-not-allowed"
+                        : "border-border hover:border-cyan-400/50 hover:bg-muted"
+                    )}>
+                    {table.label}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-xs text-muted-foreground">Las mesas en rojo ya tienen reserva a esa hora</p>
           </div>
 
           {/* Notes */}
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="notes">Notas (opcional)</Label>
-            <Textarea id="notes" placeholder="Alergias, celebración especial, preferencias de mesa..." rows={3} value={form.notes} onChange={set("notes")} />
+            <Textarea id="notes" placeholder="Alergias, celebración, preferencias..." rows={2} value={formNotes} onChange={e => setFormNotes(e.target.value)} />
           </div>
 
           {/* Actions */}
           <div className="flex gap-2 pt-1">
             <Button variant="outline" className="flex-1 rounded-lg" onClick={onClose}>Cancelar</Button>
-            <Button
-              className="flex-1 rounded-lg"
-              onClick={onSubmit}
-              disabled={isLoading || !form.guestName || !form.guestPhone || !form.date || !form.time}
-            >
+            <Button className="flex-1 rounded-lg" onClick={onSubmit}
+              disabled={isLoading || !formName.trim() || !formPhone.trim() || !formDate || !formTime || closed}>
               {isLoading ? "Guardando..." : isEditing ? "Guardar cambios" : "Crear reserva"}
             </Button>
           </div>
