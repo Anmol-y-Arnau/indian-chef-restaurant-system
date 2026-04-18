@@ -1300,3 +1300,12 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Mapa de mesas se actualiza en tiempo real (polling cada 30s)
 - [x] API pública devuelve disponibilidad real considerando walk-ins y mesas ocupadas
 - [x] 117/117 tests pasan
+
+## Rediseño Calendario de Reservas
+
+- [ ] Vista de calendario real (mes con días clicables)
+- [ ] Al pulsar un día, vista de ese día dividida en Comida (13-16h) y Cena (19-23h/23:30)
+- [ ] Botón flotante "+" para añadir reserva (solo visible al pulsar)
+- [ ] Quitar panel lateral y simplificar la UI
+- [ ] Liberación automática de mesa 10 minutos tras el pago (completeTable)
+- [ ] Quitar lógica de días punta de la UI (simplificar)

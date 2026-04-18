@@ -92,6 +92,13 @@
       "when": 1776517634619,
       "tag": "0012_normal_dragon_man",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "5",
+      "when": 1776519071132,
+      "tag": "0013_normal_magneto",
+      "breakpoints": true
     }
   ]
 }

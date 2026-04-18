@@ -57,7 +57,7 @@ export async function updateReservation(
 
 export async function updateReservationStatus(
   id: number,
-  status: "pending" | "confirmed" | "seated" | "cancelled" | "no_show"
+  status: "pending" | "confirmed" | "seated" | "cancelled" | "no_show" | "finished"
 ) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");

@@ -150,7 +150,7 @@ export const reservations = mysqlTable("reservations", {
   partySize: int("partySize").notNull().default(2),        // Número de comensales
   tableId: varchar("tableId", { length: 20 }),             // Mesa asignada (opcional)
   // Estado
-  status: mysqlEnum("status", ["pending", "confirmed", "seated", "cancelled", "no_show"])
+  status: mysqlEnum("status", ["pending", "confirmed", "seated", "cancelled", "no_show", "finished"])
     .default("pending").notNull(),
   // Asignación de mesas (puede ser más de una cuando se juntan)
   assignedTableIds: text("assignedTableIds"),              // JSON array: ["0+","0-"]

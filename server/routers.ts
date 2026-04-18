@@ -161,6 +161,26 @@ export const appRouter = router({
         });
         await restaurantDb.clearTableOrders(input.tableId);
         await restaurantDb.upsertTable(input.tableId, "free");
+
+        // Release any active reservation for this table after 10 minutes
+        // We mark it as 'finished' immediately so the system knows it will be free soon,
+        // and schedule the actual status update via a delayed background task.
+        try {
+          const today = new Date().toISOString().slice(0, 10);
+          const { getReservationsByDate, updateReservationStatus } = await import('./reservationDb');
+          const todayReservations = await getReservationsByDate(today);
+          const activeForTable = todayReservations.filter(r => {
+            const tableIds = r.assignedTableIds ? JSON.parse(r.assignedTableIds) as string[] : r.tableId ? [r.tableId] : [];
+            return tableIds.includes(input.tableId) && (r.status === 'seated' || r.status === 'confirmed');
+          });
+          // Mark as 'finished' after 10 min delay (table is now free)
+          for (const r of activeForTable) {
+            setTimeout(async () => {
+              try { await updateReservationStatus(r.id, 'finished'); } catch {}
+            }, 10 * 60 * 1000); // 10 minutes
+          }
+        } catch { /* non-critical */ }
+
         return { success: true };
       }),
 
@@ -710,7 +730,7 @@ Reglas:
     updateStatus: publicProcedure
       .input(z.object({
         id: z.number(),
-        status: z.enum(["pending", "confirmed", "seated", "cancelled", "no_show"]),
+        status: z.enum(["pending", "confirmed", "seated", "cancelled", "no_show", "finished"]),
       }))
       .mutation(async ({ input }) => {
         const { updateReservationStatus } = await import('./reservationDb');

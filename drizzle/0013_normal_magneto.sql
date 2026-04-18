@@ -1,0 +1,1 @@
+ALTER TABLE `reservations` MODIFY COLUMN `status` enum('pending','confirmed','seated','cancelled','no_show','finished') NOT NULL DEFAULT 'pending';
