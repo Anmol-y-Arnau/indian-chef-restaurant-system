@@ -1287,3 +1287,16 @@ Nueva sección con gráficos y análisis de ventas.
 - [x] Horarios correctos: miércoles-lunes 13:00-16:00 y 19:00-23:00, viernes/sábado hasta 23:30, martes cerrado
 - [x] Vista calendario muestra qué mesas están ocupadas/libres por franja horaria
 - [x] Al seleccionar hora en formulario, mostrar qué mesas están disponibles
+
+## Sistema de Capacidad en Tiempo Real
+
+- [x] Motor de asignación automática: lógica de combinación de mesas según partySize
+- [x] Layout real del restaurante: 8 mesas interiores + terraza, con capacidades y combinaciones
+- [x] Bloqueo automático de franja horaria cuando no hay mesas disponibles
+- [x] Botón de walk-in en vista de reservas (texto libre: "mesa 2 3 personas")
+- [x] Walk-in bloquea la mesa en el sistema al instante
+- [x] Liberación de mesa al pagar (completeTable libera la mesa automáticamente)
+- [x] Límite de 1h30 en días punta (configurable por fecha)
+- [x] Mapa de mesas se actualiza en tiempo real (polling cada 30s)
+- [x] API pública devuelve disponibilidad real considerando walk-ins y mesas ocupadas
+- [x] 117/117 tests pasan

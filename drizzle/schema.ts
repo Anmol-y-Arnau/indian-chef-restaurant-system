@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, decimal, json, tinyint } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, decimal, json, tinyint, boolean } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -152,6 +152,11 @@ export const reservations = mysqlTable("reservations", {
   // Estado
   status: mysqlEnum("status", ["pending", "confirmed", "seated", "cancelled", "no_show"])
     .default("pending").notNull(),
+  // Asignación de mesas (puede ser más de una cuando se juntan)
+  assignedTableIds: text("assignedTableIds"),              // JSON array: ["0+","0-"]
+  assignmentInstruction: text("assignmentInstruction"),   // Texto para el camarero
+  estimatedEnd: varchar("estimatedEnd", { length: 5 }),   // "HH:MM" hora estimada de salida
+  isPeakDay: tinyint("isPeakDay").default(0).notNull(), // Día punta (1h30 máx)
   // Información adicional
   notes: text("notes"),                                    // Notas del cliente o del restaurante
   origin: mysqlEnum("origin", ["manual", "web", "phone"])
@@ -163,3 +168,39 @@ export const reservations = mysqlTable("reservations", {
 
 export type Reservation = typeof reservations.$inferSelect;
 export type InsertReservation = typeof reservations.$inferInsert;
+
+/**
+ * Walk-ins: clientes sin reserva que se sientan directamente
+ * Se registran para bloquear mesas en tiempo real
+ */
+export const walkIns = mysqlTable("walk_ins", {
+  id: int("id").autoincrement().primaryKey(),
+  date: varchar("date", { length: 10 }).notNull(),         // "YYYY-MM-DD"
+  time: varchar("time", { length: 5 }).notNull(),          // "HH:MM" hora de llegada
+  partySize: int("partySize").notNull().default(2),
+  assignedTableIds: text("assignedTableIds").notNull(),    // JSON array: ["2"]
+  assignmentInstruction: text("assignmentInstruction"),
+  estimatedEnd: varchar("estimatedEnd", { length: 5 }),    // "HH:MM" hora estimada de salida
+  isPeakDay: tinyint("isPeakDay").default(0).notNull(),
+  status: mysqlEnum("walkin_status", ["seated", "finished", "cancelled"])
+    .default("seated").notNull(),
+  notes: text("notes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type WalkIn = typeof walkIns.$inferSelect;
+export type InsertWalkIn = typeof walkIns.$inferInsert;
+
+/**
+ * Peak days: días marcados como punta (límite de 1h30 por mesa)
+ */
+export const peakDays = mysqlTable("peak_days", {
+  id: int("id").autoincrement().primaryKey(),
+  date: varchar("date", { length: 10 }).notNull().unique(), // "YYYY-MM-DD"
+  reason: varchar("reason", { length: 255 }),              // "San Valentín", "Puente", etc.
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type PeakDay = typeof peakDays.$inferSelect;
+export type InsertPeakDay = typeof peakDays.$inferInsert;

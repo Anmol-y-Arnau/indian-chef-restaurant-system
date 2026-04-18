@@ -726,6 +726,190 @@ Reglas:
         await deleteReservation(input.id);
         return { success: true };
       }),
+
+    // Obtener disponibilidad para una fecha y tamaño de grupo
+    getAvailability: publicProcedure
+      .input(z.object({
+        date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        partySize: z.number().int().min(1).max(14),
+      }))
+      .query(async ({ input }) => {
+        const { buildOccupiedSlots } = await import('./walkInDb');
+        const { checkAvailabilityForDate } = await import('./tableAssignment');
+        const { getTimeSlotsForDate } = await import('./reservationUtils');
+        const slots = await buildOccupiedSlots(input.date);
+        const timeSlots = getTimeSlotsForDate(input.date);
+        if (timeSlots.length === 0) return { closed: true, slots: {} };
+        const availability = checkAvailabilityForDate(slots, input.date, input.partySize, timeSlots);
+        return { closed: false, slots: availability };
+      }),
+
+    // Asignar mesa automáticamente para una reserva
+    assignTable: publicProcedure
+      .input(z.object({
+        date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        time: z.string().regex(/^\d{2}:\d{2}$/),
+        partySize: z.number().int().min(1).max(14),
+      }))
+      .query(async ({ input }) => {
+        const { buildOccupiedSlots } = await import('./walkInDb');
+        const { assignTable, getOccupiedTableIds } = await import('./tableAssignment');
+        const slots = await buildOccupiedSlots(input.date);
+        const occupied = getOccupiedTableIds(slots, input.date, input.time);
+        return assignTable(input.partySize, occupied);
+      }),
+
+    // Crear reserva con asignación automática de mesa
+    createWithAssignment: publicProcedure
+      .input(z.object({
+        guestName: z.string().min(1),
+        guestPhone: z.string().min(1),
+        guestEmail: z.string().email().optional().nullable(),
+        date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        time: z.string().regex(/^\d{2}:\d{2}$/),
+        partySize: z.number().int().min(1).max(14),
+        notes: z.string().optional().nullable(),
+        origin: z.enum(["manual", "web", "phone"]).default("manual"),
+      }))
+      .mutation(async ({ input }) => {
+        const { buildOccupiedSlots, isPeakDay } = await import('./walkInDb');
+        const { assignTable, getOccupiedTableIds, estimateEndTime } = await import('./tableAssignment');
+        const { createReservation } = await import('./reservationDb');
+        const slots = await buildOccupiedSlots(input.date);
+        const occupied = getOccupiedTableIds(slots, input.date, input.time);
+        const assignment = assignTable(input.partySize, occupied);
+        if (!assignment.success) {
+          return { success: false, reason: assignment.reason, reservation: null, assignment: null };
+        }
+        const peak = await isPeakDay(input.date);
+        const estimatedEnd = peak ? estimateEndTime(input.time, 90) : null;
+        const reservation = await createReservation({
+          ...input,
+          status: "confirmed",
+          tableId: assignment.group!.tableIds[0],
+          assignedTableIds: JSON.stringify(assignment.group!.tableIds),
+          assignmentInstruction: assignment.instruction,
+          estimatedEnd,
+          isPeakDay: peak ? 1 : 0,
+        });
+        return { success: true, reservation, assignment };
+      }),
+  }),
+
+  // ─── Walk-ins ──────────────────────────────────────────────────────────────
+  walkIns: router({
+    getByDate: publicProcedure
+      .input(z.object({ date: z.string() }))
+      .query(async ({ input }) => {
+        const { getWalkInsByDate } = await import('./walkInDb');
+        return getWalkInsByDate(input.date);
+      }),
+
+    // Registrar walk-in con texto libre ("mesa 2 3 personas")
+    createFromText: publicProcedure
+      .input(z.object({
+        text: z.string().min(1),
+        date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        time: z.string().regex(/^\d{2}:\d{2}$/),
+      }))
+      .mutation(async ({ input }) => {
+        const { parseWalkInText, createWalkIn, isPeakDay } = await import('./walkInDb');
+        const { estimateEndTime } = await import('./tableAssignment');
+        const parsed = parseWalkInText(input.text);
+        if (!parsed) {
+          return { success: false, reason: 'No se pudo interpretar. Usa formato: "mesa 2 3 personas" o "terraza 4 personas"', walkIn: null, parsed: null };
+        }
+        const peak = await isPeakDay(input.date);
+        const estimatedEnd = peak ? estimateEndTime(input.time, 90) : null;
+        const walkIn = await createWalkIn({
+          date: input.date,
+          time: input.time,
+          partySize: parsed.partySize,
+          tableIds: [parsed.tableId],
+          instruction: `Mesa ${parsed.tableId} — ${parsed.partySize} personas (walk-in)`,
+          estimatedEnd: estimatedEnd ?? undefined,
+          isPeakDay: peak,
+          notes: `__walkin__ texto: "${input.text}"`,
+        });
+        return { success: true, walkIn, parsed };
+      }),
+
+    // Registrar walk-in con asignación automática de mesa
+    createWithAssignment: publicProcedure
+      .input(z.object({
+        date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        time: z.string().regex(/^\d{2}:\d{2}$/),
+        partySize: z.number().int().min(1).max(14),
+        notes: z.string().optional().nullable(),
+      }))
+      .mutation(async ({ input }) => {
+        const { createWalkIn, isPeakDay, buildOccupiedSlots } = await import('./walkInDb');
+        const { getOccupiedTableIds, assignTable, estimateEndTime } = await import('./tableAssignment');
+        const slots = await buildOccupiedSlots(input.date);
+        const occupied = getOccupiedTableIds(slots, input.date, input.time);
+        const assignment = assignTable(input.partySize, occupied);
+        if (!assignment.success) {
+          return { success: false, reason: assignment.reason, walkIn: null, assignment: null };
+        }
+        const peak = await isPeakDay(input.date);
+        const estimatedEnd = peak ? estimateEndTime(input.time, 90) : null;
+        const walkIn = await createWalkIn({
+          date: input.date,
+          time: input.time,
+          partySize: input.partySize,
+          tableIds: assignment.group!.tableIds,
+          instruction: assignment.instruction,
+          estimatedEnd: estimatedEnd ?? undefined,
+          isPeakDay: peak,
+          notes: input.notes ?? undefined,
+        });
+        return { success: true, walkIn, assignment };
+      }),
+
+    // Marcar walk-in como terminado (mesa libre)
+    finish: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        const { finishWalkIn } = await import('./walkInDb');
+        return finishWalkIn(input.id);
+      }),
+
+    // Cancelar walk-in
+    cancel: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        const { cancelWalkIn } = await import('./walkInDb');
+        return cancelWalkIn(input.id);
+      }),
+  }),
+
+  // ─── Días punta ────────────────────────────────────────────────────────────
+  peakDays: router({
+    getByRange: publicProcedure
+      .input(z.object({ from: z.string(), to: z.string() }))
+      .query(async ({ input }) => {
+        const { getPeakDaysByRange } = await import('./walkInDb');
+        return getPeakDaysByRange(input.from, input.to);
+      }),
+    set: publicProcedure
+      .input(z.object({ date: z.string(), reason: z.string().optional() }))
+      .mutation(async ({ input }) => {
+        const { setPeakDay } = await import('./walkInDb');
+        return setPeakDay(input.date, input.reason);
+      }),
+    remove: publicProcedure
+      .input(z.object({ date: z.string() }))
+      .mutation(async ({ input }) => {
+        const { removePeakDay } = await import('./walkInDb');
+        await removePeakDay(input.date);
+        return { success: true };
+      }),
+    check: publicProcedure
+      .input(z.object({ date: z.string() }))
+      .query(async ({ input }) => {
+        const { isPeakDay } = await import('./walkInDb');
+        return { isPeak: await isPeakDay(input.date) };
+      }),
   }),
 });
 export type AppRouter = typeof appRouter;

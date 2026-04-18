@@ -85,6 +85,13 @@
       "when": 1776515808731,
       "tag": "0011_gray_cardiac",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "5",
+      "when": 1776517634619,
+      "tag": "0012_normal_dragon_man",
+      "breakpoints": true
     }
   ]
 }
