@@ -429,6 +429,58 @@ function AddReservationDialog({
   );
 }
 
+// ─── Slot Overflow Panel ────────────────────────────────────────────────────────────
+
+function SlotOverflowPanel({
+  reservations,
+  onSelect,
+  onClose,
+}: {
+  reservations: Reservation[];
+  onSelect: (r: Reservation) => void;
+  onClose: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={onClose}>
+      <div
+        className="bg-[#1e1e2e] border border-white/20 rounded-2xl shadow-2xl p-4 w-72 z-50 max-h-[80vh] overflow-y-auto"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm font-semibold text-white">Reservas a esta hora</span>
+          <button onClick={onClose} className="text-muted-foreground hover:text-white text-lg leading-none">×</button>
+        </div>
+        <div className="space-y-2">
+          {reservations.map(r => {
+            const cfg = STATUS_COLORS[r.status];
+            const tables = r.assignedTableIds ? JSON.parse(r.assignedTableIds) as string[] : r.tableId ? [r.tableId] : [];
+            return (
+              <button
+                key={r.id}
+                className={cn(
+                  "w-full text-left rounded-xl border-l-2 px-3 py-2 transition-all hover:brightness-125",
+                  cfg.bg, cfg.border, cfg.text,
+                  (r.status === "cancelled" || r.status === "no_show" || r.status === "finished") && "opacity-50"
+                )}
+                onClick={() => { onSelect(r); onClose(); }}
+              >
+                <p className="text-sm font-semibold truncate">{r.guestName}</p>
+                <div className="flex items-center gap-3 mt-0.5 text-[11px] opacity-80">
+                  <span className="flex items-center gap-1"><Users className="w-3 h-3" />{r.partySize}p</span>
+                  {r.guestPhone && <span className="flex items-center gap-1"><Phone className="w-3 h-3" />{r.guestPhone}</span>}
+                  {tables.length > 0 && <span>🪺 M{tables.join("+")}</span>}
+                </div>
+                {r.notes && <p className="text-[10px] opacity-60 mt-0.5 italic truncate">"{r.notes}"</p>}
+                <p className="text-[10px] opacity-50 mt-0.5">{STATUS_LABELS[r.status]}</p>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Overlap layout calculation ──────────────────────────────────────────────
 
 interface LayoutBlock {
@@ -485,6 +537,8 @@ function computeLayout(reservations: Reservation[]): LayoutBlock[] {
 
 // ─── Week Grid ────────────────────────────────────────────────────────────────
 
+const MAX_VISIBLE = 3;
+
 function WeekGrid({
   weekDays,
   reservationsByDate,
@@ -499,6 +553,7 @@ function WeekGrid({
   const hours = Array.from({ length: TOTAL_HOURS }, (_, i) => HOUR_START + i);
   const totalHeight = TOTAL_HOURS * PX_PER_HOUR;
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [overflowSlot, setOverflowSlot] = useState<Reservation[] | null>(null);
 
   // Scroll to 12:30 on mount
   useEffect(() => {
@@ -515,7 +570,7 @@ function WeekGrid({
     <div className="flex flex-col flex-1 overflow-hidden">
       {/* Day headers */}
       <div className="flex border-b border-white/10 flex-shrink-0 bg-[#0f0f1a]">
-        <div className="w-14 flex-shrink-0" /> {/* time gutter */}
+        <div className="w-14 flex-shrink-0" />
         {weekDays.map(ds => {
           const { dow, day, isToday } = formatDayHeader(ds);
           const closed = isClosedDay(ds);
@@ -601,51 +656,101 @@ function WeekGrid({
                   />
                 )}
 
-                {/* Reservation blocks — side-by-side when overlapping */}
-                {computeLayout(dayReservations).map(({ r, col, totalCols, startMin, endMin }) => {
-                  const top = minutesToPx(startMin);
-                  const height = Math.max(((endMin - startMin) / 60) * PX_PER_HOUR, 28);
-                  const cfg = STATUS_COLORS[r.status];
-                  const tables = r.assignedTableIds ? JSON.parse(r.assignedTableIds) as string[] : r.tableId ? [r.tableId] : [];
+                {/* Reservation blocks — max 3 visible, +N more button for overflow */}
+                {(() => {
+                  const layout = computeLayout(dayReservations);
+                  // Group by overlapping cluster to decide which get the "+N" pill
+                  // Simple approach: cap total rendered blocks at MAX_VISIBLE,
+                  // then show a "+N" pill anchored to the first hidden block's time slot.
+                  const visible = layout.slice(0, MAX_VISIBLE);
+                  const hidden  = layout.slice(MAX_VISIBLE);
 
-                  // Each block occupies 1/totalCols of the column width with a small gap
-                  const GAP = 2; // px gap between parallel blocks
-                  const widthPct = 100 / totalCols;
-                  const leftPct  = col * widthPct;
+                  // Recalculate totalCols only among visible blocks so they fill the space
+                  const visibleWithCols = visible.map((b, i) => {
+                    const usedCols = new Set<number>();
+                    visible.slice(0, i).forEach(prev => {
+                      if (prev.endMin > b.startMin && prev.startMin < b.endMin) usedCols.add(prev.col);
+                    });
+                    let col = 0;
+                    while (usedCols.has(col)) col++;
+                    return { ...b, col };
+                  });
+                  const maxCol = visibleWithCols.reduce((m, b) => Math.max(m, b.col), 0);
+                  const effectiveTotalCols = Math.min(maxCol + 1, MAX_VISIBLE);
 
                   return (
-                    <div
-                      key={r.id}
-                      className={cn(
-                        "absolute rounded-md border-l-2 px-1.5 py-0.5 cursor-pointer z-10 overflow-hidden transition-all hover:brightness-125",
-                        cfg.bg, cfg.border, cfg.text,
-                        (r.status === "cancelled" || r.status === "no_show" || r.status === "finished") && "opacity-40"
-                      )}
-                      style={{
-                        top,
-                        height,
-                        left: `calc(${leftPct}% + ${col === 0 ? 2 : GAP}px)`,
-                        right: `calc(${100 - leftPct - widthPct}% + ${col === totalCols - 1 ? 2 : GAP}px)`,
-                      }}
-                      onClick={e => { e.stopPropagation(); onClickReservation(r); }}
-                    >
-                      <p className="text-[11px] font-semibold leading-tight truncate">{r.guestName}</p>
-                      {height > 36 && (
-                        <p className="text-[10px] opacity-70 leading-tight">{r.partySize}p{tables.length > 0 ? ` · M${tables.join("+")}` : ""}</p>
-                      )}
-                    </div>
+                    <>
+                      {visibleWithCols.map(({ r, col, startMin, endMin }) => {
+                        const top = minutesToPx(startMin);
+                        const height = Math.max(((endMin - startMin) / 60) * PX_PER_HOUR, 28);
+                        const cfg = STATUS_COLORS[r.status];
+                        const tables = r.assignedTableIds ? JSON.parse(r.assignedTableIds) as string[] : r.tableId ? [r.tableId] : [];
+                        const GAP = 2;
+                        const widthPct = 100 / effectiveTotalCols;
+                        const leftPct  = col * widthPct;
+
+                        return (
+                          <div
+                            key={r.id}
+                            className={cn(
+                              "absolute rounded-md border-l-2 px-1.5 py-0.5 cursor-pointer z-10 overflow-hidden transition-all hover:brightness-125",
+                              cfg.bg, cfg.border, cfg.text,
+                              (r.status === "cancelled" || r.status === "no_show" || r.status === "finished") && "opacity-40"
+                            )}
+                            style={{
+                              top,
+                              height,
+                              left: `calc(${leftPct}% + ${col === 0 ? 2 : GAP}px)`,
+                              right: `calc(${100 - leftPct - widthPct}% + ${col === effectiveTotalCols - 1 ? 2 : GAP}px)`,
+                            }}
+                            onClick={e => { e.stopPropagation(); onClickReservation(r); }}
+                          >
+                            <p className="text-[11px] font-semibold leading-tight truncate">{r.guestName}</p>
+                            {height > 36 && (
+                              <p className="text-[10px] opacity-70 leading-tight">{r.partySize}p{tables.length > 0 ? ` · M${tables.join("+")}` : ""}</p>
+                            )}
+                          </div>
+                        );
+                      })}
+
+                      {/* "+N más" pill when there are more than MAX_VISIBLE reservations */}
+                      {hidden.length > 0 && (() => {
+                        const firstHidden = hidden[0];
+                        const pillTop = minutesToPx(firstHidden.startMin) + 2;
+                        return (
+                          <button
+                            key="overflow-pill"
+                            className="absolute right-1 z-20 text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-white/20 text-white hover:bg-white/35 transition-all"
+                            style={{ top: pillTop }}
+                            onClick={e => { e.stopPropagation(); setOverflowSlot(dayReservations); }}
+                          >
+                            +{hidden.length} más
+                          </button>
+                        );
+                      })()}
+                    </>
                   );
-                })}
+                })()}
               </div>
             );
-          })}
-        </div>
+               })
+        }
       </div>
     </div>
+
+    {/* Overflow slot panel */}
+    {overflowSlot && (
+      <SlotOverflowPanel
+        reservations={overflowSlot}
+        onSelect={r => { onClickReservation(r); setOverflowSlot(null); }}
+        onClose={() => setOverflowSlot(null)}
+      />
+    )}
+  </div>
   );
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
+// ─── Main Pagee ────────────────────────────────────────────────────────────────
 
 export default function ReservationsView() {
   const [, setLocation] = useLocation();
