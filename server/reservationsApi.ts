@@ -15,6 +15,16 @@
 import type { Express, Request, Response } from "express";
 import { createReservation, getReservationsByDate } from "./reservationDb";
 
+// ─── Validation helpers ───────────────────────────────────────────────────────
+
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+const TIME_RE = /^\d{2}:\d{2}$/;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function sanitizeStr(v: unknown, maxLen = 255): string {
+  return String(v ?? "").slice(0, maxLen).trim();
+}
+
 // ─── Auth middleware ──────────────────────────────────────────────────────────
 
 function requireApiKey(req: Request, res: Response): boolean {
@@ -40,7 +50,60 @@ export function registerReservationsApi(app: Express) {
   app.post("/api/reservations", async (req: Request, res: Response) => {
     if (!requireApiKey(req, res)) return;
     try {
-      const {
+      const body = req.body as Record<string, unknown>;
+
+      // Required fields presence check
+      if (!body.guestName || !body.guestPhone || !body.date || !body.time || !body.partySize) {
+        res.status(400).json({
+          error: "Missing required fields: guestName, guestPhone, date, time, partySize",
+        });
+        return;
+      }
+
+      // Sanitize and validate each field
+      const guestName = sanitizeStr(body.guestName, 120);
+      const guestPhone = sanitizeStr(body.guestPhone, 30);
+      const date = sanitizeStr(body.date, 10);
+      const time = sanitizeStr(body.time, 5);
+      const notes = body.notes ? sanitizeStr(body.notes, 500) : null;
+      const tableId = body.tableId ? sanitizeStr(body.tableId, 10) : null;
+
+      if (guestName.length < 1) {
+        res.status(400).json({ error: "guestName must not be empty" });
+        return;
+      }
+      if (guestPhone.length < 1) {
+        res.status(400).json({ error: "guestPhone must not be empty" });
+        return;
+      }
+      if (!DATE_RE.test(date)) {
+        res.status(400).json({ error: "Invalid date format. Use YYYY-MM-DD" });
+        return;
+      }
+      if (!TIME_RE.test(time)) {
+        res.status(400).json({ error: "Invalid time format. Use HH:MM" });
+        return;
+      }
+
+      // Email: optional but must be valid if provided
+      let guestEmail: string | null = null;
+      if (body.guestEmail) {
+        const raw = sanitizeStr(body.guestEmail, 254);
+        if (!EMAIL_RE.test(raw)) {
+          res.status(400).json({ error: "Invalid email format" });
+          return;
+        }
+        guestEmail = raw;
+      }
+
+      // partySize: must be integer 1–50
+      const partySize = parseInt(String(body.partySize), 10);
+      if (isNaN(partySize) || partySize < 1 || partySize > 50) {
+        res.status(400).json({ error: "partySize must be an integer between 1 and 50" });
+        return;
+      }
+
+      const reservation = await createReservation({
         guestName,
         guestPhone,
         guestEmail,
@@ -49,33 +112,6 @@ export function registerReservationsApi(app: Express) {
         partySize,
         tableId,
         notes,
-      } = req.body;
-
-      // Basic validation
-      if (!guestName || !guestPhone || !date || !time || !partySize) {
-        res.status(400).json({
-          error: "Missing required fields: guestName, guestPhone, date, time, partySize",
-        });
-        return;
-      }
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-        res.status(400).json({ error: "Invalid date format. Use YYYY-MM-DD" });
-        return;
-      }
-      if (!/^\d{2}:\d{2}$/.test(time)) {
-        res.status(400).json({ error: "Invalid time format. Use HH:MM" });
-        return;
-      }
-
-      const reservation = await createReservation({
-        guestName: String(guestName),
-        guestPhone: String(guestPhone),
-        guestEmail: guestEmail ? String(guestEmail) : null,
-        date: String(date),
-        time: String(time),
-        partySize: parseInt(String(partySize), 10),
-        tableId: tableId ? String(tableId) : null,
-        notes: notes ? String(notes) : null,
         status: "pending",
         origin: "web",
       });
@@ -91,8 +127,8 @@ export function registerReservationsApi(app: Express) {
   app.get("/api/reservations", async (req: Request, res: Response) => {
     if (!requireApiKey(req, res)) return;
     try {
-      const date = String(req.query.date || "");
-      if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      const date = sanitizeStr(req.query.date, 10);
+      if (!date || !DATE_RE.test(date)) {
         res.status(400).json({ error: "Missing or invalid ?date=YYYY-MM-DD query param" });
         return;
       }
@@ -118,14 +154,19 @@ export function registerReservationsApi(app: Express) {
   app.get("/api/reservations/availability", async (req: Request, res: Response) => {
     if (!requireApiKey(req, res)) return;
     try {
-      const date = String(req.query.date || "");
-      const partySize = parseInt(String(req.query.partySize || "2"), 10);
+      const date = sanitizeStr(req.query.date, 10);
+      const rawPartySize = parseInt(String(req.query.partySize || "2"), 10);
 
-      if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      if (!date || !DATE_RE.test(date)) {
         res.status(400).json({ error: "Missing or invalid ?date=YYYY-MM-DD query param" });
         return;
       }
+      if (isNaN(rawPartySize) || rawPartySize < 1 || rawPartySize > 50) {
+        res.status(400).json({ error: "partySize must be an integer between 1 and 50" });
+        return;
+      }
 
+      const partySize = rawPartySize;
       const reservations = await getReservationsByDate(date);
       const activeReservations = reservations.filter(
         r => !["cancelled", "no_show"].includes(r.status)
