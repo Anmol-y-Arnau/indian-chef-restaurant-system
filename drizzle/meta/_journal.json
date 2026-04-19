@@ -99,6 +99,13 @@
       "when": 1776519071132,
       "tag": "0013_normal_magneto",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "5",
+      "when": 1776621517659,
+      "tag": "0014_watery_penance",
+      "breakpoints": true
     }
   ]
 }

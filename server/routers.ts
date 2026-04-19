@@ -27,6 +27,17 @@ export const appRouter = router({
       return await restaurantDb.getAllTables();
     }),
 
+    // Actualizar la capacidad de una mesa (para el agente de WhatsApp y configuración)
+    updateTableCapacity: publicProcedure
+      .input(z.object({
+        tableId: z.string(),
+        capacity: z.number().int().min(0),
+      }))
+      .mutation(async ({ input }) => {
+        await restaurantDb.updateTableCapacity(input.tableId, input.capacity);
+        return { success: true };
+      }),
+
     // Get all orders across all tables
     getAllOrders: publicProcedure.query(async () => {
       return await restaurantDb.getAllOrders();
@@ -697,12 +708,77 @@ Reglas:
         tableId: z.string().optional().nullable(),
         status: z.enum(["pending", "confirmed", "seated", "cancelled", "no_show"]).default("confirmed"),
         notes: z.string().optional().nullable(),
-        origin: z.enum(["manual", "web", "phone"]).default("manual"),
+        origin: z.enum(["manual", "web", "phone", "whatsapp"]).default("manual"),
+        autoAssignTable: z.boolean().optional().default(false),
       }))
       .mutation(async ({ input }) => {
         const { createReservation } = await import('./reservationDb');
-        const reservation = await createReservation(input);
+        const { autoAssignTable: doAutoAssign, ...reservationInput } = input;
+
+        // Auto-asignación de mesa si se solicita
+        if (doAutoAssign && !reservationInput.tableId) {
+          const { buildOccupiedSlots } = await import('./walkInDb');
+          const { assignTable, getOccupiedTableIds } = await import('./tableAssignment');
+          const slots = await buildOccupiedSlots(input.date);
+          const occupied = getOccupiedTableIds(slots, input.date, input.time);
+          const assignment = assignTable(input.partySize, occupied);
+          if (assignment.success && assignment.group) {
+            reservationInput.tableId = assignment.group.tableIds[0];
+            (reservationInput as Record<string, unknown>).assignedTableIds = JSON.stringify(assignment.group.tableIds);
+            (reservationInput as Record<string, unknown>).assignmentInstruction = assignment.instruction;
+          }
+        }
+
+        const reservation = await createReservation(reservationInput);
         return reservation;
+      }),
+
+    // Verificar disponibilidad para una fecha/hora/grupo (para el agente de WhatsApp)
+    checkAvailability: publicProcedure
+      .input(z.object({
+        date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        time: z.string().regex(/^\d{2}:\d{2}$/),
+        partySize: z.number().int().min(1).max(50),
+        durationMin: z.number().int().min(30).max(240).optional().default(90),
+      }))
+      .query(async ({ input }) => {
+        const { getTimeSlotsForDate } = await import('./reservationUtils');
+        const { buildOccupiedSlots } = await import('./walkInDb');
+        const { assignTable, getOccupiedTableIds } = await import('./tableAssignment');
+
+        // 1. Verificar si el restaurante está abierto ese día y hora
+        const timeSlots = getTimeSlotsForDate(input.date);
+        if (timeSlots.length === 0) {
+          return { available: false, reason: "closed_day" as const, suggestedTables: [], capacityLeft: 0 };
+        }
+        if (!timeSlots.includes(input.time)) {
+          return { available: false, reason: "off_hours" as const, suggestedTables: [], capacityLeft: 0 };
+        }
+
+        // 2. Obtener mesas ocupadas en esa franja horaria
+        const slots = await buildOccupiedSlots(input.date);
+        const occupied = getOccupiedTableIds(slots, input.date, input.time);
+
+        // 3. Intentar asignar mesa
+        const assignment = assignTable(input.partySize, occupied);
+        if (!assignment.success) {
+          return { available: false, reason: "fully_booked" as const, suggestedTables: [], capacityLeft: 0 };
+        }
+
+        // 4. Calcular capacidad restante
+        const { RESTAURANT_TABLES } = await import('./tableAssignment');
+        const occupiedSet = new Set(occupied);
+        const totalCapacity = (RESTAURANT_TABLES as Array<{ id: string; capacity: number }>)
+          .filter((t: { id: string; capacity: number }) => !occupiedSet.has(t.id))
+          .reduce((sum: number, t: { id: string; capacity: number }) => sum + t.capacity, 0);
+
+        return {
+          available: true,
+          reason: undefined,
+          suggestedTables: assignment.group?.tableIds ?? [],
+          assignmentInstruction: assignment.instruction,
+          capacityLeft: totalCapacity,
+        };
       }),
 
     // Actualizar una reserva

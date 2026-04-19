@@ -10,13 +10,28 @@ export async function getAllTables() {
   return await db.select().from(restaurantTables);
 }
 
-export async function upsertTable(tableId: string, status: "free" | "occupied" | "reserved") {
+export async function upsertTable(
+  tableId: string,
+  status: "free" | "occupied" | "reserved",
+  guests?: number
+) {
   const db = await getDb();
   if (!db) return;
 
+  const updateSet: Record<string, unknown> = { status, updatedAt: new Date() };
+  if (guests !== undefined) updateSet.guests = guests;
+
   await db.insert(restaurantTables)
-    .values({ tableId, status })
-    .onDuplicateKeyUpdate({ set: { status, updatedAt: new Date() } });
+    .values({ tableId, status, guests: guests ?? 0 })
+    .onDuplicateKeyUpdate({ set: updateSet });
+}
+
+export async function updateTableCapacity(tableId: string, capacity: number) {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(restaurantTables)
+    .set({ capacity })
+    .where(eq(restaurantTables.tableId, tableId));
 }
 
 export async function initializeTables(tableIds: string[]) {

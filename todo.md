@@ -1313,3 +1313,13 @@ Nueva sección con gráficos y análisis de ventas.
 ## Bug Calendario - Solapamiento de Reservas
 
 - [x] Reservas a la misma hora se solapan visualmente → mostrar en columnas paralelas (estilo Google Calendar)
+
+## Integración Agente WhatsApp (Paula)
+
+- [ ] Campo `capacity` en tabla `restaurant_tables` de BD + migración
+- [ ] Exponer `capacity` en endpoint `restaurant.getTables`
+- [ ] Endpoint `reservations.checkAvailability` con lógica de solapamiento y capacidad
+- [ ] Aceptar `origin: "whatsapp"` en `reservations.create`
+- [ ] Auto-asignación de mesa al crear reserva (`autoAssignTable: true`)
+- [ ] UI para editar capacidad de cada mesa
+- [ ] Indicador visual en calendario para reservas de origen WhatsApp

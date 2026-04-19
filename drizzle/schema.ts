@@ -31,7 +31,9 @@ export type InsertUser = typeof users.$inferInsert;
 export const restaurantTables = mysqlTable("restaurant_tables", {
   id: int("id").autoincrement().primaryKey(),
   tableId: varchar("tableId", { length: 20 }).notNull().unique(), // "1", "2", "0+", "0-", etc.
+  capacity: int("capacity").notNull().default(4),               // Personas máximas en esta mesa
   status: mysqlEnum("status", ["free", "occupied", "reserved"]).default("free").notNull(),
+  guests: int("guests").notNull().default(0),                   // Personas actualmente sentadas
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
 
@@ -159,7 +161,7 @@ export const reservations = mysqlTable("reservations", {
   isPeakDay: tinyint("isPeakDay").default(0).notNull(), // Día punta (1h30 máx)
   // Información adicional
   notes: text("notes"),                                    // Notas del cliente o del restaurante
-  origin: mysqlEnum("origin", ["manual", "web", "phone"])
+  origin: mysqlEnum("origin", ["manual", "web", "phone", "whatsapp"])
     .default("manual").notNull(),                          // Dónde se originó la reserva
   // Timestamps
   createdAt: timestamp("createdAt").defaultNow().notNull(),

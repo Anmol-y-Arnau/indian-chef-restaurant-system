@@ -119,6 +119,13 @@ export const TABLE_GROUPS: TableGroup[] = [
   { name: "Zona trasera completa (5+6+8) y delantera (0++0-)", tableIds: ["5", "6", "8", "0+", "0-"], capacity: 14, minParty: 11, maxParty: 14, priority: 70 },
 ];
 
+/**
+ * Alias de TABLES con campo `capacity` para compatibilidad con el agente de WhatsApp.
+ * `capacity` = baseCapacity de cada mesa individual.
+ */
+export const RESTAURANT_TABLES: Array<{ id: string; label: string; capacity: number; zone: string }> =
+  TABLES.map(t => ({ id: t.id, label: t.label, capacity: t.baseCapacity, zone: t.zone }));
+
 // ─── Core assignment logic ────────────────────────────────────────────────────
 
 /**
