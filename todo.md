@@ -1309,3 +1309,7 @@ Nueva sección con gráficos y análisis de ventas.
 - [ ] Quitar panel lateral y simplificar la UI
 - [ ] Liberación automática de mesa 10 minutos tras el pago (completeTable)
 - [ ] Quitar lógica de días punta de la UI (simplificar)
+
+## Bug Calendario - Solapamiento de Reservas
+
+- [x] Reservas a la misma hora se solapan visualmente → mostrar en columnas paralelas (estilo Google Calendar)

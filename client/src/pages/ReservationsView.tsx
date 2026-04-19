@@ -429,6 +429,60 @@ function AddReservationDialog({
   );
 }
 
+// ─── Overlap layout calculation ──────────────────────────────────────────────
+
+interface LayoutBlock {
+  r: Reservation;
+  col: number;
+  totalCols: number;
+  startMin: number;
+  endMin: number;
+}
+
+/**
+ * Groups reservations into overlapping clusters and assigns each a column
+ * so they sit side by side instead of stacking on top of each other.
+ */
+function computeLayout(reservations: Reservation[]): LayoutBlock[] {
+  // Sort by start time
+  const sorted = [...reservations].sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
+
+  const blocks: LayoutBlock[] = sorted.map(r => ({
+    r,
+    col: 0,
+    totalCols: 1,
+    startMin: timeToMinutes(r.time),
+    endMin: r.estimatedEnd ? timeToMinutes(r.estimatedEnd) : timeToMinutes(r.time) + 90,
+  }));
+
+  // Greedy column assignment: for each block, find the first column not
+  // occupied by any overlapping block that was already placed.
+  for (let i = 0; i < blocks.length; i++) {
+    const usedCols = new Set<number>();
+    for (let j = 0; j < i; j++) {
+      if (blocks[j].endMin > blocks[i].startMin && blocks[j].startMin < blocks[i].endMin) {
+        usedCols.add(blocks[j].col);
+      }
+    }
+    let col = 0;
+    while (usedCols.has(col)) col++;
+    blocks[i].col = col;
+  }
+
+  // Compute totalCols per overlapping cluster
+  for (let i = 0; i < blocks.length; i++) {
+    let maxCol = blocks[i].col;
+    for (let j = 0; j < blocks.length; j++) {
+      if (i !== j && blocks[j].endMin > blocks[i].startMin && blocks[j].startMin < blocks[i].endMin) {
+        maxCol = Math.max(maxCol, blocks[j].col);
+      }
+    }
+    blocks[i].totalCols = maxCol + 1;
+  }
+
+  return blocks;
+}
+
 // ─── Week Grid ────────────────────────────────────────────────────────────────
 
 function WeekGrid({
@@ -547,24 +601,32 @@ function WeekGrid({
                   />
                 )}
 
-                {/* Reservation blocks */}
-                {dayReservations.map(r => {
-                  const startMin = timeToMinutes(r.time);
-                  const endMin = r.estimatedEnd ? timeToMinutes(r.estimatedEnd) : startMin + 90;
+                {/* Reservation blocks — side-by-side when overlapping */}
+                {computeLayout(dayReservations).map(({ r, col, totalCols, startMin, endMin }) => {
                   const top = minutesToPx(startMin);
                   const height = Math.max(((endMin - startMin) / 60) * PX_PER_HOUR, 28);
                   const cfg = STATUS_COLORS[r.status];
                   const tables = r.assignedTableIds ? JSON.parse(r.assignedTableIds) as string[] : r.tableId ? [r.tableId] : [];
 
+                  // Each block occupies 1/totalCols of the column width with a small gap
+                  const GAP = 2; // px gap between parallel blocks
+                  const widthPct = 100 / totalCols;
+                  const leftPct  = col * widthPct;
+
                   return (
                     <div
                       key={r.id}
                       className={cn(
-                        "absolute left-0.5 right-0.5 rounded-md border-l-2 px-1.5 py-0.5 cursor-pointer z-10 overflow-hidden transition-all hover:brightness-125",
+                        "absolute rounded-md border-l-2 px-1.5 py-0.5 cursor-pointer z-10 overflow-hidden transition-all hover:brightness-125",
                         cfg.bg, cfg.border, cfg.text,
                         (r.status === "cancelled" || r.status === "no_show" || r.status === "finished") && "opacity-40"
                       )}
-                      style={{ top, height }}
+                      style={{
+                        top,
+                        height,
+                        left: `calc(${leftPct}% + ${col === 0 ? 2 : GAP}px)`,
+                        right: `calc(${100 - leftPct - widthPct}% + ${col === totalCols - 1 ? 2 : GAP}px)`,
+                      }}
                       onClick={e => { e.stopPropagation(); onClickReservation(r); }}
                     >
                       <p className="text-[11px] font-semibold leading-tight truncate">{r.guestName}</p>
