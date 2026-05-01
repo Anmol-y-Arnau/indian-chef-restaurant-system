@@ -181,6 +181,24 @@ export async function clearTableOrders(tableId: string) {
   await db.delete(orders).where(eq(orders.tableId, tableId));
 }
 
+/**
+ * Mueve todos los pedidos activos de una mesa a otra.
+ * La mesa origen queda libre; la mesa destino pasa a ocupada.
+ */
+export async function moveTableOrders(fromTableId: string, toTableId: string) {
+  const db = await getDb();
+  if (!db) return;
+  // Actualizar tableId de todos los pedidos de la mesa origen
+  await db.update(orders)
+    .set({ tableId: toTableId, updatedAt: new Date() })
+    .where(eq(orders.tableId, fromTableId));
+  // Marcar mesa origen como libre
+  await upsertTable(fromTableId, 'free');
+  // Marcar mesa destino como ocupada
+  await upsertTable(toTableId, 'occupied');
+  console.log(`[moveTableOrders] Moved orders from table ${fromTableId} to ${toTableId}`);
+}
+
 // ========== SALES ==========
 
 export async function addSale(sale: InsertSale) {

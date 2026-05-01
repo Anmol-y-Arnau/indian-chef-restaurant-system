@@ -195,6 +195,20 @@ export const appRouter = router({
         return { success: true };
       }),
 
+    // Move all orders from one table to another (liberar mesa sin cerrar)
+    moveTable: publicProcedure
+      .input(z.object({
+        fromTableId: z.string().min(1),
+        toTableId: z.string().min(1),
+      }))
+      .mutation(async ({ input }) => {
+        if (input.fromTableId === input.toTableId) {
+          throw new Error('La mesa origen y destino no pueden ser la misma');
+        }
+        await restaurantDb.moveTableOrders(input.fromTableId, input.toTableId);
+        return { success: true };
+      }),
+
     // Get sales history
     getSales: publicProcedure.query(async () => {
       return await restaurantDb.getAllSales();

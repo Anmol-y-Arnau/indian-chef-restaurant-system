@@ -3,7 +3,7 @@ import { useRestaurant } from "@/contexts/RestaurantContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import { sortOrdersByCategory } from "@/lib/orderUtils";
-import { Copy, QrCode, Minus, Printer, Trash2, X, Bluetooth, FileText } from "lucide-react";
+import { Copy, QrCode, Minus, Printer, Trash2, X, Bluetooth, FileText, ArrowRightLeft } from "lucide-react";
 import { useHaptic } from "@/hooks/useHaptic";
 import PaymentModal, { type PaymentData } from "./PaymentModal";
 import { QRCodeModal } from "./QRCodeModal";
@@ -32,10 +32,14 @@ export function OrderPanel() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
   const [showInvoiceDialog, setShowInvoiceDialog] = useState(false);
+  const [showMoveDialog, setShowMoveDialog] = useState(false);
+  const [moveTargetId, setMoveTargetId] = useState<string>('');
   const [qrData, setQrData] = useState<{ url: string; ticketNumber: number } | null>(null);
   
   // MUST be called before any conditional returns (Rules of Hooks)
   const generatePDFMutation = trpc.restaurant.generateTicketPDF.useMutation();
+  const moveTableMutation = trpc.restaurant.moveTable.useMutation();
+  const utils = trpc.useUtils();
   const haptic = useHaptic();
 
   if (!activeTableId) {
@@ -333,16 +337,91 @@ export function OrderPanel() {
         </div>
         
         {table.status !== 'free' && (
-          <Button 
-            variant="ghost" 
-            className="w-full text-destructive hover:bg-destructive/10 hover:text-destructive text-xs h-8"
-            onClick={() => {
-              if(confirm(t('confirm_cancel'))) clearTable(activeTableId);
-            }}
-          >
-            <Trash2 className="w-3 h-3 mr-2" />
-            {t('release_table')}
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              variant="ghost" 
+              className="flex-1 text-blue-400 hover:bg-blue-500/10 hover:text-blue-300 text-xs h-8"
+              onClick={() => { setMoveTargetId(''); setShowMoveDialog(true); }}
+              title="Mover todos los pedidos a otra mesa"
+            >
+              <ArrowRightLeft className="w-3 h-3 mr-2" />
+              Mover mesa
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="flex-1 text-destructive hover:bg-destructive/10 hover:text-destructive text-xs h-8"
+              onClick={() => {
+                if(confirm(t('confirm_cancel'))) clearTable(activeTableId);
+              }}
+            >
+              <Trash2 className="w-3 h-3 mr-2" />
+              {t('release_table')}
+            </Button>
+          </div>
+        )}
+
+        {/* Diálogo de mover mesa */}
+        {showMoveDialog && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => setShowMoveDialog(false)}>
+            <div className="bg-card border border-border rounded-xl p-6 w-80 shadow-2xl" onClick={e => e.stopPropagation()}>
+              <h3 className="font-heading text-lg text-primary mb-1 flex items-center gap-2">
+                <ArrowRightLeft className="w-5 h-5" />
+                Mover mesa
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Mover todos los pedidos de <strong>{table.name}</strong> a otra mesa. La mesa actual quedará libre.
+              </p>
+              <div className="grid grid-cols-4 gap-2 mb-4">
+                {tables
+                  .filter(t => String(t.id) !== String(activeTableId))
+                  .map(t => (
+                    <button
+                      key={t.id}
+                      onClick={() => setMoveTargetId(String(t.id))}
+                      className={`rounded-lg py-2 text-sm font-semibold border transition-all ${
+                        moveTargetId === String(t.id)
+                          ? 'bg-primary text-primary-foreground border-primary shadow-lg scale-105'
+                          : t.status === 'occupied'
+                          ? 'bg-secondary/10 border-secondary/50 text-secondary hover:bg-secondary/20'
+                          : 'bg-muted border-border text-foreground hover:bg-accent'
+                      }`}
+                    >
+                      {t.name}
+                    </button>
+                  ))}
+              </div>
+              {moveTargetId && (
+                <p className="text-xs text-muted-foreground mb-3">
+                  {tables.find(t => String(t.id) === moveTargetId)?.status === 'occupied'
+                    ? '⚠️ Esa mesa ya tiene pedidos — los pedidos se combinarán.'
+                    : '✓ Mesa libre — los pedidos se moverán directamente.'}
+                </p>
+              )}
+              <div className="flex gap-2">
+                <Button variant="outline" className="flex-1" onClick={() => setShowMoveDialog(false)}>Cancelar</Button>
+                <Button
+                  className="flex-1 gradient-primary text-primary-foreground border-0"
+                  disabled={!moveTargetId || moveTableMutation.isPending}
+                  onClick={async () => {
+                    if (!moveTargetId) return;
+                    try {
+                      await moveTableMutation.mutateAsync({ fromTableId: String(activeTableId), toTableId: moveTargetId });
+                      await utils.restaurant.getActiveOrders.invalidate();
+                      await utils.restaurant.getTables.invalidate();
+                      setShowMoveDialog(false);
+                      setActiveTableId(moveTargetId);
+                      haptic.success();
+                      toast.success(`Pedidos movidos a ${tables.find(t => String(t.id) === moveTargetId)?.name ?? moveTargetId}`);
+                    } catch (e) {
+                      toast.error('Error al mover la mesa');
+                    }
+                  }}
+                >
+                  {moveTableMutation.isPending ? 'Moviendo...' : 'Confirmar'}
+                </Button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
 
