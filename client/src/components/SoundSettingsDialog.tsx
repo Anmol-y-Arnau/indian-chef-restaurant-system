@@ -176,7 +176,7 @@ export function SoundSettingsDialog({ isOpen, onClose, deliveredTables, onReacti
         </DialogHeader>
 
         {/* Todo el contenido variable en un único ScrollArea para scroll unificado */}
-        <ScrollArea className="flex-1 -mx-1 px-1">
+        <ScrollArea className="h-[60vh] -mx-1 px-1">
           <div className="space-y-4 pb-2">
             {/* Toggle Global */}
             <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
