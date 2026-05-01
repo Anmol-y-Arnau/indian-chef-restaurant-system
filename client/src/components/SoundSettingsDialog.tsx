@@ -4,18 +4,32 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ChevronDown, ChevronRight, Volume2, VolumeX } from 'lucide-react';
+import { ChevronDown, ChevronRight, Volume2, VolumeX, CheckCircle2, RotateCcw } from 'lucide-react';
 import { CATEGORIES, MENU_ITEMS } from '@/lib/data';
+
+export interface DeliveredTable {
+  id: string | number;
+  name: string;
+  orders: Array<{
+    id: string | number;
+    menuItem: { name: string; category: string };
+    quantity: number;
+    spiceLevel?: string;
+    notes?: string;
+  }>;
+}
 
 interface SoundSettingsDialogProps {
   isOpen: boolean;
   onClose: () => void;
+  deliveredTables?: DeliveredTable[];
+  onReactivateTable?: (tableId: string | number) => void;
 }
 
 // TODAS las categorías del menú (control total para el usuario)
 const SOUND_CATEGORIES = ['menu_del_dia', 'starters', 'salads', 'tandoor', 'veg_curry', 'chicken_curry', 'fish_prawn_curry', 'lamb_curry', 'biryani', 'sides', 'wines', 'drinks', 'coffees', 'desserts'];
 
-export function SoundSettingsDialog({ isOpen, onClose }: SoundSettingsDialogProps) {
+export function SoundSettingsDialog({ isOpen, onClose, deliveredTables, onReactivateTable }: SoundSettingsDialogProps) {
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [selectedCategories, setSelectedCategories] = useState<Set<string>>(new Set(SOUND_CATEGORIES));
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
@@ -257,6 +271,57 @@ export function SoundSettingsDialog({ isOpen, onClose }: SoundSettingsDialogProp
             </ScrollArea>
           </div>
         </div>
+
+        {/* Mesas entregadas */}
+        {deliveredTables && deliveredTables.length > 0 && (
+          <div className="border-t pt-4">
+            <Label className="text-sm font-semibold mb-3 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-green-500" />
+              Mesas Entregadas ({deliveredTables.length})
+            </Label>
+            <ScrollArea className="max-h-[220px]">
+              <div className="space-y-2">
+                {deliveredTables.map(table => (
+                  <div key={table.id} className="border border-slate-700 rounded-lg overflow-hidden bg-slate-900/50">
+                    <div className="flex items-center justify-between px-3 py-2 bg-slate-800/60">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-green-500" />
+                        <span className="font-semibold text-slate-300 text-sm">Mesa {table.name}</span>
+                        <span className="text-xs text-slate-500">{table.orders.length} platos</span>
+                      </div>
+                      {onReactivateTable && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 px-2 text-xs text-orange-400 hover:text-orange-300 hover:bg-orange-900/30"
+                          onClick={() => onReactivateTable(table.id)}
+                          title="Reactivar mesa (marcar platos como pendientes)"
+                        >
+                          <RotateCcw className="w-3 h-3 mr-1" />
+                          Reactivar
+                        </Button>
+                      )}
+                    </div>
+                    <div className="px-3 py-2 space-y-1">
+                      {table.orders.map(order => (
+                        <div key={order.id} className="flex items-center justify-between text-xs text-slate-400">
+                          <span className="flex items-center gap-1">
+                            <CheckCircle2 className="w-3 h-3 text-green-600 flex-shrink-0" />
+                            {order.menuItem.name}
+                            {order.spiceLevel && order.spiceLevel !== '-' && (
+                              <span className="text-orange-400 ml-1">{order.spiceLevel}</span>
+                            )}
+                          </span>
+                          <span className="text-slate-500 ml-2">x{order.quantity}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+        )}
 
         {/* Botones de acción */}
         <div className="flex gap-2 justify-end pt-4 border-t">

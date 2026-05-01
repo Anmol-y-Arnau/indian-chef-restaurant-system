@@ -5,7 +5,7 @@ import { trpc } from '@/lib/trpc';
 import { MENU_ITEMS, INITIAL_TABLES } from '@/lib/data';
 import { OrderItem } from '@/lib/types';
 import { getCategoryOrder } from '@/lib/orderUtils';
-import { SoundSettingsDialog } from '@/components/SoundSettingsDialog';
+import { SoundSettingsDialog, type DeliveredTable } from '@/components/SoundSettingsDialog';
 import { useHaptic } from '@/hooks/useHaptic';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -468,6 +468,21 @@ export default function KitchenView() {
     },
   });
 
+  // Mesas completadas (para mostrar en el panel de configuración)
+  const deliveredTables = useMemo<DeliveredTable[]>(() => tables
+    .filter(table => table.orders.length > 0 && table.orders.every(o => o.isDelivered))
+    .map(table => ({
+      id: table.id,
+      name: table.name,
+      orders: table.orders.map(o => ({
+        id: o.id,
+        menuItem: { name: o.menuItem.name, category: o.menuItem.category },
+        quantity: o.quantity,
+        spiceLevel: o.spiceLevel,
+        notes: o.notes,
+      })),
+    })), [tables]);
+
   // Mesas activas memoizadas — solo las que tienen pedidos pendientes (no completadas)
   const activeTables = useMemo(() => tables
     .filter(table => table.orders.length > 0)
@@ -648,6 +663,19 @@ export default function KitchenView() {
       <SoundSettingsDialog 
         isOpen={isSoundSettingsOpen}
         onClose={() => setIsSoundSettingsOpen(false)}
+        deliveredTables={deliveredTables}
+        onReactivateTable={async (tableId) => {
+          // Marcar todos los platos de la mesa como pendientes
+          const tableData = tables.find(t => String(t.id) === String(tableId));
+          if (!tableData) return;
+          const orderIds = tableData.orders.map(o => Number(o.id));
+          try {
+            await batchDeliveryMutation.mutateAsync({ orderIds, isDelivered: false });
+            haptic.light();
+          } catch (e) {
+            console.error('[REACTIVATE]', e);
+          }
+        }}
       />
     </div>
   );
