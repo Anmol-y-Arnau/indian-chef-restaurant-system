@@ -175,46 +175,47 @@ export function SoundSettingsDialog({ isOpen, onClose, deliveredTables, onReacti
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 flex-1 overflow-hidden flex flex-col">
-          {/* Toggle Global */}
-          <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-            <div className="space-y-0.5">
-              <Label className="text-base font-semibold">Sonido Activado</Label>
-              <p className="text-sm text-muted-foreground">
-                Activar o desactivar todas las notificaciones sonoras
-              </p>
+        {/* Todo el contenido variable en un único ScrollArea para scroll unificado */}
+        <ScrollArea className="flex-1 -mx-1 px-1">
+          <div className="space-y-4 pb-2">
+            {/* Toggle Global */}
+            <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+              <div className="space-y-0.5">
+                <Label className="text-base font-semibold">Sonido Activado</Label>
+                <p className="text-sm text-muted-foreground">
+                  Activar o desactivar todas las notificaciones sonoras
+                </p>
+              </div>
+              <Switch
+                checked={soundEnabled}
+                onCheckedChange={setSoundEnabled}
+              />
             </div>
-            <Switch
-              checked={soundEnabled}
-              onCheckedChange={setSoundEnabled}
-            />
-          </div>
 
-          {/* Botón de prueba */}
-          <Button
-            variant="outline"
-            onClick={playTestSound}
-            className="w-full"
-            disabled={!soundEnabled}
-          >
-            <Volume2 className="w-4 h-4 mr-2" />
-            Probar Sonido
-          </Button>
+            {/* Botón de prueba */}
+            <Button
+              variant="outline"
+              onClick={playTestSound}
+              className="w-full"
+              disabled={!soundEnabled}
+            >
+              <Volume2 className="w-4 h-4 mr-2" />
+              Probar Sonido
+            </Button>
 
-          {/* Lista de categorías */}
-          <div className="flex-1 overflow-hidden">
-            <Label className="text-sm font-semibold mb-2 block">
-              Seleccionar por Categoría o Plato Individual
-            </Label>
-            <ScrollArea className="h-[400px] border rounded-lg">
-              <div className="p-4 space-y-2">
+            {/* Lista de categorías */}
+            <div>
+              <Label className="text-sm font-semibold mb-2 block">
+                Seleccionar por Categoría o Plato Individual
+              </Label>
+              <div className="border rounded-lg divide-y">
                 {CATEGORIES.filter(cat => SOUND_CATEGORIES.includes(cat.id)).map(category => {
                   const categoryItems = MENU_ITEMS.filter(item => item.category === category.id);
                   const isExpanded = expandedCategories.has(category.id);
                   const isCategorySelected = selectedCategories.has(category.id);
                   
                   return (
-                    <div key={category.id} className="border rounded-lg overflow-hidden">
+                    <div key={category.id} className="overflow-hidden">
                       {/* Header de categoría */}
                       <div className="flex items-center gap-2 p-3 bg-muted/50 hover:bg-muted transition-colors">
                         <Button
@@ -268,63 +269,61 @@ export function SoundSettingsDialog({ isOpen, onClose, deliveredTables, onReacti
                   );
                 })}
               </div>
-            </ScrollArea>
-          </div>
-        </div>
+            </div>
 
-        {/* Mesas entregadas */}
-        {deliveredTables && deliveredTables.length > 0 && (
-          <div className="border-t pt-4">
-            <Label className="text-sm font-semibold mb-3 flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-green-500" />
-              Mesas Entregadas ({deliveredTables.length})
-            </Label>
-            <ScrollArea className="max-h-[220px]">
-              <div className="space-y-2">
-                {deliveredTables.map(table => (
-                  <div key={table.id} className="border border-slate-700 rounded-lg overflow-hidden bg-slate-900/50">
-                    <div className="flex items-center justify-between px-3 py-2 bg-slate-800/60">
-                      <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-green-500" />
-                        <span className="font-semibold text-slate-300 text-sm">Mesa {table.name}</span>
-                        <span className="text-xs text-slate-500">{table.orders.length} platos</span>
-                      </div>
-                      {onReactivateTable && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 px-2 text-xs text-orange-400 hover:text-orange-300 hover:bg-orange-900/30"
-                          onClick={() => onReactivateTable(table.id)}
-                          title="Reactivar mesa (marcar platos como pendientes)"
-                        >
-                          <RotateCcw className="w-3 h-3 mr-1" />
-                          Reactivar
-                        </Button>
-                      )}
-                    </div>
-                    <div className="px-3 py-2 space-y-1">
-                      {table.orders.map(order => (
-                        <div key={order.id} className="flex items-center justify-between text-xs text-slate-400">
-                          <span className="flex items-center gap-1">
-                            <CheckCircle2 className="w-3 h-3 text-green-600 flex-shrink-0" />
-                            {order.menuItem.name}
-                            {order.spiceLevel && order.spiceLevel !== '-' && (
-                              <span className="text-orange-400 ml-1">{order.spiceLevel}</span>
-                            )}
-                          </span>
-                          <span className="text-slate-500 ml-2">x{order.quantity}</span>
+            {/* Mesas entregadas */}
+            {deliveredTables && deliveredTables.length > 0 && (
+              <div className="border-t pt-4">
+                <Label className="text-sm font-semibold mb-3 flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-green-500" />
+                  Mesas Entregadas ({deliveredTables.length})
+                </Label>
+                <div className="space-y-2">
+                  {deliveredTables.map(table => (
+                    <div key={table.id} className="border border-slate-700 rounded-lg overflow-hidden bg-slate-900/50">
+                      <div className="flex items-center justify-between px-3 py-2 bg-slate-800/60">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-green-500" />
+                          <span className="font-semibold text-slate-300 text-sm">Mesa {table.name}</span>
+                          <span className="text-xs text-slate-500">{table.orders.length} platos</span>
                         </div>
-                      ))}
+                        {onReactivateTable && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 px-2 text-xs text-orange-400 hover:text-orange-300 hover:bg-orange-900/30"
+                            onClick={() => onReactivateTable(table.id)}
+                            title="Reactivar mesa (marcar platos como pendientes)"
+                          >
+                            <RotateCcw className="w-3 h-3 mr-1" />
+                            Reactivar
+                          </Button>
+                        )}
+                      </div>
+                      <div className="px-3 py-2 space-y-1">
+                        {table.orders.map(order => (
+                          <div key={order.id} className="flex items-center justify-between text-xs text-slate-400">
+                            <span className="flex items-center gap-1">
+                              <CheckCircle2 className="w-3 h-3 text-green-600 flex-shrink-0" />
+                              {order.menuItem.name}
+                              {order.spiceLevel && order.spiceLevel !== '-' && (
+                                <span className="text-orange-400 ml-1">{order.spiceLevel}</span>
+                              )}
+                            </span>
+                            <span className="text-slate-500 ml-2">x{order.quantity}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </ScrollArea>
+            )}
           </div>
-        )}
+        </ScrollArea>
 
-        {/* Botones de acción */}
-        <div className="flex gap-2 justify-end pt-4 border-t">
+        {/* Botones de acción — siempre visibles al fondo */}
+        <div className="flex gap-2 justify-end pt-4 border-t shrink-0">
           <Button variant="outline" onClick={onClose}>
             Cancelar
           </Button>
