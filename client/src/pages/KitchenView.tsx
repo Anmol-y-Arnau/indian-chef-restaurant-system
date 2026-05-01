@@ -162,7 +162,6 @@ function categorizeOrders(orders: any[]) {
 }
 
 const TableCard = memo(({ table, tableCount, onToggleItem, onMarkAllDelivered }: TableCardProps) => {
-  const [isExpanded, setIsExpanded] = useState(false);
   const categorized = useMemo(() => categorizeOrders(table.orders), [table.orders]);
   const hasPendingStarters = categorized.starters.some((o: any) => !o.isDelivered);
   const isFullyDelivered = table.isFullyDelivered;
@@ -186,41 +185,17 @@ const TableCard = memo(({ table, tableCount, onToggleItem, onMarkAllDelivered }:
     gap: totalItems <= 3 ? 'gap-2' : totalItems <= 6 ? 'gap-1.5' : totalItems <= 10 ? 'gap-1' : 'gap-0.5',
   }), [totalItems]);
 
-  // Si está completamente entregado y NO expandido, mostrar versión comprimida
-  if (isFullyDelivered && !isExpanded) {
-    return (
-      <div 
-        onClick={() => setIsExpanded(true)}
-        className="bg-slate-800/30 rounded-lg p-2 border border-slate-700/50 cursor-pointer hover:bg-slate-800/50 transition-all flex items-center justify-between opacity-40 hover:opacity-60"
-      >
-        <div className="flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-green-600" />
-          <span className="text-slate-500 text-xs font-semibold">Mesa {table.name}</span>
-        </div>
-        <span className="text-slate-600 text-[10px] uppercase">Todo Entregado</span>
-      </div>
-    );
-  }
-
   return (
     <div 
       className={`
-        bg-slate-800 rounded-xl ${sizes.padding} border-4 transition-all duration-500 shadow-2xl relative flex flex-col h-full overflow-hidden
+        bg-slate-800 rounded-xl ${sizes.padding} border-4 transition-all duration-500 shadow-2xl relative flex flex-col
         ${isFullyDelivered 
           ? 'border-slate-700 opacity-70' 
           : 'border-slate-600'
         }
       `}
     >
-      {isFullyDelivered && isExpanded && (
-        <button
-          onClick={() => setIsExpanded(false)}
-          className="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-slate-400 p-1 rounded text-xs z-10"
-          title="Comprimir"
-        >
-          −
-        </button>
-      )}
+
       {/* HEADER - MESA */}
       <div className="flex justify-between items-center mb-6 pb-4 border-b-2 border-slate-700">
         <div className="flex items-center gap-4">
@@ -246,8 +221,8 @@ const TableCard = memo(({ table, tableCount, onToggleItem, onMarkAllDelivered }:
         </div>
       </div>
 
-      {/* Contenedor scrollable para todas las categorías */}
-      <div className="flex-1 overflow-y-auto">
+      {/* Contenedor de categorías — crece con el contenido */}
+      <div className="flex-1">
         {/* ENTRANTES - PRIORIDAD */}
         {categorized.starters.length > 0 && (
           <div className="mb-6">
@@ -493,7 +468,7 @@ export default function KitchenView() {
     },
   });
 
-  // Mesas activas memoizadas
+  // Mesas activas memoizadas — solo las que tienen pedidos pendientes (no completadas)
   const activeTables = useMemo(() => tables
     .filter(table => table.orders.length > 0)
     .map(table => {
@@ -512,12 +487,8 @@ export default function KitchenView() {
         oldestTimestamp: oldestOrder?.createdAt ? new Date(oldestOrder.createdAt).getTime() : Date.now()
       };
     })
-    .sort((a, b) => {
-      if (a.isFullyDelivered !== b.isFullyDelivered) {
-        return a.isFullyDelivered ? 1 : -1;
-      }
-      return a.oldestTimestamp - b.oldestTimestamp;
-    }), [tables]);
+    .filter(table => !table.isFullyDelivered)
+    .sort((a, b) => a.oldestTimestamp - b.oldestTimestamp), [tables]);
 
   // Sonido de notificación
   const playNotificationSound = useCallback(() => {
@@ -627,8 +598,7 @@ export default function KitchenView() {
               <div>
                 <h1 className="text-2xl font-bold">KITCHEN DISPLAY SYSTEM</h1>
                 <p className="text-orange-100 text-sm">
-                  {activeTables.filter(t => !t.isFullyDelivered).length} mesas activas · {' '}
-                  {activeTables.filter(t => t.isFullyDelivered).length} completadas
+                  {activeTables.length} {activeTables.length === 1 ? 'mesa activa' : 'mesas activas'}
                 </p>
               </div>
             </div>
@@ -644,9 +614,9 @@ export default function KitchenView() {
         </div>
       </div>
 
-      <div className="container mx-auto px-3 py-3 h-[calc(100vh-100px)] overflow-y-auto">
+      <div className="container mx-auto px-3 py-3 overflow-y-auto">
         {activeTables.length > 0 ? (
-          <div className="grid grid-cols-4 gap-2 h-full" style={{ gridAutoRows: 'minmax(200px, auto)' }}>
+          <div className="grid grid-cols-4 gap-3 items-start">
             {activeTables.map(table => (
               <TableCard 
                 key={table.id} 
