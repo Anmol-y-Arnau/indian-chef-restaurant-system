@@ -105,3 +105,15 @@ temp/
 *.db
 *.sqlite
 *.sqlite3
+
+# Internal development files (not for public repo)
+.manus/
+todo.md
+ideas.md
+*.pdf
+add_starprop_*.mjs
+generate_starprop_*.mjs
+check_db_schema.mjs
+test_delivery_update.mjs
+assign_numbers.py
+translate_menu.py
